@@ -1,0 +1,142 @@
+{
+  "window_title": {
+    "en": "Car Parts Management",
+    "he": "ניהול חלקי רכב"
+  },
+  "app_title_1": {
+    "en": "Abu Mukh Car Parts",
+    "he": "חלקי חילוף אבו מוך"
+  },
+  "app_title_2": {
+    "en": "The King of Spare Car Parts",
+    "he": "מלך חלקי החילוף"
+  },
+  "app_title_3": {
+    "en": "The Best in the Market",
+    "he": "הכי טוב שיש"
+  },
+  "Abu Mukh Car Parts": {
+    "en": "Abu Mukh Car Parts",
+    "he": "אבו מוך חלפי רכב"
+  },
+  "header_title": {
+    "en": "Welcome to Abu Mukh Car Parts",
+    "he": "ברוכים הבאים לאבו מוך חלפי רכב"
+  },
+  "home_page_title": {
+    "en": "Welcome to Abu Mukh Car Parts Management",
+    "he": "ברוכים הבאים לניהול חלקי רכב אבו מוך"
+  },
+  "home_button_tooltip": {
+    "en": "Return to home page",
+    "he": "חזרה לדף הבית"
+  },
+  "copyright": {
+    "en": "Copyright © 2025 Abu Mukh Car Parts",
+    "he": "זכויות יוצרים © 2025 אבו מוך חלפי רכב"
+  },
+  "footer_content": {
+    "en": "All rights reserved.",
+    "he": "כל הזכויות שמורות."
+  },
+  "loading_products": {
+    "en": "Loading products...",
+    "he": "טוען מוצרים..."
+  },
+  "products_loaded": {
+    "en": "Loaded {count} products",
+    "he": "נטענו {count} מוצרים"
+  },
+  "status_ready": {
+    "en": "Status: Ready",
+    "he": "סטטוס: מוכן"
+  },
+  "search_placeholder": {
+    "en": "Search...",
+    "he": "חפש..."
+  },
+  "search_products": {
+    "en": "Search:",
+    "he": "חיפוש:"
+  },
+  "close": {
+    "en": "Close",
+    "he": "סגור"
+  },
+  "save": {
+    "en": "Save",
+    "he": "שמור"
+  },
+  "cancel": {
+    "en": "Cancel",
+    "he": "בטל"
+  },
+  "reset": {
+    "en": "Reset",
+    "he": "איפוס"
+  },
+  "success": {
+    "en": "Success",
+    "he": "הצלחה"
+  },
+  "error": {
+    "en": "Error",
+    "he": "שגיאה"
+  },
+  "expand": {
+    "en": "Expand",
+    "he": "הרחב"
+  },
+  "type_message": {
+    "en": "Type your message",
+    "he": "הקלד את ההודעה שלך"
+  },
+  "send": {
+    "en": "Send",
+    "he": "שלח"
+  },
+  "graph_placeholder": {
+    "en": "Graph will be displayed here",
+    "he": "גרף יוצג כאן"
+  },
+  "stats_info": {
+    "en": "Additional statistics information can be shown here.",
+    "he": "ניתן להציג כאן מידע סטטיסטי נוסף."
+  },
+  "username_placeholder": {
+    "en": "Username",
+    "he": "שם משתמש"
+  },
+  "password_placeholder": {
+    "en": "Password",
+    "he": "סיסמה"
+  },
+  "username_label": {
+    "en": "Username",
+    "he": "שם משתמש"
+  },
+  "password_label": {
+    "en": "Password",
+    "he": "סיסמה"
+  },
+  "login_button": {
+    "en": "Login",
+    "he": "התחברות"
+  },
+  "login_successful": {
+    "en": "Login successful!",
+    "he": "התחברות הצליחה!"
+  },
+  "login_failed": {
+    "en": "Invalid credentials!",
+    "he": "פרטי התחברות לא חוקיים!"
+  },
+  "login_failed_title": {
+    "en": "Login Failed",
+    "he": "התחברות נכשלה"
+  },
+  "login_failed_message": {
+    "en": "Invalid username or password.",
+    "he": "שם משתמש או סיסמה שגויים."
+  }
+}

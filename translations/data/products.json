@@ -1,0 +1,90 @@
+{
+  "product_details": {
+    "en": "Product Details",
+    "he": "פרטי מוצר"
+  },
+  "products_table": {
+    "en": "Parts Table",
+    "he": "טבלת חלקים"
+  },
+  "id": {
+    "en": "ID",
+    "he": "מזהה"
+  },
+  "category": {
+    "en": "Category",
+    "he": "קטגוריה"
+  },
+  "car": {
+    "en": "Car",
+    "he": "רכב"
+  },
+  "model": {
+    "en": "Model",
+    "he": "דגם"
+  },
+  "product_name": {
+    "en": "Product Name",
+    "he": "שם חלק"
+  },
+  "quantity": {
+    "en": "Quantity",
+    "he": "כמות"
+  },
+  "price": {
+    "en": "Price",
+    "he": "מחיר"
+  },
+  "product_name_placeholder": {
+    "en": "Enter product name",
+    "he": "הזן שם מוצר"
+  },
+  "category_placeholder": {
+    "en": "Enter category",
+    "he": "הזן קטגוריה"
+  },
+  "car_placeholder": {
+    "en": "Enter car name",
+    "he": "הזן שם רכב"
+  },
+  "model_placeholder": {
+    "en": "Enter model",
+    "he": "הזן דגם"
+  },
+  "stock_status": {
+    "en": "Stock Status",
+    "he": "מצב מלאי"
+  },
+  "all_products": {
+    "en": "All Products",
+    "he": "כל המוצרים"
+  },
+  "in_stock_only": {
+    "en": "In Stock Only",
+    "he": "במלאי בלבד"
+  },
+  "out_of_stock_only": {
+    "en": "Out of Stock Only",
+    "he": "אזל מהמלאי בלבד"
+  },
+  "price_range": {
+    "en": "Price Range",
+    "he": "טווח מחירים"
+  },
+  "min": {
+    "en": "Min",
+    "he": "מינימום"
+  },
+  "max": {
+    "en": "Max",
+    "he": "מקסימום"
+  },
+  "no_min_price": {
+    "en": "No minimum",
+    "he": "ללא מינימום"
+  },
+  "no_max_price": {
+    "en": "No maximum",
+    "he": "ללא מקסימום"
+  }
+}

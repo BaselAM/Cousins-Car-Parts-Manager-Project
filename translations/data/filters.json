@@ -1,0 +1,34 @@
+{
+  "filter_title": {
+    "en": "Filter Products",
+    "he": "סינון מוצרים"
+  },
+  "filter_criteria": {
+    "en": "Filter Criteria",
+    "he": "קריטריוני סינון"
+  },
+  "filter_results": {
+    "en": "Found {count} out of {total} products",
+    "he": "נמצאו {count} מתוך {total} מוצרים"
+  },
+  "filter_status": {
+    "en": "Showing {count} of {total} products",
+    "he": "מציג {count} מתוך {total} מוצרים"
+  },
+  "search_results": {
+    "en": "Found {count} of {total} products",
+    "he": "נמצאו {count} מתוך {total} מוצרים"
+  },
+  "name_placeholder": {
+    "en": "Search by name",
+    "he": "חפש לפי שם"
+  },
+  "search_placeholder": {
+    "en": "Search products by name, category, car...",
+    "he": "חפש מוצרים לפי שם, קטגוריה, רכב..."
+  },
+  "no_cell_selected": {
+    "en": "No cell selected",
+    "he": "לא נבחר תא"
+  }
+}

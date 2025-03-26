@@ -1,0 +1,82 @@
+{
+  "export_error": {
+    "en": "Error exporting data",
+    "he": "שגיאה בייצוא המידע"
+  },
+  "unexpected_error": {
+    "en": "Unexpected error",
+    "he": "שגיאה לא צפויה"
+  },
+  "select_mode_required": {
+    "en": "Select mode must be enabled for deletion",
+    "he": "יש להפעיל מצב בחירה למחיקה"
+  },
+  "no_rows_selected": {
+    "en": "No rows selected for deletion",
+    "he": "לא נבחרו שורות למחיקה"
+  },
+  "operation_canceled": {
+    "en": "Operation canceled",
+    "he": "הפעולה בוטלה"
+  },
+  "selection_mode_error": {
+    "en": "Error in selection mode",
+    "he": "שגיאה במצב בחירה"
+  },
+  "add_error": {
+    "en": "Error adding product",
+    "he": "שגיאה בהוספת מוצר"
+  },
+  "load_error": {
+    "en": "Error loading products",
+    "he": "שגיאה בטעינת מוצרים"
+  },
+  "dialog_error": {
+    "en": "Error opening dialog",
+    "he": "שגיאה בפתיחת החלון"
+  },
+  "data_error": {
+    "en": "Invalid data provided",
+    "he": "נתונים לא תקינים"
+  },
+  "operation_error": {
+    "en": "Operation failed",
+    "he": "הפעולה נכשלה"
+  },
+  "details_error": {
+    "en": "Error showing product details",
+    "he": "שגיאה בהצגת פרטי המוצר"
+  },
+  "clear_error": {
+    "en": "Error clearing field",
+    "he": "שגיאה בניקוי השדה"
+  },
+  "filter_error": {
+    "en": "Error applying filter",
+    "he": "שגיאה בהחלת הסינון"
+  },
+  "language_change_error": {
+    "en": "Failed to change language",
+    "he": "שגיאה בשינוי שפה"
+  },
+  "operation_failed": {
+    "en": "Operation failed",
+    "he": "הפעולה נכשלה"
+  },
+  "settings_save_error": {
+    "en": "Failed to save settings",
+    "he": "שמירת ההגדרות נכשלה"
+  },
+  "save_error": {
+    "en": "Save error",
+    "he": "שגיאה בשמירה"
+  },
+  "invalid_number": {
+    "en": "Please enter a valid number",
+    "he": "אנא הזן מספר תקין"
+  },
+  "delete_failed": {
+    "en": "Failed to delete products",
+    "he": "כשלון במחיקת המוצרים"
+  }
+}

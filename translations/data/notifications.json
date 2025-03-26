@@ -1,0 +1,34 @@
+{
+  "notifications": {
+    "en": "Notifications",
+    "he": "התראות"
+  },
+  "popout_notifications": {
+    "en": "Popout Notifications",
+    "he": "התראות קופצות"
+  },
+  "mark_all_read": {
+    "en": "Mark all as read",
+    "he": "סמן הכל כנקרא"
+  },
+  "see_all_notifications": {
+    "en": "See all notifications",
+    "he": "ראה את כל ההתראות"
+  },
+  "chat": {
+    "en": "Chat",
+    "he": "שיחה"
+  },
+  "chat_assistant": {
+    "en": "Chat Assistant",
+    "he": "עוזר שיחה"
+  },
+  "expand_chat": {
+    "en": "Expand Chat",
+    "he": "הרחב שיחה"
+  },
+  "popout_chat": {
+    "en": "Popout Chat",
+    "he": "שיחה קופצת"
+  }
+}

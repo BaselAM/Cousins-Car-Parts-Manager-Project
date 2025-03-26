@@ -1,0 +1,78 @@
+{
+  "parts_button": {
+    "en": "Parts",
+    "he": "חלקים"
+  },
+  "web_search_button": {
+    "en": "Web Search",
+    "he": "חיפוש באינטרנט"
+  },
+  "products_button": {
+    "en": "Products Table",
+    "he": "טבלת חלקים"
+  },
+  "statistics_button": {
+    "en": "Statistics",
+    "he": "סטטיסטיקה"
+  },
+  "settings_button": {
+    "en": "Settings",
+    "he": "הגדרות"
+  },
+  "help_button": {
+    "en": "Help",
+    "he": "עזרה"
+  },
+  "exit_button": {
+    "en": "Exit",
+    "he": "יציאה"
+  },
+  "refresh_statistics": {
+    "en": "Refresh Statistics",
+    "he": "רענן סטטיסטיקות"
+  },
+  "products_list_button": {
+    "en": "Products List",
+    "he": "רשימת חלקים"
+  },
+  "select_button": {
+    "en": "Select",
+    "he": "בחר"
+  },
+  "remove": {
+    "en": "Remove",
+    "he": "מחק"
+  },
+  "filter_button": {
+    "en": "Filter",
+    "he": "סינון"
+  },
+  "apply_filter": {
+    "en": "Apply Filter",
+    "he": "החל סינון"
+  },
+  "add_product": {
+    "en": "Add Product",
+    "he": "הוסף חלק"
+  },
+  "clear_all": {
+    "en": "Clear All",
+    "he": "נקה הכל"
+  },
+  "export": {
+    "en": "Export",
+    "he": "ייצוא"
+  },
+  "refresh": {
+    "en": "Refresh",
+    "he": "רענון"
+  },
+  "yes_btn": {
+    "en": "Yes, delete {count}",
+    "he": "כן, מחק {count}"
+  },
+  "no_btn": {
+    "en": "No",
+    "he": "לא"
+  }
+}
