@@ -24,8 +24,12 @@
     "he": "ברוכים הבאים לאבו מוך חלפי רכב"
   },
   "home_page_title": {
-    "en": "Welcome to Abu Mukh Car Parts Management",
-    "he": "ברוכים הבאים לניהול חלקי רכב אבו מוך"
+    "en": "Home Page",
+    "he": "דף בית"
+  },
+  "welcome_message": {
+    "en": "Welcome",
+    "he": "ברוך הבא"
   },
   "home_button_tooltip": {
     "en": "Return to home page",

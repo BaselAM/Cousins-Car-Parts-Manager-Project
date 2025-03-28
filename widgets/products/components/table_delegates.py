@@ -63,11 +63,11 @@ class ThemedNumericDelegate(ThemedItemDelegate):
         try:
             text = editor.text().strip()
             if text:
-                # Format as number with 2 decimal places for price column (index 6)
-                if index.column() == 6:  # Price column
+                # Format as number with 2 decimal places for price column (index 5)
+                if index.column() == 5:  # Price column
                     value = float(text.replace(',', '.'))
                     model.setData(index, f"{value:.2f}")
-                else:  # Quantity column (index 5)
+                else:  # Quantity column (index 4)
                     value = int(text)
                     model.setData(index, str(value))
             else:

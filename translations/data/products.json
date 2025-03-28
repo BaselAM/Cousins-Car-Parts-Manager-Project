@@ -86,5 +86,21 @@
   "no_max_price": {
     "en": "No maximum",
     "he": "ללא מקסימום"
-  }
+  },
+  "compatible_models": {
+  "en": "Compatible Models",
+  "he": "דגמים תואמים"
+},
+"compatible_models_placeholder": {
+  "en": "Enter compatible models (Brand:Model)",
+  "he": "הזן דגמים תואמים (מותג:דגם)"
+},
+"brand": {
+  "en": "Brand",
+  "he": "מותג"
+},
+"brand_placeholder": {
+  "en": "Enter brand name",
+  "he": "הזן שם מותג"
+}
 }

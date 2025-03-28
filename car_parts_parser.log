@@ -1,0 +1,284 @@
+2025-03-27 05:07:37,602 - __main__ - INFO - Car Parts Database Parser Starting...
+2025-03-27 05:07:37,690 - __main__ - INFO - Found parts data file at resources/btw_filenames.txt
+2025-03-27 05:07:37,713 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,713 - __main__ - INFO - Processed batch 1 (100 parts)
+2025-03-27 05:07:37,714 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,714 - __main__ - INFO - Processed batch 2 (100 parts)
+2025-03-27 05:07:37,714 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,715 - __main__ - INFO - Processed batch 3 (100 parts)
+2025-03-27 05:07:37,715 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,715 - __main__ - INFO - Processed batch 4 (100 parts)
+2025-03-27 05:07:37,716 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,716 - __main__ - INFO - Processed batch 5 (100 parts)
+2025-03-27 05:07:37,716 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,717 - __main__ - INFO - Processed batch 6 (100 parts)
+2025-03-27 05:07:37,717 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,717 - __main__ - INFO - Processed batch 7 (100 parts)
+2025-03-27 05:07:37,718 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,718 - __main__ - INFO - Processed batch 8 (100 parts)
+2025-03-27 05:07:37,718 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,718 - __main__ - INFO - Processed batch 9 (100 parts)
+2025-03-27 05:07:37,719 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,719 - __main__ - INFO - Processed batch 10 (100 parts)
+2025-03-27 05:07:37,719 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,719 - __main__ - INFO - Processed batch 11 (100 parts)
+2025-03-27 05:07:37,720 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,720 - __main__ - INFO - Processed batch 12 (100 parts)
+2025-03-27 05:07:37,720 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,720 - __main__ - INFO - Processed batch 13 (100 parts)
+2025-03-27 05:07:37,721 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,721 - __main__ - INFO - Processed batch 14 (100 parts)
+2025-03-27 05:07:37,721 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,721 - __main__ - INFO - Processed batch 15 (100 parts)
+2025-03-27 05:07:37,722 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,722 - __main__ - INFO - Processed batch 16 (100 parts)
+2025-03-27 05:07:37,722 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,722 - __main__ - INFO - Processed batch 17 (100 parts)
+2025-03-27 05:07:37,723 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,723 - __main__ - INFO - Processed batch 18 (100 parts)
+2025-03-27 05:07:37,723 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,723 - __main__ - INFO - Processed batch 19 (100 parts)
+2025-03-27 05:07:37,723 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,725 - __main__ - INFO - Processed batch 20 (100 parts)
+2025-03-27 05:07:37,725 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,725 - __main__ - INFO - Processed batch 21 (100 parts)
+2025-03-27 05:07:37,725 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,726 - __main__ - INFO - Processed batch 22 (100 parts)
+2025-03-27 05:07:37,726 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,726 - __main__ - INFO - Processed batch 23 (100 parts)
+2025-03-27 05:07:37,726 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,727 - __main__ - INFO - Processed batch 24 (100 parts)
+2025-03-27 05:07:37,727 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,727 - __main__ - INFO - Processed batch 25 (100 parts)
+2025-03-27 05:07:37,727 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,727 - __main__ - INFO - Processed batch 26 (100 parts)
+2025-03-27 05:07:37,728 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,728 - __main__ - INFO - Processed batch 27 (100 parts)
+2025-03-27 05:07:37,728 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,728 - __main__ - INFO - Processed batch 28 (100 parts)
+2025-03-27 05:07:37,729 - __main__ - ERROR - Error processing parts data: table parts has no column named size
+2025-03-27 05:07:37,729 - __main__ - INFO - Processed batch 29 (50 parts)
+2025-03-27 05:37:16,607 - __main__ - INFO - Car Parts Database Parser Starting...
+2025-03-27 05:37:16,636 - __main__ - INFO - Added missing column 'size' to parts table.
+2025-03-27 05:37:16,650 - __main__ - INFO - Added missing column 'oe_number' to parts table.
+2025-03-27 05:37:16,664 - __main__ - INFO - Added missing column 'brand' to parts table.
+2025-03-27 05:37:16,677 - __main__ - INFO - Added missing column 'compatible_models' to parts table.
+2025-03-27 05:37:16,678 - __main__ - ERROR - Error updating schema: Cannot add a column with non-constant default
+2025-03-27 05:37:16,678 - __main__ - INFO - Found parts data file at resources/btw_filenames.txt
+2025-03-27 05:37:16,747 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,747 - __main__ - INFO - Processed batch 1 (100 parts)
+2025-03-27 05:37:16,792 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,792 - __main__ - INFO - Processed batch 2 (100 parts)
+2025-03-27 05:37:16,838 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,838 - __main__ - INFO - Processed batch 3 (100 parts)
+2025-03-27 05:37:16,893 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,893 - __main__ - INFO - Processed batch 4 (100 parts)
+2025-03-27 05:37:16,933 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,933 - __main__ - INFO - Processed batch 5 (100 parts)
+2025-03-27 05:37:16,977 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:16,977 - __main__ - INFO - Processed batch 6 (100 parts)
+2025-03-27 05:37:17,020 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,020 - __main__ - INFO - Processed batch 7 (100 parts)
+2025-03-27 05:37:17,064 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,065 - __main__ - INFO - Processed batch 8 (100 parts)
+2025-03-27 05:37:17,110 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,110 - __main__ - INFO - Processed batch 9 (100 parts)
+2025-03-27 05:37:17,151 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,152 - __main__ - INFO - Processed batch 10 (100 parts)
+2025-03-27 05:37:17,191 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,191 - __main__ - INFO - Processed batch 11 (100 parts)
+2025-03-27 05:37:17,235 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,235 - __main__ - INFO - Processed batch 12 (100 parts)
+2025-03-27 05:37:17,272 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,272 - __main__ - INFO - Processed batch 13 (100 parts)
+2025-03-27 05:37:17,316 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,316 - __main__ - INFO - Processed batch 14 (100 parts)
+2025-03-27 05:37:17,358 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,358 - __main__ - INFO - Processed batch 15 (100 parts)
+2025-03-27 05:37:17,402 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,402 - __main__ - INFO - Processed batch 16 (100 parts)
+2025-03-27 05:37:17,428 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,428 - __main__ - INFO - Processed batch 17 (100 parts)
+2025-03-27 05:37:17,476 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,476 - __main__ - INFO - Processed batch 18 (100 parts)
+2025-03-27 05:37:17,522 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,522 - __main__ - INFO - Processed batch 19 (100 parts)
+2025-03-27 05:37:17,554 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,554 - __main__ - INFO - Processed batch 20 (100 parts)
+2025-03-27 05:37:17,602 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,602 - __main__ - INFO - Processed batch 21 (100 parts)
+2025-03-27 05:37:17,633 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,633 - __main__ - INFO - Processed batch 22 (100 parts)
+2025-03-27 05:37:17,666 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,666 - __main__ - INFO - Processed batch 23 (100 parts)
+2025-03-27 05:37:17,722 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,722 - __main__ - INFO - Processed batch 24 (100 parts)
+2025-03-27 05:37:17,760 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,760 - __main__ - INFO - Processed batch 25 (100 parts)
+2025-03-27 05:37:17,793 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,793 - __main__ - INFO - Processed batch 26 (100 parts)
+2025-03-27 05:37:17,840 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,840 - __main__ - INFO - Processed batch 27 (100 parts)
+2025-03-27 05:37:17,903 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:17,903 - __main__ - INFO - Processed batch 28 (100 parts)
+2025-03-27 05:37:17,934 - __main__ - INFO - Successfully processed 50 parts.
+2025-03-27 05:37:17,934 - __main__ - INFO - Processed batch 29 (50 parts)
+2025-03-27 05:37:18,030 - __main__ - INFO - Database Statistics:
+2025-03-27 05:37:18,030 - __main__ - INFO - Total parts: 5700
+2025-03-27 05:37:18,030 - __main__ - INFO - Parts with year info: 3750
+2025-03-27 05:37:18,030 - __main__ - INFO - Parts with location info: 1490
+2025-03-27 05:37:18,030 - __main__ - INFO - Parts with side info: 1962
+2025-03-27 05:37:18,030 - __main__ - INFO - Top 5 Categories:
+2025-03-27 05:37:18,030 - __main__ - INFO -   Unknown: 1888 parts
+2025-03-27 05:37:18,030 - __main__ - INFO -   Brake Discs: 826 parts
+2025-03-27 05:37:18,030 - __main__ - INFO -   Air Filter: 432 parts
+2025-03-27 05:37:18,030 - __main__ - INFO -   Control Arm: 416 parts
+2025-03-27 05:37:18,030 - __main__ - INFO -   Belt: 358 parts
+2025-03-27 05:37:18,187 - __main__ - INFO - Successfully exported 5700 parts to car_parts_database_export.json
+2025-03-27 05:37:18,187 - __main__ - INFO - Car Parts Database Parser Complete
+2025-03-27 05:37:57,364 - __main__ - INFO - Car Parts Database Parser Starting...
+2025-03-27 05:37:57,428 - __main__ - INFO - Found parts data file at resources/btw_filenames.txt
+2025-03-27 05:37:57,473 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,474 - __main__ - INFO - Processed batch 1 (100 parts)
+2025-03-27 05:37:57,505 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,505 - __main__ - INFO - Processed batch 2 (100 parts)
+2025-03-27 05:37:57,533 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,533 - __main__ - INFO - Processed batch 3 (100 parts)
+2025-03-27 05:37:57,561 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,561 - __main__ - INFO - Processed batch 4 (100 parts)
+2025-03-27 05:37:57,589 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,589 - __main__ - INFO - Processed batch 5 (100 parts)
+2025-03-27 05:37:57,618 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,618 - __main__ - INFO - Processed batch 6 (100 parts)
+2025-03-27 05:37:57,647 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,647 - __main__ - INFO - Processed batch 7 (100 parts)
+2025-03-27 05:37:57,674 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,674 - __main__ - INFO - Processed batch 8 (100 parts)
+2025-03-27 05:37:57,703 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,703 - __main__ - INFO - Processed batch 9 (100 parts)
+2025-03-27 05:37:57,731 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,731 - __main__ - INFO - Processed batch 10 (100 parts)
+2025-03-27 05:37:57,760 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,760 - __main__ - INFO - Processed batch 11 (100 parts)
+2025-03-27 05:37:57,787 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,787 - __main__ - INFO - Processed batch 12 (100 parts)
+2025-03-27 05:37:57,815 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,816 - __main__ - INFO - Processed batch 13 (100 parts)
+2025-03-27 05:37:57,844 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,844 - __main__ - INFO - Processed batch 14 (100 parts)
+2025-03-27 05:37:57,872 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,872 - __main__ - INFO - Processed batch 15 (100 parts)
+2025-03-27 05:37:57,901 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,902 - __main__ - INFO - Processed batch 16 (100 parts)
+2025-03-27 05:37:57,931 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,931 - __main__ - INFO - Processed batch 17 (100 parts)
+2025-03-27 05:37:57,961 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,961 - __main__ - INFO - Processed batch 18 (100 parts)
+2025-03-27 05:37:57,989 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:57,989 - __main__ - INFO - Processed batch 19 (100 parts)
+2025-03-27 05:37:58,017 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,018 - __main__ - INFO - Processed batch 20 (100 parts)
+2025-03-27 05:37:58,047 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,047 - __main__ - INFO - Processed batch 21 (100 parts)
+2025-03-27 05:37:58,076 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,076 - __main__ - INFO - Processed batch 22 (100 parts)
+2025-03-27 05:37:58,108 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,108 - __main__ - INFO - Processed batch 23 (100 parts)
+2025-03-27 05:37:58,137 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,137 - __main__ - INFO - Processed batch 24 (100 parts)
+2025-03-27 05:37:58,164 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,164 - __main__ - INFO - Processed batch 25 (100 parts)
+2025-03-27 05:37:58,190 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,190 - __main__ - INFO - Processed batch 26 (100 parts)
+2025-03-27 05:37:58,217 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,217 - __main__ - INFO - Processed batch 27 (100 parts)
+2025-03-27 05:37:58,244 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:37:58,244 - __main__ - INFO - Processed batch 28 (100 parts)
+2025-03-27 05:37:58,261 - __main__ - INFO - Successfully processed 50 parts.
+2025-03-27 05:37:58,263 - __main__ - INFO - Processed batch 29 (50 parts)
+2025-03-27 05:37:58,279 - __main__ - INFO - Database Statistics:
+2025-03-27 05:37:58,279 - __main__ - INFO - Total parts: 2850
+2025-03-27 05:37:58,279 - __main__ - INFO - Parts with year info: 1875
+2025-03-27 05:37:58,279 - __main__ - INFO - Parts with location info: 745
+2025-03-27 05:37:58,279 - __main__ - INFO - Parts with side info: 1110
+2025-03-27 05:37:58,279 - __main__ - INFO - Top 5 Categories:
+2025-03-27 05:37:58,279 - __main__ - INFO -   Unknown: 913 parts
+2025-03-27 05:37:58,279 - __main__ - INFO -   Brake Discs: 413 parts
+2025-03-27 05:37:58,279 - __main__ - INFO -   Air Filter: 216 parts
+2025-03-27 05:37:58,279 - __main__ - INFO -   Control Arm: 208 parts
+2025-03-27 05:37:58,280 - __main__ - INFO -   Belt: 181 parts
+2025-03-27 05:37:58,329 - __main__ - INFO - Successfully exported 2850 parts to car_parts_database_export.json
+2025-03-27 05:37:58,331 - __main__ - INFO - Car Parts Database Parser Complete
+2025-03-27 05:38:16,377 - __main__ - INFO - Car Parts Database Parser Starting...
+2025-03-27 05:38:16,454 - __main__ - INFO - Found parts data file at resources/btw_filenames.txt
+2025-03-27 05:38:16,498 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,498 - __main__ - INFO - Processed batch 1 (100 parts)
+2025-03-27 05:38:16,532 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,532 - __main__ - INFO - Processed batch 2 (100 parts)
+2025-03-27 05:38:16,570 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,570 - __main__ - INFO - Processed batch 3 (100 parts)
+2025-03-27 05:38:16,619 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,619 - __main__ - INFO - Processed batch 4 (100 parts)
+2025-03-27 05:38:16,660 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,661 - __main__ - INFO - Processed batch 5 (100 parts)
+2025-03-27 05:38:16,694 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,695 - __main__ - INFO - Processed batch 6 (100 parts)
+2025-03-27 05:38:16,741 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,741 - __main__ - INFO - Processed batch 7 (100 parts)
+2025-03-27 05:38:16,777 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,777 - __main__ - INFO - Processed batch 8 (100 parts)
+2025-03-27 05:38:16,813 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,813 - __main__ - INFO - Processed batch 9 (100 parts)
+2025-03-27 05:38:16,846 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,846 - __main__ - INFO - Processed batch 10 (100 parts)
+2025-03-27 05:38:16,881 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,882 - __main__ - INFO - Processed batch 11 (100 parts)
+2025-03-27 05:38:16,913 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,913 - __main__ - INFO - Processed batch 12 (100 parts)
+2025-03-27 05:38:16,950 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,950 - __main__ - INFO - Processed batch 13 (100 parts)
+2025-03-27 05:38:16,984 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:16,984 - __main__ - INFO - Processed batch 14 (100 parts)
+2025-03-27 05:38:17,019 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,019 - __main__ - INFO - Processed batch 15 (100 parts)
+2025-03-27 05:38:17,053 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,054 - __main__ - INFO - Processed batch 16 (100 parts)
+2025-03-27 05:38:17,089 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,089 - __main__ - INFO - Processed batch 17 (100 parts)
+2025-03-27 05:38:17,120 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,121 - __main__ - INFO - Processed batch 18 (100 parts)
+2025-03-27 05:38:17,154 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,155 - __main__ - INFO - Processed batch 19 (100 parts)
+2025-03-27 05:38:17,188 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,188 - __main__ - INFO - Processed batch 20 (100 parts)
+2025-03-27 05:38:17,223 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,223 - __main__ - INFO - Processed batch 21 (100 parts)
+2025-03-27 05:38:17,256 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,256 - __main__ - INFO - Processed batch 22 (100 parts)
+2025-03-27 05:38:17,295 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,296 - __main__ - INFO - Processed batch 23 (100 parts)
+2025-03-27 05:38:17,339 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,339 - __main__ - INFO - Processed batch 24 (100 parts)
+2025-03-27 05:38:17,373 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,373 - __main__ - INFO - Processed batch 25 (100 parts)
+2025-03-27 05:38:17,409 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,409 - __main__ - INFO - Processed batch 26 (100 parts)
+2025-03-27 05:38:17,451 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,451 - __main__ - INFO - Processed batch 27 (100 parts)
+2025-03-27 05:38:17,493 - __main__ - INFO - Successfully processed 100 parts.
+2025-03-27 05:38:17,493 - __main__ - INFO - Processed batch 28 (100 parts)
+2025-03-27 05:38:17,519 - __main__ - INFO - Successfully processed 50 parts.
+2025-03-27 05:38:17,519 - __main__ - INFO - Processed batch 29 (50 parts)
+2025-03-27 05:38:17,541 - __main__ - INFO - Database Statistics:
+2025-03-27 05:38:17,542 - __main__ - INFO - Total parts: 2850
+2025-03-27 05:38:17,542 - __main__ - INFO - Parts with year info: 1875
+2025-03-27 05:38:17,542 - __main__ - INFO - Parts with location info: 745
+2025-03-27 05:38:17,542 - __main__ - INFO - Parts with side info: 1110
+2025-03-27 05:38:17,542 - __main__ - INFO - Top 5 Categories:
+2025-03-27 05:38:17,542 - __main__ - INFO -   Unknown: 913 parts
+2025-03-27 05:38:17,542 - __main__ - INFO -   Brake Discs: 413 parts
+2025-03-27 05:38:17,542 - __main__ - INFO -   Air Filter: 216 parts
+2025-03-27 05:38:17,542 - __main__ - INFO -   Control Arm: 208 parts
+2025-03-27 05:38:17,542 - __main__ - INFO -   Belt: 181 parts
+2025-03-27 05:38:17,598 - __main__ - INFO - Successfully exported 2850 parts to car_parts_database_export.json
+2025-03-27 05:38:17,599 - __main__ - INFO - Car Parts Database Parser Complete

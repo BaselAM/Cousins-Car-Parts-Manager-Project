@@ -52,10 +52,11 @@ class FilterDialog(ElegantDialog):
         self.currency_symbol = currency_symbol
 
         # Initialize empty filters dictionary
+        # Initialize empty filters dictionary
         self.filters = {
             "category": "",
             "name": "",
-            "car_name": "",
+            "brand": "",
             "model": "",
             "min_price": None,
             "max_price": None,
@@ -113,12 +114,12 @@ class FilterDialog(ElegantDialog):
         car_grid.setSpacing(8)  # Reduced spacing
         car_grid.setContentsMargins(8, 12, 8, 8)  # Adjusted to fit title
 
-        # Car Name
-        car_label = QLabel(self.translator.t('car') + ":")
-        self.car_input = QLineEdit()
-        self.car_input.setPlaceholderText(self.translator.t('car_placeholder'))
-        car_grid.addWidget(car_label, 0, 0)
-        car_grid.addWidget(self.car_input, 0, 1)
+        # Brand
+        brand_label = QLabel(self.translator.t('brand') + ":")
+        self.brand_input = QLineEdit()
+        self.brand_input.setPlaceholderText(self.translator.t('brand_placeholder'))
+        car_grid.addWidget(brand_label, 0, 0)
+        car_grid.addWidget(self.brand_input, 0, 1)
 
         # Model
         model_label = QLabel(self.translator.t('model') + ":")
@@ -245,7 +246,7 @@ class FilterDialog(ElegantDialog):
         """Reset all filter fields to default values."""
         self.category_input.clear()
         self.name_input.clear()
-        self.car_input.clear()
+        self.brand_input.clear()
         self.model_input.clear()
         self.min_price.setValue(0)
         self.max_price.setValue(0)
@@ -266,7 +267,7 @@ class FilterDialog(ElegantDialog):
         """Apply filters and store values with simplified stock status handling."""
         self.filters["category"] = self.category_input.text().strip()
         self.filters["name"] = self.name_input.text().strip()
-        self.filters["car_name"] = self.car_input.text().strip()
+        self.filters["brand"] = self.brand_input.text().strip()
         self.filters["model"] = self.model_input.text().strip()
 
         # Only set min/max price if they're not at default values
@@ -307,8 +308,8 @@ class FilterDialog(ElegantDialog):
         if saved_settings.get("name"):
             self.name_input.setText(saved_settings["name"])
 
-        if saved_settings.get("car_name"):
-            self.car_input.setText(saved_settings["car_name"])
+        if saved_settings.get("brand"):
+            self.brand_input.setText(saved_settings["brand"])
 
         if saved_settings.get("model"):
             self.model_input.setText(saved_settings["model"])

@@ -1,0 +1,13 @@
+{
+    "Skoda": ["Octavia", "Superb", "Fabia", "Kodiaq", "Rapid"],
+    "Volkswagen": ["Golf", "Tiguan", "Polo", "Passat", "Jetta"],
+    "Mazda": ["Mazda 2", "Mazda 3", "Mazda 5", "Mazda 6", "CX-5"],
+    "Toyota": ["Corolla", "Yaris", "RAV4", "Avensis", "CHR"],
+    "Suzuki": ["Swift", "Vitara", "Jimny", "Alto", "Celerio"],
+    "Ford": ["Fiesta", "Focus", "Mustang", "Explorer", "Transit"],
+    "Honda": ["Civic", "Accord", "CR-V", "Jazz", "Pilot"],
+    "BMW": ["3 Series", "5 Series", "X3", "X5", "M3"],
+    "Mercedes-Benz": ["C-Class", "E-Class", "S-Class", "GLA", "GLE"],
+    "Audi": ["A3", "A4", "A6", "Q5", "Q7"],
+    "Nissan": ["Sentra", "Altima", "Maxima", "Versa", "X-Trail"]
+}

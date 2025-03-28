@@ -1,0 +1,8 @@
+{
+    "left": ["left", "lhs", "שמאל"],
+    "right": ["right", "rhs", "ימין"],
+    "front": ["front", "קדמי", "frontside"],
+    "rear": ["rear", "אחורי", "back"],
+    "upper": ["up", "upper", "top", "עליון"],
+    "lower": ["down", "lower", "bottom", "תחתון"]
+}

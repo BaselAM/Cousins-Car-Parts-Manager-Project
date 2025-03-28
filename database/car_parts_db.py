@@ -2,10 +2,11 @@ import sqlite3
 from pathlib import Path
 import threading
 import logging
+from datetime import datetime
 
 
 class CarPartsDB:
-    """Thread-safe database handler for car parts inventory"""
+    """Thread-safe database handler for car parts inventory with enhanced schema"""
 
     def __init__(self, db_path=None):
         # Configure logging
@@ -56,17 +57,23 @@ class CarPartsDB:
             raise
 
     def create_table(self):
-        """Create table if it doesn't exist"""
+        """Create table with enhanced schema if it doesn't exist"""
         query = '''
         CREATE TABLE IF NOT EXISTS parts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            parcode INTEGER PRIMARY KEY AUTOINCREMENT,
             category TEXT NOT NULL,
-            car_name TEXT NOT NULL,
-            model TEXT NOT NULL,
             product_name TEXT NOT NULL,
             quantity INTEGER DEFAULT 0,
             price REAL DEFAULT 0.0,
-            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            compatible_brands TEXT,
+            compatible_models TEXT,
+            model_years TEXT,
+            drive_type TEXT,
+            engine_info TEXT,
+            position TEXT,
+            side TEXT,
+            engine_type TEXT,
+            last_updated TIMESTAMP DEFAULT (datetime('now','localtime'))
         )
         '''
         self.execute_query(query)
@@ -118,8 +125,56 @@ class CarPartsDB:
                 self.logger.error(f"SQL error: {e}")
                 raise
 
-    def add_part(self, category, car_name, model, product_name, quantity, price):
-        """Add a new part with explicit verification"""
+    def update_schema_if_needed(self):
+        """Check and update database schema if needed"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                # Check if the parts table exists
+                self.local.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='parts'")
+                if self.local.cursor.fetchone() is None:
+                    # Table doesn't exist, create it
+                    self.create_table()
+                    return True
+
+                # Check for all required columns
+                self.local.cursor.execute("PRAGMA table_info(parts)")
+                existing_columns = {row[1] for row in self.local.cursor.fetchall()}
+
+                # Define the expected columns
+                expected_columns = {
+                    'parcode', 'category', 'product_name', 'quantity', 'price',
+                    'compatible_brands', 'compatible_models', 'model_years',
+                    'drive_type', 'engine_info', 'position', 'side', 'engine_type',
+                    'last_updated'
+                }
+
+                # Add any missing columns
+                missing_columns = expected_columns - existing_columns
+                for column in missing_columns:
+                    # Use appropriate data type based on column name
+                    if column in ('quantity'):
+                        data_type = 'INTEGER DEFAULT 0'
+                    elif column in ('price'):
+                        data_type = 'REAL DEFAULT 0.0'
+                    elif column == 'last_updated':
+                        data_type = "TIMESTAMP DEFAULT (datetime('now','localtime'))"
+                    else:
+                        data_type = 'TEXT'
+
+                    self.local.cursor.execute(f"ALTER TABLE parts ADD COLUMN {column} {data_type}")
+                    self.logger.info(f"Added missing column: {column}")
+
+                self.local.conn.commit()
+                return True
+
+            except sqlite3.Error as e:
+                self.logger.error(f"Error updating schema: {e}")
+                return False
+
+
+    def add_part(self, category, product_name, quantity=0, price=0.0, **kwargs):
+        """Add a new part with enhanced fields"""
         with self.lock:
             self.ensure_connection()
             try:
@@ -129,9 +184,21 @@ class CarPartsDB:
                     return False
 
                 # Set defaults for required fields that can't be NULL
-                category = category if category and category.strip() else "3"  # Use default category "3"
-                car_name = car_name if car_name and car_name.strip() else "-"  # Use default "-"
-                model = model if model and model.strip() else "-"  # Use default "-"
+                category = category if category and category.strip() else "Other Parts"
+
+                # Prepare additional fields
+                field_names = ['category', 'product_name', 'quantity', 'price']
+                field_values = [category, product_name, quantity, price]
+
+                # Add any additional fields from kwargs
+                for key, value in kwargs.items():
+                    field_names.append(key)
+                    field_values.append(value)
+
+                # Add the current timestamp
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                field_names.append('last_updated')
+                field_values.append(current_time)
 
                 # Convert and validate numeric values
                 try:
@@ -145,33 +212,37 @@ class CarPartsDB:
                 thread_id = threading.get_ident()
                 self.logger.info(f"Thread {thread_id}: Adding part: '{product_name}'")
 
+                # Build the query
+                fields = ', '.join(field_names)
+                placeholders = ', '.join(['?'] * len(field_values))
+
                 # Use explicit transaction
                 self.local.conn.execute("BEGIN TRANSACTION")
 
-                self.local.cursor.execute("""
+                self.local.cursor.execute(f"""
                     INSERT INTO parts 
-                    (category, car_name, model, product_name, quantity, price)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                """, (category, car_name, model, product_name, quantity, price))
+                    ({fields})
+                    VALUES ({placeholders})
+                """, field_values)
 
                 # Get the ID of the inserted row
                 new_id = self.local.cursor.lastrowid
-                self.logger.info(f"Created new part with ID: {new_id}")
+                self.logger.info(f"Created new part with Parcode: {new_id}")
 
                 # Explicitly commit the transaction
                 self.local.conn.commit()
 
                 # Verify the part was added by trying to fetch it
-                self.local.cursor.execute("SELECT * FROM parts WHERE id = ?", (new_id,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (new_id,))
                 result = self.local.cursor.fetchone()
 
                 if result:
                     self.logger.info(
-                        f"Successfully verified part was added with ID: {new_id}")
+                        f"Successfully verified part was added with Parcode: {new_id}")
                     return True
                 else:
                     self.logger.error(
-                        f"Failed to verify part was added with ID: {new_id}")
+                        f"Failed to verify part was added with Parcode: {new_id}")
                     return False
 
             except sqlite3.Error as e:
@@ -214,15 +285,15 @@ class CarPartsDB:
                 self.logger.error(f"Error counting parts: {e}")
                 return 0
 
-    def get_part(self, part_id):
-        """Get a single part by ID"""
+    def get_part(self, parcode):
+        """Get a single part by parcode"""
         with self.lock:
             self.ensure_connection()
             try:
-                self.local.cursor.execute("SELECT * FROM parts WHERE id = ?", (part_id,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (parcode,))
                 return self.local.cursor.fetchone()
             except sqlite3.Error as e:
-                self.logger.error(f"Error fetching part {part_id}: {e}")
+                self.logger.error(f"Error fetching part {parcode}: {e}")
                 return None
 
     def get_all_parts(self):
@@ -239,30 +310,31 @@ class CarPartsDB:
                 self.logger.error(f"Error fetching all parts: {e}")
                 return []
 
-    def update_part(self, part_id, **kwargs):
+    def update_part(self, parcode, **kwargs):
         """Update a part with detailed audit logging"""
         with self.lock:
             self.ensure_connection()
             try:
                 # First, get the original part data for comparison
-                self.local.cursor.execute("SELECT * FROM parts WHERE id = ?", (part_id,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (parcode,))
                 original_part = self.local.cursor.fetchone()
 
                 if not original_part:
                     self.logger.warning(
-                        f"Attempted to update non-existent part #{part_id}")
+                        f"Attempted to update non-existent part #{parcode}")
                     return False
 
                 # Build the update query
                 set_clause = ', '.join([f"{k} = ?" for k in kwargs.keys()])
-                set_clause += ", last_updated = CURRENT_TIMESTAMP"  # Always update timestamp
-                values = list(kwargs.values()) + [part_id]
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                set_clause += ", last_updated = ?"  # Always update timestamp
+                values = list(kwargs.values()) + [current_time, parcode]
 
                 # Execute the update
                 self.local.cursor.execute(f"""
                     UPDATE parts 
                     SET {set_clause}
-                    WHERE id = ?
+                    WHERE parcode = ?
                 """, values)
                 self.local.conn.commit()
 
@@ -297,38 +369,38 @@ class CarPartsDB:
                     if changes:
                         changes_str = ", ".join(changes)
                         self.logger.info(
-                            f"Thread {thread_id}: Updated part #{part_id} - {changes_str}")
+                            f"Thread {thread_id}: Updated part #{parcode} - {changes_str}")
                     else:
                         self.logger.info(
-                            f"Thread {thread_id}: Updated part #{part_id} - no changes detected")
+                            f"Thread {thread_id}: Updated part #{parcode} - no changes detected")
 
                     return True
                 else:
-                    self.logger.warning(f"Update part #{part_id} - no rows affected")
+                    self.logger.warning(f"Update part #{parcode} - no rows affected")
                     return False
 
             except sqlite3.Error as e:
-                self.logger.error(f"Database error updating part #{part_id}: {e}")
+                self.logger.error(f"Database error updating part #{parcode}: {e}")
                 return False
 
-    def delete_part(self, part_id):
-        """Delete a part by ID"""
+    def delete_part(self, parcode):
+        """Delete a part by parcode"""
         with self.lock:
             self.ensure_connection()
             try:
                 thread_id = threading.get_ident()
-                self.logger.info(f"Thread {thread_id}: Deleting part {part_id}")
-                self.local.cursor.execute("DELETE FROM parts WHERE id = ?", (part_id,))
+                self.logger.info(f"Thread {thread_id}: Deleting part {parcode}")
+                self.local.cursor.execute("DELETE FROM parts WHERE parcode = ?", (parcode,))
                 self.local.conn.commit()
                 return self.local.cursor.rowcount > 0
             except sqlite3.Error as e:
                 self.logger.error(f"Database error: {str(e)}")
                 return False
 
-    def delete_multiple_parts(self, part_ids):
+    def delete_multiple_parts(self, parcodes):
         """Delete multiple parts in a single transaction"""
-        if not part_ids:
-            self.logger.warning("No part IDs provided for deletion")
+        if not parcodes:
+            self.logger.warning("No part parcodes provided for deletion")
             return False
 
         with self.lock:
@@ -341,12 +413,12 @@ class CarPartsDB:
                 batch_size = 100
                 deleted_count = 0
 
-                for i in range(0, len(part_ids), batch_size):
-                    batch = part_ids[i:i + batch_size]
+                for i in range(0, len(parcodes), batch_size):
+                    batch = parcodes[i:i + batch_size]
                     placeholders = ','.join(['?'] * len(batch))
 
                     self.local.cursor.execute(
-                        f"DELETE FROM parts WHERE id IN ({placeholders})",
+                        f"DELETE FROM parts WHERE parcode IN ({placeholders})",
                         batch
                     )
                     deleted_count += self.local.cursor.rowcount
@@ -364,20 +436,22 @@ class CarPartsDB:
                 return False
 
     def search_parts(self, search_term=''):
-        """Search parts by any field"""
+        """Search parts by any field (enhanced)"""
         with self.lock:
             self.ensure_connection()
-            query = '''
-            SELECT * FROM parts 
-            WHERE car_name LIKE ? 
-               OR model LIKE ? 
-               OR product_name LIKE ?
-            '''
+
+            # Get all text columns for searching
+            self.local.cursor.execute("PRAGMA table_info(parts)")
+            text_columns = [row[1] for row in self.local.cursor.fetchall()
+                            if row[2] == 'TEXT' or row[2] == '']
+
+            conditions = ' OR '.join([f"{col} LIKE ?" for col in text_columns])
+            params = [f'%{search_term}%'] * len(text_columns)
+
+            query = f"SELECT * FROM parts WHERE {conditions}"
+
             try:
-                self.local.cursor.execute(
-                    query,
-                    (f'%{search_term}%', f'%{search_term}%', f'%{search_term}%')
-                )
+                self.local.cursor.execute(query, params)
                 return self.local.cursor.fetchall()
             except sqlite3.Error as e:
                 self.logger.error(f"Search error: {e}")
@@ -413,17 +487,53 @@ class CarPartsDB:
                 self.logger.error(f"Search error: {e}")
                 return []
 
-    def get_unique_cars(self):
-        """Get list of unique car names - added since error indicates this is missing"""
+    def get_unique_brands(self):
+        """Get list of unique car brands"""
         with self.lock:
             self.ensure_connection()
             try:
                 self.local.cursor.execute(
-                    "SELECT DISTINCT car_name FROM parts WHERE car_name != '-' ORDER BY car_name"
+                    "SELECT DISTINCT compatible_brands FROM parts WHERE compatible_brands IS NOT NULL"
                 )
-                return [row[0] for row in self.local.cursor.fetchall()]
+
+                # Process the results to extract unique brand names
+                all_brands = set()
+                for row in self.local.cursor.fetchall():
+                    if row[0]:
+                        brands = row[0].split(',')
+                        for brand in brands:
+                            if brand and brand.strip():
+                                all_brands.add(brand.strip())
+
+                return sorted(list(all_brands))
             except sqlite3.Error as e:
-                self.logger.error(f"Error getting unique cars: {e}")
+                self.logger.error(f"Error getting unique brands: {e}")
+                return []
+
+    def get_unique_models_for_brand(self, brand):
+        """Get list of unique models for a specific brand"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute(
+                    "SELECT compatible_models FROM parts WHERE compatible_models LIKE ?",
+                    (f"%{brand}:%",)
+                )
+
+                # Process the results to extract unique model names for this brand
+                models = set()
+                for row in self.local.cursor.fetchall():
+                    if row[0]:
+                        model_entries = row[0].split(',')
+                        for entry in model_entries:
+                            if entry and ':' in entry:
+                                brand_name, model_name = entry.split(':', 1)
+                                if brand_name.strip() == brand:
+                                    models.add(model_name.strip())
+
+                return sorted(list(models))
+            except sqlite3.Error as e:
+                self.logger.error(f"Error getting models for {brand}: {e}")
                 return []
 
     def begin_transaction(self):

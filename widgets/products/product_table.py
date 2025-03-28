@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor
 from themes import get_color
 from .components.table_delegates import ThemedNumericDelegate, ThemedItemDelegate
+from translations.car_parts_info_translations import translate_category, translate_compatible_models
 
 
 class ProductsTable(QFrame):
@@ -24,7 +25,7 @@ class ProductsTable(QFrame):
 
         # Create table widget
         self.table = QTableWidget()
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(6)
         self.update_headers()
 
         # Hide vertical header completely - this removes row numbers
@@ -78,11 +79,11 @@ class ProductsTable(QFrame):
         self.numeric_delegate = ThemedNumericDelegate()
 
         # Apply delegates to different column types
-        for col in range(1, 5):  # Text columns
-            self.table.setItemDelegateForColumn(col, self.item_delegate)
-        self.table.setItemDelegateForColumn(5, self.numeric_delegate)  # Quantity
-        self.table.setItemDelegateForColumn(6, self.numeric_delegate)  # Price
-
+        self.table.setItemDelegateForColumn(1, self.item_delegate)  # Category
+        self.table.setItemDelegateForColumn(2, self.item_delegate)  # Product name
+        self.table.setItemDelegateForColumn(3, self.item_delegate)  # Compatible models (FIXED)
+        self.table.setItemDelegateForColumn(4, self.numeric_delegate)  # Quantity
+        self.table.setItemDelegateForColumn(5, self.numeric_delegate)  # Price
         # Add table to layout
         layout.addWidget(self.table)
 
@@ -94,9 +95,8 @@ class ProductsTable(QFrame):
         headers = [
             self.translator.t('id'),
             self.translator.t('category'),
-            self.translator.t('car'),
-            self.translator.t('model'),
             self.translator.t('product_name'),
+            self.translator.t('compatible_models'),
             self.translator.t('quantity'),
             self.translator.t('price')
         ]
@@ -120,29 +120,67 @@ class ProductsTable(QFrame):
 
             # Populate the data row by row
             for row, prod in enumerate(products):
-                # ID column (non-editable)
-                id_item = QTableWidgetItem(str(prod[0]))
-                id_item.setFlags(id_item.flags() ^ Qt.ItemIsEditable)
-                id_item.setTextAlignment(Qt.AlignCenter)  # Center align ID
-                self.table.setItem(row, 0, id_item)
+                try:
+                    # ID column (non-editable) - parcode is at index 0
+                    id_item = QTableWidgetItem(str(prod[0]))
+                    id_item.setFlags(id_item.flags() ^ Qt.ItemIsEditable)
+                    id_item.setTextAlignment(Qt.AlignCenter)  # Center align ID
+                    self.table.setItem(row, 0, id_item)
 
-                # Other columns
-                for col in range(1, 5):
-                    text = str(prod[col]) if prod[col] not in [None, ""] else "-"
-                    item = QTableWidgetItem(text)
-                    # Left align text fields
-                    item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                    self.table.setItem(row, col, item)
+                    category_text = str(prod[1]) if len(prod) > 1 and prod[1] not in [None, ""] else "-"
+                    try:
+                        # Translate category
+                        category_text = translate_category(category_text, self.translator.language)
+                    except Exception as e:
+                        print(f"Error translating category: {e}")
+                    category_item = QTableWidgetItem(category_text)
+                    category_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    self.table.setItem(row, 1, category_item)
 
-                # Quantity - center align
-                qty_item = QTableWidgetItem(str(prod[5]))
-                qty_item.setTextAlignment(Qt.AlignCenter)
-                self.table.setItem(row, 5, qty_item)
+                    # Product name - left align - product_name is at index 2
+                    name_text = str(prod[2]) if len(prod) > 2 and prod[2] not in [None, ""] else "-"
+                    name_item = QTableWidgetItem(name_text)
+                    name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    self.table.setItem(row, 2, name_item)
 
-                # Price - right align
-                price_item = QTableWidgetItem(f"{float(prod[6]):.2f}")
-                price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                self.table.setItem(row, 6, price_item)
+                    models_text = str(prod[6]) if len(prod) > 6 and prod[6] not in [None, ""] else "-"
+                    try:
+                        # Translate compatible models
+                        models_text = translate_compatible_models(models_text, self.translator.language)
+                    except Exception as e:
+                        print(f"Error translating models: {e}")
+                    models_item = QTableWidgetItem(models_text)
+                    models_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    self.table.setItem(row, 3, models_item)
+
+                    # Quantity - center align - quantity is at index 3
+                    qty_value = "0"
+                    if len(prod) > 3 and prod[3] is not None:
+                        try:
+                            qty_value = str(int(prod[3]))
+                        except (ValueError, TypeError):
+                            qty_value = "0"
+                    qty_item = QTableWidgetItem(qty_value)
+                    qty_item.setTextAlignment(Qt.AlignCenter)
+                    self.table.setItem(row, 4, qty_item)
+
+                    # Price - right align - price is at index 4
+
+                    price_value = "0.00"
+                    if len(prod) > 4 and prod[4] is not None:
+                        try:
+                            price_value = f"{float(prod[4]):.2f}"
+                        except (ValueError, TypeError):
+                            price_value = "0.00"
+                    price_item = QTableWidgetItem(price_value)
+                    price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                    self.table.setItem(row, 5, price_item)
+
+                except Exception as e:
+                    print(f"Error processing row {row}: {e}")
+                    # Create empty cells for this row to avoid table corruption
+                    for col in range(6):  # Now 6 columns
+                        self.table.setItem(row, col, QTableWidgetItem("-"))
 
             # Re-enable sorting and signals after all data is loaded
             self.table.setSortingEnabled(True)
@@ -165,8 +203,8 @@ class ProductsTable(QFrame):
         total_width = self.width() - 40  # Subtract scrollbar width and some padding
 
         # Column width distribution (percentages)
-        # ID: 8%, Category: 12%, Car: 15%, Model: 15%, Name: 28%, Qty: 10%, Price: 12%
-        col_widths = [8, 12, 15, 15, 28, 10, 12]
+        # ID: 8%, Category: 12%, Product Name: 32%, Compatible Models: 28%, Qty: 10%, Price: 10%
+        col_widths = [8, 12, 32, 28, 10, 10]  # Made price column smaller
 
         # Apply the widths
         for i, width_percent in enumerate(col_widths):
@@ -201,7 +239,7 @@ class ProductsTable(QFrame):
             row = index.row()
             try:
                 id_item = self.table.item(row, 0)
-                name_item = self.table.item(row, 4)
+                name_item = self.table.item(row, 1)  # Now name is in column 1
                 if id_item and name_item and id_item.text().isdigit():
                     product_details.append((
                         int(id_item.text()),
@@ -277,7 +315,7 @@ class ProductsTable(QFrame):
                 background-color: {highlight_color}25;
             }}
 
-            /* Modern scrollbar styling integrated directly in the table style */
+            /* Modern scrollbar styling */
             QScrollBar:vertical {{
                 background: transparent;
                 width: 8px;
@@ -300,7 +338,6 @@ class ProductsTable(QFrame):
                 height: 0px;
                 width: 0px;
             }}
-
             QScrollBar:horizontal {{
                 background: transparent;
                 height: 8px;
@@ -323,44 +360,32 @@ class ProductsTable(QFrame):
                 height: 0px;
                 width: 0px;
             }}
-
-            /* Comprehensive corner styling */
+            /* Corner styling */
             QScrollBar::corner {{
                 background: {bg_color};
                 border: none;
             }}
-            QAbstractScrollArea::corner {{
-                background: {bg_color};
-                border: none;
-            }}
-
-            /* Ensure header corners are styled too */
             QHeaderView {{ 
                 background-color: {bg_color}; 
-            }}
-            QHeaderView::corner {{
-                background-color: {bg_color};
-                border: none;
-            }}
-
-            /* Target scroll bar corner specifically */
-            QAbstractScrollArea QScrollBar::corner {{
-                background: {bg_color};
-                border: none;
-            }}
-
-            /* Style any other potential widgets in the table */
-            QTableWidget > QWidget {{
-                background-color: {bg_color};
-                border: none;
             }}
         """
         self.table.setStyleSheet(table_style)
 
-        # As a fallback, directly set the background of the table viewport
-        self.table.viewport().setStyleSheet(f"background: {bg_color};")
+        # BLOCK SIGNALS DURING VISUAL UPDATE
+        self.table.blockSignals(True)
+        try:
+            # Update existing items' colors without triggering changes
+            text_qcolor = QColor(text_color)
+            for row in range(self.table.rowCount()):
+                for col in range(self.table.columnCount()):
+                    item = self.table.item(row, col)
+                    if item and item.foreground().color() != text_qcolor:
+                        item.setForeground(text_qcolor)
+        finally:
+            self.table.blockSignals(False)
 
-        # Style all child widgets to prevent any white boxes
+        # Background fallbacks
+        self.table.viewport().setStyleSheet(f"background: {bg_color};")
         for child in self.table.findChildren(QWidget):
             child.setStyleSheet(f"background-color: {bg_color}; border: none;")
 
@@ -368,3 +393,68 @@ class ProductsTable(QFrame):
         """Handle resize events to adjust column widths"""
         super().resizeEvent(event)
         self.adjust_column_widths()
+
+
+def highlight_matching_text(self, search_text):
+    """
+    Highlight cells containing the search text
+
+    Args:
+        search_text: Text to highlight in the table
+    """
+    if not search_text:
+        return
+
+    search_text = search_text.lower()
+
+    # Reset any previous formatting
+    self._reset_cell_formatting()
+
+    from PyQt5.QtGui import QBrush, QColor
+    from themes import get_color
+
+    # Get highlight color with reduced opacity for better readability
+    highlight_color = QColor(get_color('highlight'))
+    highlight_color.setAlpha(120)  # 47% opacity for subtle highlighting
+    highlight_brush = QBrush(highlight_color)
+
+    matching_rows = []
+
+    # Search all table content
+    for row in range(self.table.rowCount()):
+        row_has_match = False
+        for col in range(1, self.table.columnCount()):  # Skip ID column
+            item = self.table.item(row, col)
+            if item:
+                cell_text = item.text().lower()
+                if search_text in cell_text:
+                    # Highlight this cell
+                    item.setBackground(highlight_brush)
+                    row_has_match = True
+
+        if row_has_match:
+            matching_rows.append(row)
+
+    # If we found any matches, scroll to the first one
+    if matching_rows:
+        self.table.scrollToItem(self.table.item(matching_rows[0], 0))
+
+
+def _reset_cell_formatting(self):
+    """Reset all cell formatting to default"""
+    from PyQt5.QtGui import QBrush, QColor
+    from themes import get_color
+
+    bg_color = QColor(get_color('background'))
+    secondary_color = QColor(get_color('secondary'))
+    text_color = QColor(get_color('text'))
+
+    for row in range(self.table.rowCount()):
+        # Determine row background (alternating colors)
+        row_bg = secondary_color if row % 2 else bg_color
+
+        for col in range(self.table.columnCount()):
+            item = self.table.item(row, col)
+            if item:
+                item.setBackground(QBrush(row_bg))
+                item.setForeground(QBrush(text_color))

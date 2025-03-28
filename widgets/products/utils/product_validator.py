@@ -46,22 +46,18 @@ class ProductValidator:
 
         # Set default values for missing fields
         if 'category' not in data or not data['category']:
-            sanitized['category'] = "3"  # Default category
+            sanitized['category'] = "Other Parts"  # Default category
         else:
             sanitized['category'] = data['category']
 
-        if 'car_name' not in data or not data['car_name']:
-            sanitized['car_name'] = "-"
-        else:
-            sanitized['car_name'] = data['car_name']
-
-        if 'model' not in data or not data['model']:
-            sanitized['model'] = "-"
-        else:
-            sanitized['model'] = data['model']
-
         # Product name is required
         sanitized['product_name'] = data.get('product_name', '')
+
+        # Add compatible_brands with default value if missing
+        sanitized['compatible_brands'] = data.get('compatible_brands', 'Other')
+
+        # Add compatible_models field with default value if missing
+        sanitized['compatible_models'] = data.get('compatible_models', '')
 
         # Convert numeric values
         try:

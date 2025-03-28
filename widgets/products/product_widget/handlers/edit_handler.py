@@ -38,11 +38,10 @@ class EditHandler:
 
             field_map = {
                 1: 'category',
-                2: 'car_name',
-                3: 'model',
-                4: 'product_name',
-                5: 'quantity',
-                6: 'price'
+                2: 'product_name',
+                3: 'compatible_models',
+                4: 'quantity',
+                5: 'price'
             }
 
             field = field_map.get(column)

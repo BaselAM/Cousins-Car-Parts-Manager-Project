@@ -29,12 +29,10 @@ class ProductManager:
                 else:
                     # Map field name to index if column_index not provided
                     field_map = {
-                        'category': 1,
-                        'car_name': 2,
-                        'model': 3,
-                        'product_name': 4,
-                        'quantity': 5,
-                        'price': 6
+                        'product_name': 1,
+                        'compatible_models': 2,
+                        'quantity': 3,
+                        'price': 4
                     }
                     if field in field_map:
                         prod_list[field_map[field]] = value

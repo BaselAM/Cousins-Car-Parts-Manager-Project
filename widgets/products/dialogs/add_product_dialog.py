@@ -45,18 +45,6 @@ class AddProductDialog(ElegantDialog):
         self.category_input.setPlaceholderText(self.translator.t('category_placeholder'))
         form_layout.addRow(category_label, self.category_input)
 
-        # Car Name
-        car_label = QLabel(self.translator.t('car') + ":")
-        self.car_input = QLineEdit()
-        self.car_input.setPlaceholderText(self.translator.t('car_placeholder'))
-        form_layout.addRow(car_label, self.car_input)
-
-        # Model
-        model_label = QLabel(self.translator.t('model') + ":")
-        self.model_input = QLineEdit()
-        self.model_input.setPlaceholderText(self.translator.t('model_placeholder'))
-        form_layout.addRow(model_label, self.model_input)
-
         # Product Name (Required)
         product_name_label = QLabel(self.translator.t('product_name') + " *:")
         product_name_label.setStyleSheet("font-weight: bold;")
@@ -64,6 +52,12 @@ class AddProductDialog(ElegantDialog):
         self.product_name_input.setPlaceholderText(
             self.translator.t('product_name_placeholder'))
         form_layout.addRow(product_name_label, self.product_name_input)
+
+        # Compatible Models
+        compatible_models_label = QLabel(self.translator.t('compatible_models') + ":")
+        self.compatible_models_input = QLineEdit()
+        self.compatible_models_input.setPlaceholderText(self.translator.t('compatible_models_placeholder'))
+        form_layout.addRow(compatible_models_label, self.compatible_models_input)
 
         # Quantity
         quantity_label = QLabel(self.translator.t('quantity') + ":")
@@ -145,11 +139,11 @@ class AddProductDialog(ElegantDialog):
     def clear_fields(self):
         """Clear all input fields."""
         self.category_input.clear()
-        self.car_input.clear()
-        self.model_input.clear()
         self.product_name_input.clear()
+        self.compatible_models_input.clear()
         self.quantity_input.setValue(1)
         self.price_input.setValue(0.00)
+
 
     def save_product(self):
         """Validate and save product data."""
@@ -171,13 +165,12 @@ class AddProductDialog(ElegantDialog):
         # Collect all data
         self.product_data = {
             "category": self.category_input.text().strip(),
-            "car_name": self.car_input.text().strip(),
-            "model": self.model_input.text().strip(),
             "product_name": product_name,
             "quantity": self.quantity_input.value(),
-            "price": self.price_input.value()
+            "price": self.price_input.value(),
+            "compatible_brands": "Other",  # Default brand
+            "compatible_models": self.compatible_models_input.text().strip()
         }
-
         self.accept()
 
     def get_data(self):

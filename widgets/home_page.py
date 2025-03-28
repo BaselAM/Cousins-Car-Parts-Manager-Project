@@ -46,15 +46,17 @@ class HomePageWidget(QWidget):
 
         # Header section
         header = QFrame()
+        header.setObjectName("header")
         header_layout = QVBoxLayout(header)
         header_layout.setContentsMargins(0, 0, 0, 5)
 
-        # Title
-        self.title = QLabel(self.translator.t('home_page_title'))
+        # Title - will be set in update_translations()
+        self.title = QLabel()
         self.title.setAlignment(Qt.AlignCenter)
-        title_font = QFont("Segoe UI", 24)
+        title_font = QFont("Segoe UI", 26)  # Bigger font
         title_font.setBold(True)
         self.title.setFont(title_font)
+        self.title.setObjectName("pageTitle")
 
         # Add to header layout
         header_layout.addWidget(self.title)
@@ -110,13 +112,38 @@ class HomePageWidget(QWidget):
         # Add grid to container
         app_grid_layout.addWidget(grid_widget)
 
-        # SIMPLE USER INFO - REPLACED VERBOSE TEXT
-        self.user_info = QLabel(f"Welcome, {self.username}")
+        # Add everything to main layout with proper proportions
+        self.main_layout.addWidget(header)
+        self.main_layout.addSpacing(5)
+        self.main_layout.addWidget(app_grid_container, 1)  # Give more space to buttons
+
+        # User welcome container - simple but elegant
+        user_container = QFrame()
+        user_container.setObjectName("userContainer")
+        user_layout = QVBoxLayout(user_container)
+        user_layout.setContentsMargins(10, 10, 10, 10)
+
+        # Welcome text - will be set in update_translations()
+        self.welcome_label = QLabel()
+        self.welcome_label.setAlignment(Qt.AlignCenter)
+        welcome_font = QFont("Segoe UI", 14)
+        welcome_font.setBold(True)
+        self.welcome_label.setFont(welcome_font)
+        self.welcome_label.setObjectName("welcomeText")
+
+        # Username display
+        self.user_info = QLabel(self.username)
         self.user_info.setAlignment(Qt.AlignCenter)
-        user_font = QFont("Segoe UI", 13)
+        user_font = QFont("Segoe UI", 16)
         user_font.setBold(True)
         self.user_info.setFont(user_font)
-        app_grid_layout.addWidget(self.user_info)
+        self.user_info.setObjectName("usernameText")
+
+        user_layout.addWidget(self.welcome_label)
+        user_layout.addWidget(self.user_info)
+
+        # Add user container to main layout
+        self.main_layout.addWidget(user_container)
 
         # Exit button at bottom with a different style
         exit_container = QFrame()
@@ -136,17 +163,41 @@ class HomePageWidget(QWidget):
         exit_layout.addWidget(self.exit_button)
         exit_layout.addStretch(1)
 
-        # Add everything to main layout with proper proportions
-        self.main_layout.addWidget(header)
-        self.main_layout.addSpacing(5)
-        self.main_layout.addWidget(app_grid_container, 1)  # Give more space to buttons
         self.main_layout.addWidget(exit_container)
 
-    def update_user(self, username):
-        """Update the displayed username"""
-        self.username = username
+        # Initialize translations
+        self.update_translations()
+
+    def update_user(self, user_data):
+        """Update the displayed username
+
+        Args:
+            user_data: Can be a string username or a dictionary with user info
+        """
+        # Store the user data
+        self.username = user_data
+
         if hasattr(self, 'user_info'):
-            self.user_info.setText(f"Welcome, {username}")
+            # Handle the username display based on the type
+            if isinstance(user_data, dict):
+                # If it's a dictionary, extract username or display name
+                display_name = user_data.get('username', '')
+                if not display_name and 'name' in user_data:
+                    display_name = user_data['name']
+                if not display_name and 'display_name' in user_data:
+                    display_name = user_data['display_name']
+                if not display_name:
+                    # If no specific name field found, use the first value in the dict
+                    for key, value in user_data.items():
+                        if isinstance(value, str):
+                            display_name = value
+                            break
+
+                # Set the user info text
+                self.user_info.setText(str(display_name))
+            else:
+                # If it's not a dictionary (assume string), use it directly
+                self.user_info.setText(str(user_data))
 
     def apply_theme(self):
         """Apply elegant theme styling with modern app aesthetics"""
@@ -163,6 +214,35 @@ class HomePageWidget(QWidget):
                 background-color: {card_bg};
                 border-radius: 20px;
                 border: 1px solid rgba(255, 255, 255, 0.1);
+            }}
+        """
+
+        # Header and welcome styles - more elegant
+        title_style = f"""
+            #pageTitle {{
+                color: {highlight_color};
+                font-size: 26px;
+                padding: 10px;
+                border-bottom: 2px solid {highlight_color};
+            }}
+
+            #userContainer {{
+                background-color: {card_bg};
+                border-radius: 15px;
+                margin-top: 10px;
+                padding: 10px;
+            }}
+
+            #welcomeText {{
+                color: {text_color};
+                font-size: 14px;
+            }}
+
+            #usernameText {{
+                color: {highlight_color};
+                font-size: 16px;
+                font-weight: bold;
+                padding: 5px;
             }}
         """
 
@@ -205,10 +285,6 @@ class HomePageWidget(QWidget):
 
         self.exit_button.setStyleSheet(exit_button_style)
 
-        # Title and user info styles
-        self.title.setStyleSheet(f"color: {text_color};")
-        self.user_info.setStyleSheet(f"color: {highlight_color}; margin-top: 10px;")
-
         # Main widget style
         self.setStyleSheet(f"""
             HomePageWidget {{
@@ -218,17 +294,29 @@ class HomePageWidget(QWidget):
                 color: {text_color};
             }}
             {container_style}
+            {title_style}
         """)
 
     def update_translations(self):
         """Update all text when language changes"""
-        self.title.setText(self.translator.t('home_page_title'))
+        # Get current language from translator
+        current_language = getattr(self.translator, 'language', 'en')
+
+        # Update header based on language
+        if current_language == "he":
+            self.title.setText("דף הבית")
+            self.welcome_label.setText("ברוך הבא")
+        else:
+            self.title.setText("Home Page")
+            self.welcome_label.setText("Welcome")
 
         # Update button texts
         for btn_id, button in self.nav_buttons.items():
             button.setText(self.translator.t(btn_id))
 
-        # Update user info - maintain username
-        self.user_info.setText(f"Welcome, {self.username}")
+        # Ensure user info is up to date
+        if hasattr(self, 'user_info') and self.username:
+            self.update_user(self.username)
 
+        # Update exit button
         self.exit_button.setText(self.translator.t('exit_button'))

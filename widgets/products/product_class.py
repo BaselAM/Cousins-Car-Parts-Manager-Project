@@ -41,6 +41,11 @@ class ProductsWidget(QWidget):
         self.product_table = ui_components['product_table']
         self.status_bar = ui_components['status_bar']
 
+        # Initialize search timer
+        self.search_timer = QTimer(self)
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self._delayed_search)
+
         # Apply theme
         self.ui_handler.apply_theme()
 
@@ -67,29 +72,6 @@ class ProductsWidget(QWidget):
         # Load products after initialization
         QTimer.singleShot(100, self.load_products)
 
-    def _connect_signals(self):
-        """Connect all signals for the widget"""
-        # Connect button signals
-        self.add_btn.clicked.connect(self.add_operation.show_add_dialog)
-        self.select_toggle.toggled.connect(self.toggle_selection_mode)
-        self.remove_btn.clicked.connect(self.delete_selected_products)
-        self.filter_btn.clicked.connect(self.show_filter_dialog)
-        self.export_btn.clicked.connect(self.export_products)
-        self.refresh_btn.clicked.connect(self.load_products)
-
-        # Connect search signal
-        self.search_input.textChanged.connect(self.on_search)
-
-        # Connect table signals
-        self.product_table.cellChanged.connect(self.on_cell_changed)
-
-        # Connect cancel auto-hide when buttons clicked
-        self.select_toggle.clicked.connect(self.cancel_status_timer)
-        self.refresh_btn.clicked.connect(self.cancel_status_timer)
-
-        # Connect data loader signals
-        self.product_loader.products_loaded.connect(self.handle_loaded_products)
-        self.product_loader.error_occurred.connect(self.show_error)
 
     def toggle_selection_mode(self, checked):
         """Toggle product selection mode"""
@@ -102,19 +84,6 @@ class ProductsWidget(QWidget):
             self.select_toggle.blockSignals(False)
             self.ui_handler.apply_theme()
         elif message:
-            self.status_bar.show_message(message, "info")
-        else:
-            self.status_bar.clear()
-
-    def on_search(self, text):
-        """Handle search text changes"""
-        filtered_products, message = self.search_handler.search_products(
-            self.product_manager.get_products(),
-            text
-        )
-        self.product_table.update_table_data(filtered_products)
-
-        if message:
             self.status_bar.show_message(message, "info")
         else:
             self.status_bar.clear()
@@ -248,3 +217,72 @@ class ProductsWidget(QWidget):
         except Exception as e:
             print(f"Cleanup error: {e}")
         event.accept()
+
+    def _connect_signals(self):
+        """Connect all signals for the widget"""
+        # Connect button signals
+        self.add_btn.clicked.connect(self.add_operation.show_add_dialog)
+        self.select_toggle.toggled.connect(self.toggle_selection_mode)
+        self.remove_btn.clicked.connect(self.delete_selected_products)
+        self.filter_btn.clicked.connect(self.show_filter_dialog)
+        self.export_btn.clicked.connect(self.export_products)
+        self.refresh_btn.clicked.connect(self.load_products)
+
+        # Connect search signal with delay for better performance
+        self.search_timer = QTimer(self)
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self._delayed_search)
+        self.search_input.textChanged.connect(self._on_search_input_changed)
+
+        # Connect table signals
+        self.product_table.cellChanged.connect(self.on_cell_changed)
+
+        # Connect cancel auto-hide when buttons clicked
+        self.select_toggle.clicked.connect(self.cancel_status_timer)
+        self.refresh_btn.clicked.connect(self.cancel_status_timer)
+
+        # Connect data loader signals
+        self.product_loader.products_loaded.connect(self.handle_loaded_products)
+        self.product_loader.error_occurred.connect(self.show_error)
+
+    def _on_search_input_changed(self, text):
+        """Handle search input changes with delay to improve performance"""
+        # Cancel any existing timer
+        if self.search_timer.isActive():
+            self.search_timer.stop()
+
+        search_text = text.strip()
+
+        if search_text:
+            # Delay actual search for better performance (250ms)
+            self.search_timer.start(250)
+        else:
+            # If search is cleared, show all products
+            self.product_table.update_table_data(self.product_manager.get_products())
+            self.status_bar.clear()
+
+    def _delayed_search(self):
+        """Perform search after delay to avoid searching on every keystroke"""
+        search_text = self.search_input.text().strip()
+        self.on_search(search_text)
+
+    def on_search(self, text):
+        """Handle search text changes using improved search"""
+        # Use the improved search handler
+        filtered_products, message = self.search_handler.search_products(
+            self.product_manager.get_products(),
+            text
+        )
+
+        # Update the table with filtered results
+        self.product_table.update_table_data(filtered_products)
+
+        # If we have search results, also highlight matching cells
+        if text.strip() and hasattr(self.product_table, 'highlight_matching_text'):
+            self.product_table.highlight_matching_text(text)
+
+        # Show message or clear it
+        if message:
+            self.status_bar.show_message(message, "info")
+        else:
+            self.status_bar.clear()

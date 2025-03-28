@@ -115,6 +115,8 @@ class UIHandler:
         }
 
     def apply_theme(self):
+        if hasattr(self.widget, '_is_closing') and self.widget._is_closing:
+            return
         """Apply theme to all UI components"""
         bg_color = get_color('background')
         text_color = get_color('text')
@@ -213,18 +215,26 @@ class UIHandler:
 
         # Set up the status bar theme
         theme_status = {
-            "success": {"bg": get_color('status_success_bg') or "#e8f5e9",
-                        "border": get_color('status_success_border') or "#81c784",
-                        "text": get_color('status_success_text') or "#2E7D32"},
-            "error": {"bg": get_color('status_error_bg') or "#ffebee",
-                      "border": get_color('status_error_border') or "#e57373",
-                      "text": get_color('status_error_text') or "#C62828"},
-            "warning": {"bg": get_color('status_warning_bg') or "#fff8e1",
-                        "border": get_color('status_warning_border') or "#ffd54f",
-                        "text": get_color('status_warning_text') or "#EF6C00"},
-            "info": {"bg": get_color('status_info_bg') or "#e3f2fd",
-                     "border": get_color('status_info_border') or "#64b5f6",
-                     "text": get_color('status_info_text') or "#1565C0"}
+            "success": {
+                "bg": get_color('success'),
+                "border": QColor(get_color('success')).darker(150).name(),
+                "text": QColor(get_color('background')).lighter(200).name()
+            },
+            "error": {
+                "bg": get_color('error'),
+                "border": QColor(get_color('error')).darker(150).name(),
+                "text": QColor(get_color('background')).lighter(200).name()
+            },
+            "warning": {
+                "bg": get_color('warning'),
+                "border": QColor(get_color('warning')).darker(150).name(),
+                "text": QColor(get_color('background')).lighter(200).name()
+            },
+            "info": {
+                "bg": get_color('highlight'),
+                "border": QColor(get_color('highlight')).darker(150).name(),
+                "text": QColor(get_color('background')).lighter(200).name()
+            }
         }
         self.status_bar.set_theme(theme_status)
 
