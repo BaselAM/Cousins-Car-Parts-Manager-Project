@@ -2,13 +2,19 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
 from typing import Optional
 
-from .search_widget import ModernSearchWidget
-from .notifications_widget import NotificationsWidget
-from .navigation_widget import NavigationWidget
-from widgets.header.chatbot.direct_chat import DirectChatWidget as ChatWidget  # Updated import
-from widgets.header.chatbot.chat_handler import ChatSignalBlocker  # New import
-from .date_time_widget import LuxuryDateTimeWidget
+# Use absolute imports instead of relative imports
+from widgets.header.search_widget import ModernSearchWidget
+from widgets.header.notifications_widget import NotificationsWidget
+from widgets.header.navigation_widget import NavigationWidget
+from widgets.header.chatbot.direct_chat import DirectChatWidget as ChatWidget
+from widgets.header.date_time_widget import LuxuryDateTimeWidget
 from themes import get_color
+
+# Import the custom logger
+from logger import get_logger
+
+# Get a module-specific logger
+logger = get_logger(__name__)
 
 
 class TopBarWidget(QWidget):
@@ -22,7 +28,9 @@ class TopBarWidget(QWidget):
     search_submitted = pyqtSignal(str)
     home_clicked = pyqtSignal()
     notification_clicked = pyqtSignal()
-    chat_clicked = pyqtSignal()
+    chat_clicked = pyqtSignal(str)
+    # This flag is used to prevent showing "coming soon" messages
+    chat_is_available = True  # IMPORTANT: Set to True to enable chat
 
     def __init__(self, translator, database, parent: Optional[QWidget] = None):
         """
@@ -37,11 +45,15 @@ class TopBarWidget(QWidget):
         self.translator = translator
         self.database = database
 
+        logger.debug("Initializing TopBarWidget")
+
         self._setup_ui()
         self.apply_theme()
 
     def _setup_ui(self) -> None:
         """Create and arrange all top bar components in their layout."""
+        logger.debug("Setting up TopBarWidget UI components")
+
         main_layout = QHBoxLayout(self)
         main_layout.setContentsMargins(20, 10, 20, 10)
         main_layout.setSpacing(15)  # Increased spacing between elements
@@ -59,12 +71,17 @@ class TopBarWidget(QWidget):
 
         # Create chat widget with expandable chat interface
         self.chat_widget = ChatWidget(self.translator)
+        logger.debug("Chat widget initialized")
 
-        # Create a signal blocker to prevent "coming soon" message
-        self.chat_blocker = ChatSignalBlocker()
-
-        # Connect to our dummy signal instead of the actual chat widget signal
-        self.chat_blocker.chat_submitted.connect(self.chat_clicked)
+        # MODIFIED: Connect directly to chat signals - single connection only
+        if hasattr(self.chat_widget, 'chat_submitted'):
+            self.chat_widget.chat_submitted.connect(self._on_chat_message)
+            logger.debug("Connected to chat_submitted signal")
+        elif hasattr(self.chat_widget, 'message_sent'):
+            self.chat_widget.message_sent.connect(self._on_chat_message)
+            logger.debug("Connected to message_sent signal (legacy)")
+        else:
+            logger.warning("No chat signals found to connect to")
 
         # Create notifications widget with dropdown
         self.notifications_widget = NotificationsWidget(self.translator)
@@ -95,6 +112,18 @@ class TopBarWidget(QWidget):
         # Set object name for styling
         self.setObjectName("topBarWidget")
 
+        logger.debug("TopBar UI setup complete")
+
+    def _on_chat_message(self, message):
+        """
+        Handle chat messages and emit the chat_clicked signal.
+        This is now a direct connection without showing any "coming soon" message.
+        """
+        logger.info(f"TopBarWidget received chat message: {message}")
+
+        # Forward the message to any connected slots
+        self.chat_clicked.emit(message)
+
     def clear_search(self) -> None:
         """Clear the search input field."""
         self.search_widget.clear_search()
@@ -111,6 +140,7 @@ class TopBarWidget(QWidget):
     def update_translations(self) -> None:
         """Update translations for all child components."""
         try:
+            logger.debug("Updating translations in TopBarWidget")
             # Update all component translations
             self.search_widget.update_translations()
             self.notifications_widget.update_translations()
@@ -118,11 +148,12 @@ class TopBarWidget(QWidget):
             self.chat_widget.update_translations()
             self.date_time_widget.update_translations()
         except Exception as e:
-            print(f"Error updating translations in top bar: {str(e)}")
+            logger.error(f"Error updating translations in top bar: {str(e)}")
 
     def apply_theme(self) -> None:
         """Apply current theme to the top bar and all its components."""
         try:
+            logger.debug("Applying theme to TopBarWidget")
             header_color = get_color('header')
             border_color = get_color('border')
 
@@ -137,7 +168,7 @@ class TopBarWidget(QWidget):
             # Apply theme to all child components
             self._apply_component_themes()
         except Exception as e:
-            print(f"Error applying theme to top bar: {str(e)}")
+            logger.error(f"Error applying theme to top bar: {str(e)}")
             # Fallback minimal styling
             self.setStyleSheet("""
                 #topBarWidget {
@@ -162,7 +193,7 @@ class TopBarWidget(QWidget):
                 if hasattr(component, 'apply_theme'):
                     component.apply_theme()
             except Exception as e:
-                print(f"Error applying theme to {component.__class__.__name__}: {str(e)}")
+                logger.error(f"Error applying theme to {component.__class__.__name__}: {str(e)}")
 
     def resizeEvent(self, event) -> None:
         """

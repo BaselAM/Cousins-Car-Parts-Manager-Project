@@ -5,10 +5,10 @@ Handles user authentication, profile management, and security.
 import os
 import sqlite3
 import hashlib
-import logging
+from logger import get_logger
 from pathlib import Path
-
-logger = logging.getLogger('UsersDB')
+from config import USERS_DB_PATH
+logger = get_logger('UsersDB')
 
 
 class UsersDB:
@@ -16,12 +16,13 @@ class UsersDB:
 
     def __init__(self, db_path=None):
         """Initialize the user database connection."""
-        if db_path is None:
-            # Use default path in the database directory
-            db_dir = Path(__file__).parent
-            db_path = db_dir / 'users.db'
 
-        self.db_path = str(db_path)
+        if db_path is None:
+            # Use default path from config
+            self.db_path = str(USERS_DB_PATH)
+        else:
+            self.db_path = str(db_path)
+
         self.connection = None
 
         # Initialize the database

@@ -1,0 +1,20 @@
+Metadata-Version: 2.2
+Name: mtsql
+Version: 1.11.19
+Summary: Extra Python modules to deal with the interaction between pandas dataframes and remote SQL servers, for Minh-Tri Pham
+Home-page: https://github.com/inteplus/mtsql
+Author: ['Minh-Tri Pham']
+Project-URL: Documentation, https://mtdoc.readthedocs.io/en/latest/mt.sql/mt.sql.html
+Project-URL: Source Code, https://github.com/inteplus/mtsql
+License-File: LICENSE
+Requires-Dist: sqlalchemy
+Requires-Dist: tzlocal
+Requires-Dist: tqdm
+Requires-Dist: psycopg[binary]
+Requires-Dist: mtbase>=4.31.5
+Requires-Dist: mtpandas>=1.16.8
+Dynamic: author
+Dynamic: home-page
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: summary

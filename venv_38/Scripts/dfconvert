@@ -1,0 +1,29 @@
+#!c:\users\97253\desktop\beastmode-csintro-excercises\cousintestproject\venv_38\scripts\python.exe
+
+"""Converts a dataframe from one file format to another. Currently accepting '.csv', '.csv.zip' and '.parquet'."""
+
+
+import argparse
+import asyncio
+from mt import aio
+from mt.pandas.convert import dfload_asyn, dfsave_asyn
+
+
+async def main(args, context_vars: dict = {}):
+    df = await dfload_asyn(args.in_df_filepath, context_vars=context_vars)
+    await dfsave_asyn(df, args.out_df_filepath, context_vars=context_vars)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Converts a dataframe from one file format to another. Currently accepting '.csv', '.csv.zip', '.pdh5' and '.parquet'."
+    )
+    parser.add_argument(
+        "in_df_filepath", type=str, help="Filepath to the input dataframe."
+    )
+    parser.add_argument(
+        "out_df_filepath", type=str, help="Filepath to the output dataframe."
+    )
+    args = parser.parse_args()
+
+    aio.srun(main, args)

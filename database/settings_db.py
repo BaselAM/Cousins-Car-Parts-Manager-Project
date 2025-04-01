@@ -1,13 +1,12 @@
 # settings_db.py
 import sqlite3
 from pathlib import Path
-
+from config import SETTINGS_DB_PATH
 
 class SettingsDB:
     def __init__(self):
-        db_path = Path(__file__).resolve().parent.parent / "database/settings.db"
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.db_path = db_path
+        self.db_path = SETTINGS_DB_PATH
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = None
         self.create_table()
 

@@ -14,7 +14,7 @@ import time
 import logging
 
 from themes import get_color, set_theme, THEMES
-from translations import EnhancedTranslator
+from translations import get_translator, load_translations_from_directory
 from .password_change_dialog import PasswordChangeDialog
 from database.users_db import UsersDB
 from database.settings_db import SettingsDB
@@ -32,7 +32,7 @@ class LoginWidget(QWidget):
 
     def __init__(self, translator=None, parent=None):
         super().__init__(parent)
-        self.translator = translator if translator is not None else EnhancedTranslator('en')
+        self.translator = translator
         self.users_db = UsersDB()
         self.current_user = None
 

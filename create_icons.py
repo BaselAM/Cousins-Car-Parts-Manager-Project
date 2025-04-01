@@ -1,12 +1,17 @@
-from PyQt5.QtGui import QPen, QPolygon
-from PyQt5.QtCore import QPoint
-from shared_imports import *
+from PyQt5.QtGui import QPen, QPolygon, QPainter, QPixmap, QColor
+from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtWidgets import QApplication
+import sys
+from pathlib import Path
+from config import RESOURCE_DIR, get_resource_path
 
+# Initialize QApplication at the beginning
+app = QApplication(sys.argv)
 
 def create_resources_directory():
-    resources_dir = Path("resources")
-    resources_dir.mkdir(exist_ok=True)
-    return resources_dir
+    # Use the RESOURCE_DIR from config.py
+    RESOURCE_DIR.mkdir(exist_ok=True)
+    return RESOURCE_DIR
 
 
 def create_icon(name, color_hex="#2196F3"):

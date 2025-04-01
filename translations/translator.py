@@ -10,6 +10,13 @@ from typing import Dict, Optional, List, cast
 # Configure logger
 logger = logging.getLogger('translations')
 
+# Define the exports for this module
+__all__ = [
+    'Translator',
+    'load_translation_file',
+    'load_translations_from_directory'
+]
+
 # Import original translations or create empty dict if not available
 try:
     # Try to import from original location first (for backwards compatibility)
@@ -41,7 +48,13 @@ class TranslationProvider:
         if namespace is None:
             # Explicitly annotate parts as List[str]
             parts: List[str] = os.path.basename(file_path).split('.')
-            namespace = parts[0] if parts else "" # type: ignore
+            namespace = parts[0] if parts else ""  # type: ignore
+
+        # Check if already loaded to avoid duplication
+        if namespace in self._namespaces and self._namespaces[namespace] == file_path:
+            # Already loaded this exact file for this namespace
+            return True
+
         try:
             if os.path.exists(file_path):
                 with open(file_path, 'r', encoding='utf-8') as f:
@@ -81,7 +94,6 @@ class TranslationProvider:
 
         return None
 
-    @staticmethod
     def get_available_namespaces(self) -> list:
         """Get list of all available translation namespaces."""
         return list(self._file_translations.keys())
@@ -175,7 +187,7 @@ class Translator:
     @staticmethod
     def get_namespaces() -> list:
         """Get all available translation namespaces."""
-        return _provider.get_available_namespaces(_provider)
+        return _provider.get_available_namespaces()
 
 
 def load_translation_file(file_path: str, namespace: Optional[str] = None) -> bool:
@@ -186,3 +198,29 @@ def load_translation_file(file_path: str, namespace: Optional[str] = None) -> bo
         load_translation_file('translations/data/products.json', 'products')
     """
     return _provider.load_translation_file(file_path, namespace)
+
+
+def load_translations_from_directory(directory_path: str) -> int:
+    """
+    Load all JSON translation files from the specified directory.
+
+    Args:
+        directory_path: Path to the directory containing translation files
+
+    Returns:
+        int: Number of files successfully loaded
+    """
+    if not os.path.exists(directory_path):
+        logger.warning(f"Translation directory not found: {directory_path}")
+        return 0
+
+    loaded_count = 0
+    for filename in os.listdir(directory_path):
+        if filename.endswith('.json'):
+            file_path = os.path.join(directory_path, filename)
+            namespace = os.path.splitext(filename)[0]
+            if _provider.load_translation_file(file_path, namespace):
+                loaded_count += 1
+
+    logger.info(f"Loaded {loaded_count} translation files from {directory_path}")
+    return loaded_count

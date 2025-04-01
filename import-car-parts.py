@@ -310,7 +310,7 @@ class DatabaseManager:
         # If no db_path provided, use the default location
         if db_path is None:
             # Use current directory as default
-            self.db_path = "database/car_parts.db"
+            self.db_path = "test/car_parts.db"
         else:
             self.db_path = db_path
 

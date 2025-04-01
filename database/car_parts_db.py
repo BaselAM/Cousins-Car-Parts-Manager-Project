@@ -1,50 +1,68 @@
-import sqlite3
-from pathlib import Path
+import mysql.connector
+from mysql.connector import pooling
 import threading
-import logging
+from logger import get_logger
 from datetime import datetime
 
 
 class CarPartsDB:
-    """Thread-safe database handler for car parts inventory with enhanced schema"""
+    """Thread-safe database handler for car parts inventory with MySQL backend"""
 
-    def __init__(self, db_path=None):
-        # Configure logging
-        self.logger = logging.getLogger('CarPartsDB')
-        self.logger.setLevel(logging.INFO)
-        if not self.logger.handlers:
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
+    def __init__(self, config=None):
+        # Use the centralized logging configuration instead of creating a new logger
+        self.logger = get_logger('database.car_parts_db')
 
-        # If no db_path provided, default to the 'database' folder inside the project root
-        if db_path is None:
-            # This assumes your project structure: Project/database/car_parts.db
-            self.db_path = Path(
-                __file__).resolve().parent.parent / "database/car_parts.db"
+        # Default MySQL configuration
+        if config is None:
+            self.config = {
+                'host': 'localhost',
+                'user': 'root',
+                'password': 'CousinsBusiness321$',
+                'database': 'car_parts_system'
+            }
         else:
-            self.db_path = Path(db_path)
+            self.config = config
 
         # Thread-local storage for connections
         self.local = threading.local()
         self.lock = threading.RLock()  # Reentrant lock for thread safety
 
+        # Set initial transaction state tracking
+        self.local.in_transaction = False
+
+        # Connection pool
+        self.pool = self._create_connection_pool()
+
         # Initialize main thread connection
         self.connect()
-        self.logger.info(f"Initialized database connection to {self.db_path}")
+        self.logger.info(f"Initialized database connection to {self.config['host']}")
+
+    def _create_connection_pool(self):
+        """Create a connection pool for MySQL"""
+        try:
+            pool = mysql.connector.pooling.MySQLConnectionPool(
+                pool_name="car_parts_pool",
+                pool_size=10,  # Increased from 5
+                pool_reset_session=True,  # Reset session variables when returning to pool
+                **self.config
+            )
+            return pool
+        except mysql.connector.Error as e:
+            self.logger.error(f"Error creating connection pool: {str(e)}")
+            raise
 
     def connect(self):
         """Create a thread-local database connection"""
         try:
             # Close existing connection for this thread if it exists
-            self.close_local_connection()
+            self.close_connection()
 
-            # Create new connection for this thread
-            self.local.conn = sqlite3.connect(self.db_path, timeout=10.0)
-            self.local.conn.execute("PRAGMA foreign_keys = ON")
-            self.local.cursor = self.local.conn.cursor()
+            # Get connection from pool
+            self.local.conn = self.pool.get_connection()
+            self.local.cursor = self.local.conn.cursor(dictionary=True)
+
+            # Initialize transaction state
+            self.local.in_transaction = False
 
             # Create table if needed
             self.create_table()
@@ -52,7 +70,7 @@ class CarPartsDB:
             thread_id = threading.get_ident()
             self.logger.info(f"Thread {thread_id}: Database connection established")
 
-        except sqlite3.Error as e:
+        except mysql.connector.Error as e:
             self.logger.error(f"Connection error: {str(e)}")
             raise
 
@@ -60,25 +78,25 @@ class CarPartsDB:
         """Create table with enhanced schema if it doesn't exist"""
         query = '''
         CREATE TABLE IF NOT EXISTS parts (
-            parcode INTEGER PRIMARY KEY AUTOINCREMENT,
-            category TEXT NOT NULL,
-            product_name TEXT NOT NULL,
-            quantity INTEGER DEFAULT 0,
-            price REAL DEFAULT 0.0,
+            parcode INT AUTO_INCREMENT PRIMARY KEY,
+            category VARCHAR(255) NOT NULL,
+            product_name VARCHAR(255) NOT NULL,
+            quantity INT DEFAULT 0,
+            price DECIMAL(10, 2) DEFAULT 0.0,
             compatible_brands TEXT,
             compatible_models TEXT,
             model_years TEXT,
-            drive_type TEXT,
+            drive_type VARCHAR(50),
             engine_info TEXT,
-            position TEXT,
-            side TEXT,
-            engine_type TEXT,
-            last_updated TIMESTAMP DEFAULT (datetime('now','localtime'))
+            position VARCHAR(50),
+            side VARCHAR(50),
+            engine_type VARCHAR(100),
+            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
         '''
         self.execute_query(query)
 
-    def close_local_connection(self):
+    def close_connection(self):
         """Close the connection for the current thread"""
         if hasattr(self.local, 'cursor') and self.local.cursor:
             try:
@@ -89,41 +107,163 @@ class CarPartsDB:
 
         if hasattr(self.local, 'conn') and self.local.conn:
             try:
+                # Make sure any transaction is rolled back before closing
+                if hasattr(self.local, 'in_transaction') and self.local.in_transaction:
+                    try:
+                        self.rollback_transaction()
+                    except Exception as e:
+                        self.logger.warning(f"Error rolling back transaction during close: {e}")
+
+                # Now close the connection
                 self.local.conn.close()
+
+                # Important: Set to None after closing
+                self.local.conn = None
+                self.local.in_transaction = False
             except Exception as e:
                 self.logger.warning(f"Error closing connection: {e}")
-            self.local.conn = None
-
-    def close_connection(self):
-        """Close all connections - for shutdown"""
-        self.close_local_connection()
+                self.local.conn = None
+                self.local.in_transaction = False
 
     def ensure_connection(self):
-        """Ensure this thread has a valid connection"""
-        if not hasattr(self.local, 'conn') or self.local.conn is None:
-            self.connect()
+        """Ensure this thread has a valid connection without disrupting transactions"""
+        # First, check if we need a new connection
+        needs_new_connection = False
 
-    def execute_query(self, query, params=()):
-        """Execute a query with the thread-local connection"""
+        if not hasattr(self.local, 'conn') or self.local.conn is None:
+            needs_new_connection = True
+        else:
+            try:
+                # Test connection with minimal impact query
+                self.local.cursor.execute("SELECT 1")
+                self.local.cursor.fetchall()  # Consume the result
+            except Exception as e:
+                self.logger.debug(f"Connection check failed: {e}, reconnecting")
+                needs_new_connection = True
+
+        # If connection is OK, just return
+        if not needs_new_connection:
+            return
+
+        # We need a new connection
+        try:
+            # Check if we're in a transaction before closing
+            was_in_transaction = False
+            if hasattr(self.local, 'in_transaction'):
+                was_in_transaction = self.local.in_transaction
+
+            # Close the old connection
+            self.close_connection()
+
+            # Get a new connection from the pool
+            self.local.conn = self.pool.get_connection()
+            self.local.cursor = self.local.conn.cursor(dictionary=True)
+            self.local.in_transaction = False
+
+            thread_id = threading.get_ident()
+            self.logger.info(f"Thread {thread_id}: New database connection established")
+
+            # Log warning if we lost a transaction
+            if was_in_transaction:
+                self.logger.warning("Lost transaction during connection refresh")
+
+        except Exception as e:
+            self.logger.warning(f"Pool get_connection failed: {e}, falling back to direct connect")
+            # Fall back to creating a new direct connection
+            try:
+                # Direct connection (not from pool)
+                self.local.conn = mysql.connector.connect(**self.config)
+                self.local.cursor = self.local.conn.cursor(dictionary=True)
+                self.local.in_transaction = False
+
+                thread_id = threading.get_ident()
+                self.logger.info(f"Thread {thread_id}: Direct database connection established")
+            except Exception as direct_error:
+                self.logger.error(f"Direct connection also failed: {direct_error}")
+                raise
+
+    def ensure_transaction_state(self, desired_state='ready'):
+        """
+        Ensure the connection is in the desired transaction state
+
+        Args:
+            desired_state: Either 'ready' (no transaction) or 'active' (transaction started)
+        """
+        with self.lock:
+            self.ensure_connection()
+
+            current_state = hasattr(self.local, 'in_transaction') and self.local.in_transaction
+
+            # If we want 'ready' state (no transaction) but one is active
+            if desired_state == 'ready' and current_state:
+                try:
+                    self.commit_transaction()
+                except Exception as e:
+                    self.logger.warning(f"Error committing transaction during state change: {e}")
+                    try:
+                        self.rollback_transaction()
+                    except:
+                        pass
+
+            # If we want 'active' state (transaction started) but none is active
+            elif desired_state == 'active' and not current_state:
+                self.begin_transaction()
+
+    def execute_query(self, query, params=(), fetch_all=False, commit=False):
+        """
+        Execute a query with the thread-local connection
+
+        Args:
+            query: SQL query to execute
+            params: Parameters for the query
+            fetch_all: Whether to fetch and return all results
+            commit: Whether to commit after execution
+
+        Returns:
+            Query cursor or fetched results if fetch_all is True
+        """
         with self.lock:
             self.ensure_connection()
             try:
                 self.local.cursor.execute(query, params)
+
+                if commit:
+                    self.commit_transaction()
+
+                if fetch_all:
+                    return self.local.cursor.fetchall()
+
                 return self.local.cursor
-            except sqlite3.OperationalError as e:
-                if "no such table" in str(e):
+
+            except mysql.connector.Error as e:
+                if "doesn't exist" in str(e) and "table" in str(e).lower():
                     self.create_table()
                     self.local.cursor.execute(query, params)
+
+                    if commit:
+                        self.commit_transaction()
+
+                    if fetch_all:
+                        return self.local.cursor.fetchall()
+
                     return self.local.cursor
                 else:
-                    self.logger.error(f"Database error: {e}")
+                    self.logger.error(f"Database error in execute_query: {e}")
                     # Try reconnecting
-                    self.connect()
-                    self.local.cursor.execute(query, params)
-                    return self.local.cursor
-            except sqlite3.Error as e:
-                self.logger.error(f"SQL error: {e}")
-                raise
+                    try:
+                        self.connect()
+                        self.local.cursor.execute(query, params)
+
+                        if commit:
+                            self.commit_transaction()
+
+                        if fetch_all:
+                            return self.local.cursor.fetchall()
+
+                        return self.local.cursor
+                    except Exception as retry_error:
+                        self.logger.error(f"Query retry failed: {retry_error}")
+                        raise
 
     def update_schema_if_needed(self):
         """Check and update database schema if needed"""
@@ -131,15 +271,15 @@ class CarPartsDB:
             self.ensure_connection()
             try:
                 # Check if the parts table exists
-                self.local.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='parts'")
-                if self.local.cursor.fetchone() is None:
+                self.local.cursor.execute("SHOW TABLES LIKE 'parts'")
+                if not self.local.cursor.fetchone():
                     # Table doesn't exist, create it
                     self.create_table()
                     return True
 
-                # Check for all required columns
-                self.local.cursor.execute("PRAGMA table_info(parts)")
-                existing_columns = {row[1] for row in self.local.cursor.fetchall()}
+                # Get existing columns
+                self.local.cursor.execute("DESCRIBE parts")
+                existing_columns = {row['Field'] for row in self.local.cursor.fetchall()}
 
                 # Define the expected columns
                 expected_columns = {
@@ -151,32 +291,38 @@ class CarPartsDB:
 
                 # Add any missing columns
                 missing_columns = expected_columns - existing_columns
-                for column in missing_columns:
-                    # Use appropriate data type based on column name
-                    if column in ('quantity'):
-                        data_type = 'INTEGER DEFAULT 0'
-                    elif column in ('price'):
-                        data_type = 'REAL DEFAULT 0.0'
-                    elif column == 'last_updated':
-                        data_type = "TIMESTAMP DEFAULT (datetime('now','localtime'))"
-                    else:
-                        data_type = 'TEXT'
+                if missing_columns:
+                    self.begin_transaction()
 
-                    self.local.cursor.execute(f"ALTER TABLE parts ADD COLUMN {column} {data_type}")
-                    self.logger.info(f"Added missing column: {column}")
+                    for column in missing_columns:
+                        # Use appropriate data type based on column name
+                        if column in ('quantity'):
+                            data_type = 'INT DEFAULT 0'
+                        elif column in ('price'):
+                            data_type = 'DECIMAL(10, 2) DEFAULT 0.0'
+                        elif column == 'last_updated':
+                            data_type = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+                        else:
+                            data_type = 'TEXT'
 
-                self.local.conn.commit()
+                        self.local.cursor.execute(f"ALTER TABLE parts ADD COLUMN {column} {data_type}")
+                        self.logger.info(f"Added missing column: {column}")
+
+                    self.commit_transaction()
+
                 return True
 
-            except sqlite3.Error as e:
+            except mysql.connector.Error as e:
                 self.logger.error(f"Error updating schema: {e}")
+                if hasattr(self.local, 'in_transaction') and self.local.in_transaction:
+                    self.rollback_transaction()
                 return False
-
 
     def add_part(self, category, product_name, quantity=0, price=0.0, **kwargs):
         """Add a new part with enhanced fields"""
         with self.lock:
-            self.ensure_connection()
+            self.ensure_transaction_state('ready')  # Ensure no active transaction
+
             try:
                 # Validate inputs and provide defaults for required fields
                 if not product_name or product_name.strip() == "":
@@ -195,11 +341,6 @@ class CarPartsDB:
                     field_names.append(key)
                     field_values.append(value)
 
-                # Add the current timestamp
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                field_names.append('last_updated')
-                field_values.append(current_time)
-
                 # Convert and validate numeric values
                 try:
                     quantity = int(quantity) if quantity is not None else 0
@@ -212,228 +353,51 @@ class CarPartsDB:
                 thread_id = threading.get_ident()
                 self.logger.info(f"Thread {thread_id}: Adding part: '{product_name}'")
 
+                # Begin transaction
+                self.begin_transaction()
+
                 # Build the query
                 fields = ', '.join(field_names)
-                placeholders = ', '.join(['?'] * len(field_values))
+                placeholders = ', '.join(['%s'] * len(field_values))
 
-                # Use explicit transaction
-                self.local.conn.execute("BEGIN TRANSACTION")
-
-                self.local.cursor.execute(f"""
-                    INSERT INTO parts 
-                    ({fields})
-                    VALUES ({placeholders})
-                """, field_values)
+                query = f"INSERT INTO parts ({fields}) VALUES ({placeholders})"
+                self.local.cursor.execute(query, field_values)
 
                 # Get the ID of the inserted row
                 new_id = self.local.cursor.lastrowid
                 self.logger.info(f"Created new part with Parcode: {new_id}")
 
                 # Explicitly commit the transaction
-                self.local.conn.commit()
+                self.commit_transaction()
 
                 # Verify the part was added by trying to fetch it
-                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (new_id,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = %s", (new_id,))
                 result = self.local.cursor.fetchone()
 
                 if result:
-                    self.logger.info(
-                        f"Successfully verified part was added with Parcode: {new_id}")
+                    self.logger.info(f"Successfully verified part was added with Parcode: {new_id}")
                     return True
                 else:
-                    self.logger.error(
-                        f"Failed to verify part was added with Parcode: {new_id}")
+                    self.logger.error(f"Failed to verify part was added with Parcode: {new_id}")
                     return False
 
-            except sqlite3.Error as e:
+            except mysql.connector.Error as e:
                 self.logger.error(f"Database error in add_part: {e}")
                 # Try to rollback if there was an error
-                try:
-                    self.local.conn.rollback()
-                except:
-                    pass
+                if hasattr(self.local, 'in_transaction') and self.local.in_transaction:
+                    self.rollback_transaction()
                 return False
-
-    def sync_database(self):
-        """Force database to write changes to disk"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                # Execute PRAGMA to force a write to disk
-                self.local.cursor.execute("PRAGMA wal_checkpoint")
-
-                # Execute a simple query to verify database is functioning
-                self.local.cursor.execute("SELECT COUNT(*) FROM parts")
-                count = self.local.cursor.fetchone()[0]
-
-                thread_id = threading.get_ident()
-                self.logger.info(
-                    f"Thread {thread_id}: Database synced and verified with {count} parts")
-                return True
-            except sqlite3.Error as e:
-                self.logger.error(f"Error syncing database: {e}")
-                return False
-
-    def count_parts(self):
-        """Count total number of parts in database - basic health check"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                self.local.cursor.execute("SELECT COUNT(*) FROM parts")
-                return self.local.cursor.fetchone()[0]
-            except sqlite3.Error as e:
-                self.logger.error(f"Error counting parts: {e}")
-                return 0
 
     def get_part(self, parcode):
         """Get a single part by parcode"""
         with self.lock:
             self.ensure_connection()
             try:
-                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (parcode,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = %s", (parcode,))
                 return self.local.cursor.fetchone()
-            except sqlite3.Error as e:
+            except mysql.connector.Error as e:
                 self.logger.error(f"Error fetching part {parcode}: {e}")
                 return None
-
-    def get_all_parts(self):
-        """Get all parts ordered by last updated"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                thread_id = threading.get_ident()
-                self.logger.info(f"Thread {thread_id}: Fetching all parts")
-                self.local.cursor.execute(
-                    "SELECT * FROM parts ORDER BY last_updated DESC")
-                return self.local.cursor.fetchall()
-            except sqlite3.Error as e:
-                self.logger.error(f"Error fetching all parts: {e}")
-                return []
-
-    def update_part(self, parcode, **kwargs):
-        """Update a part with detailed audit logging"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                # First, get the original part data for comparison
-                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = ?", (parcode,))
-                original_part = self.local.cursor.fetchone()
-
-                if not original_part:
-                    self.logger.warning(
-                        f"Attempted to update non-existent part #{parcode}")
-                    return False
-
-                # Build the update query
-                set_clause = ', '.join([f"{k} = ?" for k in kwargs.keys()])
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                set_clause += ", last_updated = ?"  # Always update timestamp
-                values = list(kwargs.values()) + [current_time, parcode]
-
-                # Execute the update
-                self.local.cursor.execute(f"""
-                    UPDATE parts 
-                    SET {set_clause}
-                    WHERE parcode = ?
-                """, values)
-                self.local.conn.commit()
-
-                # Check if update was successful
-                if self.local.cursor.rowcount > 0:
-                    # Log what specifically changed
-                    thread_id = threading.get_ident()
-                    changes = []
-
-                    # Get column names for reference
-                    self.local.cursor.execute("PRAGMA table_info(parts)")
-                    columns = {row[0]: row[1] for row in self.local.cursor.fetchall()}
-
-                    # Compare and log each changed field
-                    for key in kwargs:
-                        col_idx = None
-                        # Find the column index for this field
-                        for idx, name in columns.items():
-                            if name == key:
-                                col_idx = idx
-                                break
-
-                        if col_idx is not None and col_idx < len(original_part):
-                            old_value = original_part[col_idx]
-                            new_value = kwargs[key]
-
-                            if str(old_value) != str(new_value):
-                                # Use ASCII-compatible characters instead of Unicode arrow
-                                changes.append(f"{key}: '{old_value}' -> '{new_value}'")
-
-                    # Log the changes
-                    if changes:
-                        changes_str = ", ".join(changes)
-                        self.logger.info(
-                            f"Thread {thread_id}: Updated part #{parcode} - {changes_str}")
-                    else:
-                        self.logger.info(
-                            f"Thread {thread_id}: Updated part #{parcode} - no changes detected")
-
-                    return True
-                else:
-                    self.logger.warning(f"Update part #{parcode} - no rows affected")
-                    return False
-
-            except sqlite3.Error as e:
-                self.logger.error(f"Database error updating part #{parcode}: {e}")
-                return False
-
-    def delete_part(self, parcode):
-        """Delete a part by parcode"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                thread_id = threading.get_ident()
-                self.logger.info(f"Thread {thread_id}: Deleting part {parcode}")
-                self.local.cursor.execute("DELETE FROM parts WHERE parcode = ?", (parcode,))
-                self.local.conn.commit()
-                return self.local.cursor.rowcount > 0
-            except sqlite3.Error as e:
-                self.logger.error(f"Database error: {str(e)}")
-                return False
-
-    def delete_multiple_parts(self, parcodes):
-        """Delete multiple parts in a single transaction"""
-        if not parcodes:
-            self.logger.warning("No part parcodes provided for deletion")
-            return False
-
-        with self.lock:
-            self.ensure_connection()
-            try:
-                # Start transaction
-                self.begin_transaction()
-
-                # Delete parts in batches to avoid parameter limit
-                batch_size = 100
-                deleted_count = 0
-
-                for i in range(0, len(parcodes), batch_size):
-                    batch = parcodes[i:i + batch_size]
-                    placeholders = ','.join(['?'] * len(batch))
-
-                    self.local.cursor.execute(
-                        f"DELETE FROM parts WHERE parcode IN ({placeholders})",
-                        batch
-                    )
-                    deleted_count += self.local.cursor.rowcount
-
-                self.commit_transaction()
-                thread_id = threading.get_ident()
-                self.logger.info(
-                    f"Thread {thread_id}: Deleted {deleted_count} parts in batch operation")
-                return deleted_count > 0
-
-            except sqlite3.Error as e:
-                # Roll back on error
-                self.rollback_transaction()
-                self.logger.error(f"Error during batch deletion: {e}")
-                return False
 
     def search_parts(self, search_term=''):
         """Search parts by any field (enhanced)"""
@@ -441,11 +405,11 @@ class CarPartsDB:
             self.ensure_connection()
 
             # Get all text columns for searching
-            self.local.cursor.execute("PRAGMA table_info(parts)")
-            text_columns = [row[1] for row in self.local.cursor.fetchall()
-                            if row[2] == 'TEXT' or row[2] == '']
+            self.local.cursor.execute("DESCRIBE parts")
+            text_columns = [row['Field'] for row in self.local.cursor.fetchall()
+                            if 'text' in row['Type'].lower() or 'varchar' in row['Type'].lower()]
 
-            conditions = ' OR '.join([f"{col} LIKE ?" for col in text_columns])
+            conditions = ' OR '.join([f"{col} LIKE %s" for col in text_columns])
             params = [f'%{search_term}%'] * len(text_columns)
 
             query = f"SELECT * FROM parts WHERE {conditions}"
@@ -453,126 +417,324 @@ class CarPartsDB:
             try:
                 self.local.cursor.execute(query, params)
                 return self.local.cursor.fetchall()
-            except sqlite3.Error as e:
+            except mysql.connector.Error as e:
                 self.logger.error(f"Search error: {e}")
-                return []
-
-    def get_part_by_name(self, product_name):
-        """Fetch part by product name"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                self.local.cursor.execute(
-                    "SELECT * FROM parts WHERE product_name = ?",
-                    (product_name,)
-                )
-                return self.local.cursor.fetchone()
-            except sqlite3.Error as e:
-                self.logger.error(f"Error getting part by name: {e}")
-                return None
-
-    def search_products_starting_with(self, search_text, limit=5):
-        """Return product names starting with search text"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                self.local.cursor.execute("""
-                    SELECT product_name FROM parts
-                    WHERE product_name LIKE ? COLLATE NOCASE
-                    ORDER BY product_name
-                    LIMIT ?
-                """, (f"{search_text}%", limit))
-                return [row[0] for row in self.local.cursor.fetchall()]
-            except Exception as e:
-                self.logger.error(f"Search error: {e}")
-                return []
-
-    def get_unique_brands(self):
-        """Get list of unique car brands"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                self.local.cursor.execute(
-                    "SELECT DISTINCT compatible_brands FROM parts WHERE compatible_brands IS NOT NULL"
-                )
-
-                # Process the results to extract unique brand names
-                all_brands = set()
-                for row in self.local.cursor.fetchall():
-                    if row[0]:
-                        brands = row[0].split(',')
-                        for brand in brands:
-                            if brand and brand.strip():
-                                all_brands.add(brand.strip())
-
-                return sorted(list(all_brands))
-            except sqlite3.Error as e:
-                self.logger.error(f"Error getting unique brands: {e}")
-                return []
-
-    def get_unique_models_for_brand(self, brand):
-        """Get list of unique models for a specific brand"""
-        with self.lock:
-            self.ensure_connection()
-            try:
-                self.local.cursor.execute(
-                    "SELECT compatible_models FROM parts WHERE compatible_models LIKE ?",
-                    (f"%{brand}:%",)
-                )
-
-                # Process the results to extract unique model names for this brand
-                models = set()
-                for row in self.local.cursor.fetchall():
-                    if row[0]:
-                        model_entries = row[0].split(',')
-                        for entry in model_entries:
-                            if entry and ':' in entry:
-                                brand_name, model_name = entry.split(':', 1)
-                                if brand_name.strip() == brand:
-                                    models.add(model_name.strip())
-
-                return sorted(list(models))
-            except sqlite3.Error as e:
-                self.logger.error(f"Error getting models for {brand}: {e}")
                 return []
 
     def begin_transaction(self):
         """Begin a transaction in the current thread's connection"""
         with self.lock:
             self.ensure_connection()
-            try:
-                self.local.conn.execute("BEGIN TRANSACTION")
+
+            # If already in a transaction, just return
+            if hasattr(self.local, 'in_transaction') and self.local.in_transaction:
                 thread_id = threading.get_ident()
-                self.logger.info(f"Thread {thread_id}: Transaction started")
+                self.logger.debug(f"Thread {thread_id}: Transaction already active")
                 return True
-            except sqlite3.Error as e:
-                self.logger.error(f"Error starting transaction: {e}")
-                return False
+
+            try:
+                # Start a new transaction
+                self.local.conn.start_transaction()
+                self.local.in_transaction = True
+
+                thread_id = threading.get_ident()
+                self.logger.debug(f"Thread {thread_id}: Transaction started")
+                return True
+
+            except mysql.connector.Error as e:
+                if "Transaction already in progress" in str(e):
+                    # Transaction already exists, mark as in transaction
+                    self.local.in_transaction = True
+                    self.logger.debug(f"Thread {threading.get_ident()}: Using existing transaction")
+                    return True
+                else:
+                    self.logger.error(f"Error starting transaction: {e}")
+                    return False
 
     def commit_transaction(self):
         """Commit the current transaction"""
         with self.lock:
-            if hasattr(self.local, 'conn') and self.local.conn:
-                try:
-                    self.local.conn.commit()
-                    thread_id = threading.get_ident()
-                    self.logger.info(f"Thread {thread_id}: Transaction committed")
-                    return True
-                except sqlite3.Error as e:
-                    self.logger.error(f"Error committing transaction: {e}")
-                    return False
-            return False
+            if not hasattr(self.local, 'conn') or self.local.conn is None:
+                return False
+
+            # Only commit if we're in a transaction
+            if not hasattr(self.local, 'in_transaction') or not self.local.in_transaction:
+                return True  # Nothing to commit
+
+            try:
+                self.local.conn.commit()
+                self.local.in_transaction = False
+
+                thread_id = threading.get_ident()
+                self.logger.debug(f"Thread {thread_id}: Transaction committed")
+                return True
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error committing transaction: {e}")
+                return False
 
     def rollback_transaction(self):
         """Roll back the current transaction"""
         with self.lock:
-            if hasattr(self.local, 'conn') and self.local.conn:
-                try:
-                    self.local.conn.rollback()
-                    thread_id = threading.get_ident()
-                    self.logger.info(f"Thread {thread_id}: Transaction rolled back")
-                    return True
-                except sqlite3.Error as e:
-                    self.logger.error(f"Error rolling back transaction: {e}")
+            if not hasattr(self.local, 'conn') or self.local.conn is None:
+                return False
+
+            # Only roll back if we're in a transaction
+            if not hasattr(self.local, 'in_transaction') or not self.local.in_transaction:
+                return True  # Nothing to roll back
+
+            try:
+                self.local.conn.rollback()
+                self.local.in_transaction = False
+
+                thread_id = threading.get_ident()
+                self.logger.debug(f"Thread {thread_id}: Transaction rolled back")
+                return True
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error rolling back transaction: {e}")
+                return False
+
+    def get_all_parts(self):
+        """Get all parts from the database"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute("SELECT * FROM parts")
+                return self.local.cursor.fetchall()
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching all parts: {e}")
+                return []
+
+    def update_part(self, parcode, **kwargs):
+        """Update a part with the given values"""
+        with self.lock:
+            self.ensure_transaction_state('ready')  # Ensure no active transaction
+
+            # Skip empty updates
+            if not kwargs:
+                return False
+
+            try:
+                # Begin transaction using proper method
+                self.begin_transaction()
+
+                # First verify the part exists
+                verify_query = "SELECT COUNT(*) as count FROM parts WHERE parcode = %s"
+                self.local.cursor.execute(verify_query, (parcode,))
+                result = self.local.cursor.fetchone()  # Always fetch results
+
+                # If no record found, log and return
+                if not result or result['count'] == 0:
+                    self.logger.warning(f"No part found with parcode: {parcode}")
+                    self.rollback_transaction()
                     return False
-            return False
+
+                # Build the update statement
+                set_clauses = []
+                params = []
+                for key, value in kwargs.items():
+                    set_clauses.append(f"{key} = %s")
+                    params.append(value)
+
+                # Add the parcode as the last parameter
+                params.append(parcode)
+
+                # Execute the update
+                query = f"UPDATE parts SET {', '.join(set_clauses)} WHERE parcode = %s"
+                self.local.cursor.execute(query, params)
+
+                # Commit using proper method
+                self.commit_transaction()
+
+                # Log success
+                self.logger.info(f"Updated part with parcode: {parcode}")
+                return True
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error updating part {parcode}: {e}")
+                self.rollback_transaction()
+                return False
+
+    def delete_part(self, parcode):
+        """Delete a part by parcode"""
+        with self.lock:
+            self.ensure_transaction_state('ready')  # Ensure no active transaction
+
+            try:
+                # Begin new transaction
+                self.begin_transaction()
+
+                # Check if part exists
+                self.local.cursor.execute("SELECT COUNT(*) as count FROM parts WHERE parcode = %s", (parcode,))
+                result = self.local.cursor.fetchone()
+
+                if not result or result['count'] == 0:
+                    self.logger.warning(f"No part found with parcode: {parcode}")
+                    self.rollback_transaction()
+                    return False
+
+                # Delete the part
+                self.local.cursor.execute("DELETE FROM parts WHERE parcode = %s", (parcode,))
+                self.commit_transaction()
+
+                self.logger.info(f"Deleted part with parcode: {parcode}")
+                return True
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error deleting part {parcode}: {e}")
+                self.rollback_transaction()
+                return False
+
+    def delete_parts_batch(self, part_ids):
+        """Delete multiple parts in a single transaction"""
+        if not part_ids:
+            return True
+
+        with self.lock:
+            self.ensure_transaction_state('ready')  # Ensure no active transaction
+
+            try:
+                # Begin new transaction
+                self.begin_transaction()
+
+                # Prepare ID placeholders for SQL
+                placeholders = ', '.join(['%s'] * len(part_ids))
+
+                # Delete in a single query
+                query = f"DELETE FROM parts WHERE parcode IN ({placeholders})"
+                self.local.cursor.execute(query, part_ids)
+
+                # Commit the transaction
+                self.commit_transaction()
+                self.logger.info(f"Batch deleted {self.local.cursor.rowcount} parts")
+                return True
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error in batch delete: {e}")
+                self.rollback_transaction()
+                return False
+
+    def get_part_by_name(self, product_name):
+        """Get a part by product name"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute("SELECT * FROM parts WHERE product_name = %s", (product_name,))
+                return self.local.cursor.fetchone()
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching part by name '{product_name}': {e}")
+                return None
+
+    def get_unique_cars(self):
+        """Get a list of unique car brands from the database"""
+        unique_cars = []
+        with self.lock:
+            self.ensure_connection()
+            try:
+                # Simple query to get just the compatible_brands column
+                self.local.cursor.execute("""
+                    SELECT DISTINCT compatible_brands 
+                    FROM parts 
+                    WHERE compatible_brands IS NOT NULL AND compatible_brands != ''
+                """)
+
+                # Get all results
+                results = self.local.cursor.fetchall()
+                self.logger.info(f"Found {len(results)} unique car brands in database")
+
+                # Safely process results to strings only
+                for row in results:
+                    # Handle different result types safely
+                    brand = None
+
+                    if isinstance(row, dict):
+                        # Dictionary result (MySQL connector with dictionary=True)
+                        brand = row.get('compatible_brands', '')
+                    elif isinstance(row, (tuple, list)) and len(row) > 0:
+                        # Tuple/list result (standard cursor)
+                        brand = str(row[0]) if row[0] is not None else ''
+                    else:
+                        # Some other type - try to convert safely
+                        try:
+                            brand = str(row)
+                        except:
+                            continue
+
+                    # Only add non-empty strings that aren't already in the list
+                    if brand and brand not in unique_cars:
+                        unique_cars.append(brand)
+
+                self.logger.info(f"Processed {len(unique_cars)} unique car brands")
+
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching unique cars: {e}")
+            except Exception as e:
+                self.logger.error(f"Unexpected error in get_unique_cars: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+
+        return unique_cars  # Always return a list (empty if error)
+
+    def get_all_cars(self):
+        """
+        Get all unique cars from the database with improved error handling.
+
+        Returns:
+            list: A list of car dictionaries with brand, model, and year
+        """
+        with self.lock:
+            self.ensure_connection()
+            try:
+                # Use a query that explicitly returns the structure we want
+                query = """
+                SELECT DISTINCT 
+                    IF(compatible_brands IS NULL OR compatible_brands = '', 'Unknown', compatible_brands) AS brand,
+                    IF(model_years IS NULL OR model_years = '', 'Unknown', model_years) AS year,
+                    IF(compatible_models IS NULL OR compatible_models = '', 'Unknown', compatible_models) AS model
+                FROM parts 
+                WHERE compatible_brands IS NOT NULL AND compatible_brands != ''
+                ORDER BY brand, model, year
+                """
+
+                self.local.cursor.execute(query)
+                results = self.local.cursor.fetchall()
+
+                # Convert to a standard format - list of dictionaries
+                cars = []
+                brands_processed = set()
+
+                for row in results:
+                    # Handle potential missing values
+                    brand = row.get('brand', 'Unknown') if isinstance(row, dict) else row[0]
+                    year = row.get('year', 'Unknown') if isinstance(row, dict) else row[1]
+                    model = row.get('model', 'Unknown') if isinstance(row, dict) else row[2]
+
+                    # Process brands from comma-separated lists
+                    for single_brand in str(brand).split(','):
+                        single_brand = single_brand.strip()
+                        if not single_brand or single_brand.lower() == 'unknown':
+                            continue
+
+                        # Create a unique brand identifier to prevent duplicates
+                        brand_id = single_brand.lower()
+                        if brand_id in brands_processed:
+                            continue
+
+                        brands_processed.add(brand_id)
+
+                        # Add to our results
+                        cars.append({
+                            'brand': single_brand,
+                            'model': model,
+                            'year': year
+                        })
+
+                self.logger.info(f"Found {len(cars)} unique car brands in database")
+                self.logger.info(f"Processed {len(brands_processed)} unique car brands")
+                return cars
+
+            except Exception as e:
+                self.logger.error(f"Error fetching car data: {e}")
+                # Return empty list rather than None to prevent cascading errors
+                return []

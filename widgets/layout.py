@@ -160,8 +160,8 @@ class ExquisiteTitleLabel(QWidget):
 class HeaderWidget(QWidget):
     """Refined luxury header for the application"""
 
-    def __init__(self, translator, home_callback=None):
-        super().__init__()
+    def __init__(self, translator, home_callback=None, parent=None):
+        super().__init__(parent)
         self.translator = translator
         self.home_callback = home_callback
         self.setup_ui()
@@ -216,8 +216,8 @@ class HeaderWidget(QWidget):
 class FooterWidget(QWidget):
     """The footer widget shown at the bottom of the application"""
 
-    def __init__(self, translator):
-        super().__init__()
+    def __init__(self, translator,parent=None):
+        super().__init__(parent)
         self.translator = translator
         self.setup_ui()
         self.apply_theme()
@@ -254,8 +254,8 @@ class FooterWidget(QWidget):
 class CopyrightWidget(QWidget):
     """A small copyright notice at the bottom of the application"""
 
-    def __init__(self, translator):
-        super().__init__()
+    def __init__(self, translator , parent=None):
+        super().__init__(parent)
         self.translator = translator
         self.setup_ui()
         self.apply_theme()

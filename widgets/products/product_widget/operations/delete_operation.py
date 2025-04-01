@@ -69,6 +69,18 @@ class DeleteOperation:
         print(f"Starting deletion of {len(product_list)} products")
         deleted_ids = []
 
+        # For batch operations if supported by database
+        try:
+            if len(product_list) > 5:  # Only use batch operation if deleting more than 5 items
+                # Extract IDs
+                ids_to_delete = [pid for pid, _ in product_list]
+                success = self.db.delete_parts_batch(ids_to_delete)
+                if success:
+                    deleted_ids = ids_to_delete
+                    return deleted_ids
+        except Exception as e:
+            print(f"Batch delete failed, falling back to individual: {e}")
+
         # Create progress dialog
         progress = QProgressDialog(
             self.translator.t('deleting_items').format(count=len(product_list)),

@@ -1,0 +1,22 @@
+Metadata-Version: 2.2
+Name: mtpandas
+Version: 1.16.11
+Summary: MT's extra modules for pandas.
+Home-page: https://github.com/inteplus/mtpandas
+Author: ['Minh-Tri Pham']
+Project-URL: Documentation, https://mtdoc.readthedocs.io/en/latest/mt.pandas/mt.pandas.html
+Project-URL: Source Code, https://github.com/inteplus/mtpandas
+Requires-Python: >=3.6
+License-File: LICENSE
+Requires-Dist: pandas>=1.5
+Requires-Dist: pandas_parallel_apply
+Requires-Dist: mtbase>=4.30.24
+Requires-Dist: mtopencv>=1.9
+Requires-Dist: tqdm
+Requires-Dist: tabview
+Dynamic: author
+Dynamic: home-page
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

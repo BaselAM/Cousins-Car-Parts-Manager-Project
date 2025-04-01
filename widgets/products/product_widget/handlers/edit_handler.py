@@ -71,8 +71,16 @@ class EditHandler:
 
             # Ensure product name is not empty
             if field == 'product_name' and not new_value:
-                original_part = self.db.get_part(part_id)
-                original_name = original_part[4] if original_part else "Product"
+                # Find product in memory first before going to DB
+                original_name = "Product"
+                for product in all_products:
+                    if isinstance(product, dict) and product.get('parcode') == part_id:
+                        original_name = product.get('product_name', "Product")
+                        break
+                    elif not isinstance(product, dict) and len(product) > 0 and product[0] == part_id:
+                        original_name = product[2] if len(product) > 2 else "Product"
+                        break
+
                 table.blockSignals(True)
                 item.setText(original_name)
                 table.blockSignals(False)

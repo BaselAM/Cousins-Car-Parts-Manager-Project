@@ -1,29 +1,26 @@
-import logging
-import sys
 from pathlib import Path
+from logger import get_logger
+logger = get_logger(__name__)
+import sys
 
+# Third-party imports
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout, \
-    QStackedWidget
-from PyQt5.QtWidgets import QMessageBox  # Make sure this is imported
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout, QStackedWidget, QMessageBox
 
+# Local application imports
 from database.car_parts_db import CarPartsDB
 from database.settings_db import SettingsDB
-from widgets.home_page import HomePageWidget
 from themes import set_theme, get_color
-# Import the enhanced translator instead of the original one
-from translations import EnhancedTranslator
+from translations import get_translator
 from widgets.header import TopBarWidget
 from widgets.help import HelpWidget
-# Import widgets
+from widgets.home_page import HomePageWidget
 from widgets.layout import HeaderWidget, FooterWidget, CopyrightWidget
-# Add these imports near the top of gui.py
 from widgets.parts_navigation import PartsNavigationContainer
 from widgets.products import ProductsWidget
 from widgets.settings.settings_widget import SettingsWidget
 from widgets.statistics import StatisticsWidget
-
 
 class GUI(QMainWindow):
     language_changed = pyqtSignal()
@@ -43,9 +40,8 @@ class GUI(QMainWindow):
         self.current_language = self.settings_db.get_setting('language', 'en')
         self.rtl_enabled = self.settings_db.get_rtl_setting()
 
-        # Create a new enhanced translator that will include our JSON files
-        # This maintains the same interface as the original Translator class
-        self.translator = EnhancedTranslator(self.current_language)
+        # Get shared translator instance from the manager
+        self.translator = get_translator(self.current_language)
 
         # Setup UI components
         self.setup_window_properties()
@@ -67,13 +63,14 @@ class GUI(QMainWindow):
 
     def preload_views(self):
         """Initialize all view widgets"""
-        self.products_widget = ProductsWidget(self.translator, self.parts_db)
-        self.statistics_widget = StatisticsWidget(self.translator)
+        self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+        self.statistics_widget = StatisticsWidget(self.translator, parent=self)
         self.settings_widget = SettingsWidget(self.translator, self.update_language, self)
-        self.help_widget = HelpWidget(self.translator)
+        self.help_widget = HelpWidget(self.translator, parent=self)
         # Add this line:
         self.parts_navigation_widget = PartsNavigationContainer(self.translator,
-                                                                self.parts_db)
+                                                                self.parts_db,
+                                                                parent=self)
 
     def setup_ui(self):
         """Create and arrange all UI components"""
@@ -88,12 +85,11 @@ class GUI(QMainWindow):
         }
 
         # Create main widgets
-        self.home_page = HomePageWidget(self.translator, navigation_functions)
-        self.header = HeaderWidget(self.translator, self.show_home)
-        self.top_bar = TopBarWidget(self.translator,
-                                    self.parts_db)  # Use the new class name
-        self.footer = FooterWidget(self.translator)
-        copyright_widget = CopyrightWidget(self.translator)
+        self.home_page = HomePageWidget(self.translator, navigation_functions, parent=self)
+        self.header = HeaderWidget(self.translator, self.show_home, parent=self)
+        self.top_bar = TopBarWidget(self.translator, self.parts_db, parent=self)
+        self.footer = FooterWidget(self.translator, parent=self)
+        copyright_widget = CopyrightWidget(self.translator, parent=self)
 
         # Connect top bar signals
         self.top_bar.home_clicked.connect(self.show_home)
@@ -189,10 +185,17 @@ class GUI(QMainWindow):
         QMessageBox.information(self, "Notifications",
                                 "Notifications feature will be available soon")
 
-    def show_chat(self):
-        """Show chatbot interface"""
-        QMessageBox.information(self, "Chat Assistant",
-                                "Chat assistant feature will be available soon")
+    def show_chat(self, message=None):
+        """Handle chat messages from the chat widget"""
+        if message:
+            # If message provided, it's from the chat widget so don't show popup
+            logger.debug(f"Chat message handled in chat widget: {message}")
+            # The actual chat handling is already done in the widget
+            return
+
+        # This branch only executes when clicking the chat button directly
+        # If you want to implement a full-page chat view later, you could do it here
+        pass
 
     def on_search_entered(self):
         """Handle search queries"""
@@ -218,7 +221,10 @@ class GUI(QMainWindow):
             # Update state
             self.current_language = new_lang
             self.rtl_enabled = is_rtl
-            self.translator.set_language(new_lang)
+
+            # Get the updated shared translator
+
+            self.translator = get_translator(new_lang)
 
             # Apply direction changes
             direction = Qt.RightToLeft if is_rtl else Qt.LeftToRight
@@ -230,7 +236,7 @@ class GUI(QMainWindow):
             self._full_ui_refresh()
 
         except Exception as e:
-            logging.error(f"Language update error: {str(e)}")
+            logger.error(f"Language update error: {str(e)}")
             QMessageBox.critical(self, "Error", self.translator.t('settings_save_error'))
         finally:
             QApplication.restoreOverrideCursor()
@@ -273,7 +279,7 @@ class GUI(QMainWindow):
 
             event.accept()
         except Exception as e:
-            logging.error(f"Shutdown error: {str(e)}")
+            logger.error(f"Shutdown error: {str(e)}")
             sys.exit(1)
 
     def show_parts(self):

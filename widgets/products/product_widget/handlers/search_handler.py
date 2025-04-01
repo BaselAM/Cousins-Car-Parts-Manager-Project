@@ -58,24 +58,44 @@ class SearchHandler:
     def _build_searchable_text(self, product):
         """Build a searchable text string from product data including translations"""
         # Get base searchable text from original data
-        basic_fields = [
-            str(product[1] or "").lower(),  # category
-            str(product[2] or "").lower(),  # product_name
-            str(product[6] or "").lower(),  # compatible_models
-        ]
+        is_dict = isinstance(product, dict)
+
+        if is_dict:
+            basic_fields = [
+                str(product.get('category', '') or "").lower(),
+                str(product.get('product_name', '') or "").lower(),
+                str(product.get('compatible_models', '') or "").lower(),
+            ]
+        else:
+            basic_fields = [
+                str(product[1] if len(product) > 1 and product[1] else "").lower(),
+                str(product[2] if len(product) > 2 and product[2] else "").lower(),
+                str(product[6] if len(product) > 6 and product[6] else "").lower(),
+            ]
+
         searchable_text = " ".join(basic_fields)
 
         # If translations are available, add translated values to searchable text
         if self.translations_available:
             try:
                 # Add translated category
-                if product[1]:
-                    translated_category = self.translate_category(product[1], 'he').lower()
+                if is_dict:
+                    category = product.get('category', '')
+                else:
+                    category = product[1] if len(product) > 1 else ""
+
+                if category:
+                    translated_category = self.translate_category(category, 'he').lower()
                     searchable_text += " " + translated_category
 
                 # Add translated compatible_models
-                if product[6]:
-                    translated_models = self.translate_compatible_models(product[6], 'he').lower()
+                if is_dict:
+                    compatible_models = product.get('compatible_models', '')
+                else:
+                    compatible_models = product[6] if len(product) > 6 else ""
+
+                if compatible_models:
+                    translated_models = self.translate_compatible_models(compatible_models, 'he').lower()
                     searchable_text += " " + translated_models
             except Exception as e:
                 print(f"Error including translations in search: {e}")

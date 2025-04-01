@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QDesktopWidget, QGraphicsOpacityEffect
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt, QPropertyAnimation, QTimer, QEasingCurve, pyqtSlot
-from shared import SCRIPT_DIR  # Assuming SCRIPT_DIR is defined in shared
+from config import APP_ROOT as SCRIPT_DIR
 
 
 class SplashScreen(QWidget):

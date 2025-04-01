@@ -6,27 +6,34 @@ class SelectionHandler:
         self.product_table = product_table
         self.ui_handler = ui_handler
 
+        # Inside SelectionHandler class
+
     def toggle_selection_mode(self, checked):
-        """
-        Toggle selection mode for products
+            """
+            Toggle selection mode for products
 
-        Args:
-            checked: Whether selection mode is enabled
+            Args:
+                checked: Whether selection mode is enabled
 
-        Returns:
-            tuple: (success, message)
-        """
-        try:
-            self.product_table.set_selection_mode(checked)
-            self.ui_handler.update_select_button_style(checked)
+            Returns:
+                tuple: (success, message)
+            """
+            try:
+                # Set the table's selection behavior
+                self.product_table.set_selection_mode(checked)
 
-            if checked:
-                message = self.translator.t('select_mode_enabled')
-                return True, message
-            else:
-                return True, None
+                # REMOVED -> self.ui_handler.update_select_button_style(checked)
+                # The button's visual state is now handled by the stylesheet's :checked rule in UIHandler
 
-        except Exception as e:
-            error_msg = f"{self.translator.t('selection_mode_error')}: {str(e)}"
-            print(f"Selection mode error: {error_msg}")
-            return False, error_msg
+                if checked:
+                    message = self.translator.t('select_mode_enabled')
+                    return True, message  # Return success and enable message
+                else:
+                    # Return empty string to signal collapse without showing a message
+                    return True, ""  # Return success with empty message to trigger collapse
+
+            except Exception as e:
+                # Log the error and return failure status
+                error_msg = f"{self.translator.t('selection_mode_error')}: {str(e)}"
+                print(f"Selection mode error: {error_msg}")
+                return False, error_msg

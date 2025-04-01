@@ -56,23 +56,48 @@ class FilterHandler:
             filtered = []
             for prod in all_products:
                 # Extract fields with proper error handling
-                category = prod[1] if len(prod) > 1 and prod[1] else ""
-                product_name = prod[2] if len(prod) > 2 and prod[2] else ""
-                quantity = 0
-                if len(prod) > 3 and prod[3] is not None:
-                    try:
-                        quantity = int(prod[3])
-                    except (ValueError, TypeError):
-                        quantity = 0
+                # Check if we're dealing with a dictionary (MySQL) or tuple (older SQLite format)
+                is_dict = isinstance(prod, dict)
 
-                price = 0.0
-                if len(prod) > 4 and prod[4] is not None:
-                    try:
-                        price = float(prod[4])
-                    except (ValueError, TypeError):
-                        price = 0.0
+                # Extract fields with proper error handling
+                if is_dict:
+                    category = prod.get('category', '')
+                    product_name = prod.get('product_name', '')
 
-                compatible_models = prod[6] if len(prod) > 6 and prod[6] else ""
+                    quantity = 0
+                    if 'quantity' in prod and prod['quantity'] is not None:
+                        try:
+                            quantity = int(prod['quantity'])
+                        except (ValueError, TypeError):
+                            quantity = 0
+
+                    price = 0.0
+                    if 'price' in prod and prod['price'] is not None:
+                        try:
+                            price = float(prod['price'])
+                        except (ValueError, TypeError):
+                            price = 0.0
+
+                    compatible_models = prod.get('compatible_models', '')
+                else:
+                    category = prod[1] if len(prod) > 1 and prod[1] else ""
+                    product_name = prod[2] if len(prod) > 2 and prod[2] else ""
+
+                    quantity = 0
+                    if len(prod) > 3 and prod[3] is not None:
+                        try:
+                            quantity = int(prod[3])
+                        except (ValueError, TypeError):
+                            quantity = 0
+
+                    price = 0.0
+                    if len(prod) > 4 and prod[4] is not None:
+                        try:
+                            price = float(prod[4])
+                        except (ValueError, TypeError):
+                            price = 0.0
+
+                    compatible_models = prod[6] if len(prod) > 6 and prod[6] else ""
 
                 # Extract brand and model from compatible_models field
                 brands = set()

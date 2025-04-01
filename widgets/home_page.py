@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon, QFont
 from themes import get_color
 from pathlib import Path
-from shared_imports import *
+
 
 
 class ResponsiveAppButton(QToolButton):
@@ -29,8 +29,8 @@ class ResponsiveAppButton(QToolButton):
 
 
 class HomePageWidget(QWidget):
-    def __init__(self, translator, navigation_functions):
-        super().__init__()
+    def __init__(self, translator, navigation_functions, parent=None):
+        super().__init__(parent)
         self.translator = translator
         self.navigation_functions = navigation_functions
         self.username = "BaselAM"  # Default username

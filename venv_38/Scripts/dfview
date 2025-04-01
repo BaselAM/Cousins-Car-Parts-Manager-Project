@@ -1,0 +1,129 @@
+#!c:\users\97253\desktop\beastmode-csintro-excercises\cousintestproject\venv_38\scripts\python.exe
+# -*- coding: utf-8 -*-
+
+"""View a '.csv', '.csv.zip', '.parquet' or tab-delimited file in a spreadsheet-like display."""
+
+import asyncio
+import argparse
+import csv
+from io import BytesIO
+from tabview.tabview import view
+
+from mt import pd
+from mt.base import logger
+
+
+async def main(args, context_vars: dict = {}):
+    try:
+        df = await pd.dfload_asyn(
+            args.filepath,
+            show_progress=True,
+            nrows=args.max_rows,
+            context_vars=context_vars,
+        )
+        if isinstance(args.max_rows, int):
+            df = df[: args.max_rows]
+            logger.info("Restricted to {} rows.".format(len(df)))
+
+        copied = False
+        df2 = df
+
+        for key in df.columns:
+            dftype = pd.get_dftype(df[key])
+            if dftype == "object":
+                continue
+            if not copied:
+                df2 = df2.copy()  # to avoid raising a warning
+                copied = True
+            df2[key] = df2[key].apply(lambda x: None if x is None else str(x))
+
+        logger.info("Converting into in-memory CSV file for tabview.")
+        filepath = BytesIO()
+        df2.to_csv(
+            filepath,
+            quoting=csv.QUOTE_NONNUMERIC,
+            index=bool(df2.index.name is not None),
+        )
+        filepath.seek(0)  # to the beginning
+    except:
+        logger.warn_last_exception()
+        filepath = args.filepath
+        logger.info("Using tabview instead to load: '{}'.".format(filepath))
+    view(
+        filepath,
+        start_pos=start_pos,
+        column_width=args.width,
+        double_width=args.double_width,
+    )
+
+
+def start_position(start_norm, start_classic):
+    """Given a string "[y, x, ...]" or a string "+[y]:[x]", return a tuple (y, x)
+    for the start position
+
+    Args: start_norm - string [y,x, ...]
+          start_classic - string "+[y]:[x]"
+
+    Returns: tuple (y, x)
+
+    """
+    if start_norm is not None:
+        start_pos = start_norm.split(",")[:2]
+        if not start_pos[0]:
+            start_pos[0] = 0
+        start_pos = [int(i) for i in start_pos]
+    elif start_classic:
+        sp = start_classic[0].strip("+").split(":")
+        if not sp[0]:
+            sp[0] = 0
+        try:
+            start_pos = (int(sp[0]), int(sp[1]))
+        except IndexError:
+            start_pos = (int(sp[0]), 0)
+    else:
+        start_pos = (0, 0)
+    return start_pos
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description=__doc__ + "\n\n"
+        "Press F1 or '?' while running for a list of available keybindings."
+    )
+
+    parser.add_argument(
+        "filepath", type=str, help="Filepath to the dataframe for viewing."
+    )
+    parser.add_argument(
+        "--start_pos",
+        "-s",
+        help="Initial cursor display position. "
+        "Single number for just y (row) position, or two "
+        "comma-separated numbers (--start_pos 2,3) for both. ",
+    )
+    parser.add_argument(
+        "--width",
+        "-w",
+        default=20,
+        help="Specify column width. 'max' or 'mode' (default) "
+        "for variable widths, or an integer value for "
+        "fixed column width.",
+    )
+    parser.add_argument(
+        "--double_width",
+        action="store_true",
+        default=False,
+        help="Force full handling of double-width characters "
+        "for large files (with a performance penalty)",
+    )
+    parser.add_argument(
+        "-r",
+        "--max_rows",
+        type=int,
+        default=None,
+        help="If specified, the maximum number of rows to crop the table to before viewing.",
+    )
+    args = parser.parse_args()
+
+    start_pos = start_position(args.start_pos, [])
+    asyncio.run(main(args, context_vars={"async": True}))

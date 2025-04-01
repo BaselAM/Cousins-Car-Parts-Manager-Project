@@ -1,0 +1,233 @@
+2025-03-30 00:41:24,002 - root                 - INFO     - [MainThread] - --------------------------------------------------
+2025-03-30 00:41:24,002 - root                 - INFO     - [MainThread] - Logging configured. Console Level: INFO. File Level: DEBUG. Log file: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs\app_20250330.log
+2025-03-30 00:41:24,002 - root                 - INFO     - [MainThread] - --------------------------------------------------
+2025-03-30 00:41:24,006 - translations         - WARNING  - [MainThread] - Could not import original Translator - creating empty version
+2025-03-30 00:41:24,006 - translations         - INFO     - [MainThread] - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 00:41:24,008 - translations         - INFO     - [MainThread] - Loaded translations for 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 00:41:24,009 - translations         - INFO     - [MainThread] - Loaded translations for 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 00:41:24,009 - translations         - INFO     - [MainThread] - Loaded translations for 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 00:41:24,010 - translations         - INFO     - [MainThread] - Loaded translations for 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 00:41:24,011 - translations         - INFO     - [MainThread] - Loaded translations for 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 00:41:24,011 - translations         - INFO     - [MainThread] - Loaded translations for 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 00:41:24,012 - translations         - INFO     - [MainThread] - Loaded translations for 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 00:41:24,012 - translations         - INFO     - [MainThread] - Loaded translations for 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 00:41:24,013 - translations         - INFO     - [MainThread] - Loaded translations for 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 00:41:24,013 - translations         - INFO     - [MainThread] - Loaded translations for 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 00:41:24,014 - translations         - INFO     - [MainThread] - Loaded translations for 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 00:41:24,021 - main                 - INFO     - [MainThread] - Translator initialized with language: en
+2025-03-30 00:41:24,021 - main                 - INFO     - [MainThread] - Loading translation files from directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 00:41:24,021 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 00:41:24,022 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 00:41:24,022 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 00:41:24,022 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 00:41:24,022 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 00:41:24,022 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 00:41:24,022 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 00:41:24,022 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 00:41:24,022 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 00:41:24,023 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 00:41:24,023 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 00:41:24,023 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 00:41:24,023 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 00:41:24,023 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 00:41:24,023 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 00:41:24,023 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 00:41:24,023 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 00:41:24,023 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 00:41:24,023 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 00:41:24,024 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 00:41:24,024 - main                 - DEBUG    - [MainThread] - Attempting to load: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 00:41:24,024 - translations         - INFO     - [MainThread] - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 00:41:24,024 - main                 - INFO     - [MainThread] - Finished loading 11 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data.
+2025-03-30 03:50:38,342 - main - INFO - Application starting at: 2025-03-30 03:50:38
+2025-03-30 03:50:38,342 - main - INFO - Current user: BaselAM
+2025-03-30 03:50:38,399 - main - INFO - Using resources directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\resources
+2025-03-30 03:50:38,399 - main - WARNING - Missing icon file: add_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: select_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: delete_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: filter_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: export_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: refresh_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: info_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: success_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: error_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: warning_icon.png
+2025-03-30 03:50:38,400 - main - WARNING - Missing icon file: close_icon.png
+2025-03-30 03:50:38,400 - main - INFO - Initializing database connection...
+2025-03-30 03:50:38,793 - database.car_parts_db - INFO - Thread 14664: Database connection established
+2025-03-30 03:50:38,793 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-03-30 03:50:38,824 - main - INFO - Connected to database. Found 2850 parts.
+2025-03-30 03:50:39,026 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 03:50:39,026 - translations - INFO - Loaded translations for 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 03:50:39,026 - translations - INFO - Loaded translations for 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 03:50:39,028 - translations - INFO - Loaded translations for 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 03:50:39,028 - translations - INFO - Loaded translations for 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 03:50:39,028 - translations - INFO - Loaded translations for 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 03:50:39,028 - translations - INFO - Loaded translations for 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 03:50:39,028 - translations - INFO - Loaded translations for 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 03:50:39,029 - translations - INFO - Loaded translations for 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 03:50:39,029 - translations - INFO - Loaded translations for 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 03:50:39,029 - translations - INFO - Loaded translations for 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 03:50:39,029 - translations - INFO - Loaded translations for 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 03:50:39,755 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,756 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,756 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,756 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,757 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,758 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,759 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,785 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,786 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:39,973 - database.car_parts_db - INFO - Thread 16340: Database connection established
+2025-03-30 03:50:40,135 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,136 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,136 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,136 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,137 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,142 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,143 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,144 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,148 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,153 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,154 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,155 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,155 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,156 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:50:40,194 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 03:50:40,195 - translations - INFO - Loaded translations for 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 03:50:40,195 - translations - INFO - Loaded translations for 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 03:50:40,196 - translations - INFO - Loaded translations for 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 03:50:40,196 - translations - INFO - Loaded translations for 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 03:50:40,196 - translations - INFO - Loaded translations for 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 03:50:40,197 - translations - INFO - Loaded translations for 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 03:50:40,197 - translations - INFO - Loaded translations for 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 03:50:40,198 - translations - INFO - Loaded translations for 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 03:50:40,198 - translations - INFO - Loaded translations for 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 03:50:40,198 - translations - INFO - Loaded translations for 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 03:50:40,200 - translations - INFO - Loaded translations for 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 03:50:40,201 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-03-30 03:50:40,202 - UsersDB - INFO - Database tables created successfully
+2025-03-30 03:50:51,304 - UsersDB - INFO - User fahed authenticated successfully
+2025-03-30 03:50:51,318 - main - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-03-30 03:51:19,588 - themes.core - WARNING - Color key 'status_error_text' not found in theme 'dark'. Using fallback.
+2025-03-30 03:51:26,783 - database.car_parts_db - INFO - Thread 14664: Adding part: 'moataz'
+2025-03-30 03:51:26,786 - database.car_parts_db - INFO - Thread 14664: Using existing transaction
+2025-03-30 03:51:26,809 - database.car_parts_db - INFO - Created new part with Parcode: 2887
+2025-03-30 03:51:26,824 - database.car_parts_db - INFO - Successfully verified part was added with Parcode: 2887
+2025-03-30 03:51:29,385 - main - INFO - Cleaning up application resources...
+2025-03-30 03:51:29,385 - main - INFO - Closing database connection...
+2025-03-30 03:51:29,385 - main - INFO - Application shutdown complete
+2025-03-30 04:08:22,745 - main - INFO - Application starting at: 2025-03-30 04:08:22
+2025-03-30 04:08:22,745 - main - INFO - Current user: BaselAM
+2025-03-30 04:08:22,799 - main - INFO - Using resources directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\resources
+2025-03-30 04:08:22,799 - main - WARNING - Missing icon file: add_icon.png
+2025-03-30 04:08:22,799 - main - WARNING - Missing icon file: select_icon.png
+2025-03-30 04:08:22,799 - main - WARNING - Missing icon file: delete_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: filter_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: export_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: refresh_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: info_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: success_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: error_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: warning_icon.png
+2025-03-30 04:08:22,800 - main - WARNING - Missing icon file: close_icon.png
+2025-03-30 04:08:22,800 - main - INFO - Initializing database connection...
+2025-03-30 04:08:22,992 - database.car_parts_db - INFO - Thread 10624: Database connection established
+2025-03-30 04:08:22,992 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-03-30 04:08:23,016 - main - INFO - Connected to database. Found 2851 parts.
+2025-03-30 04:08:23,178 - translations.manager - INFO - Using translations directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 04:08:23,178 - translations.manager - INFO - Creating new translator with language: he
+2025-03-30 04:08:23,178 - translations.manager - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 04:08:23,179 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 04:08:23,179 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 04:08:23,179 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 04:08:23,179 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 04:08:23,180 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 04:08:23,181 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 04:08:23,675 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,677 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,677 - translations - WARNING - Missing translation for 'select_product' in 'he'
+2025-03-30 04:08:23,677 - translations - WARNING - Missing translation for 'search_products_placeholder' in 'he'
+2025-03-30 04:08:23,677 - translations - WARNING - Missing translation for 'select_product_help' in 'he'
+2025-03-30 04:08:23,677 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,678 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'select_details' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'manufacturer' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'material' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'quality' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'quality_standard' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'quality_premium' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'quality_oem' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'comments' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'comments_placeholder' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'continue_button' in 'he'
+2025-03-30 04:08:23,678 - translations - WARNING - Missing translation for 'select_details_help' in 'he'
+2025-03-30 04:08:23,679 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,680 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,680 - translations - WARNING - Missing translation for 'part_details' in 'he'
+2025-03-30 04:08:23,683 - translations - WARNING - Missing translation for 'no_image' in 'he'
+2025-03-30 04:08:23,683 - translations - WARNING - Missing translation for 'part_name' in 'he'
+2025-03-30 04:08:23,683 - translations - WARNING - Missing translation for 'car_info' in 'he'
+2025-03-30 04:08:23,684 - translations - WARNING - Missing translation for 'back_button' in 'he'
+2025-03-30 04:08:23,684 - translations - WARNING - Missing translation for 'add_to_cart' in 'he'
+2025-03-30 04:08:23,684 - translations - WARNING - Missing translation for 'print_details' in 'he'
+2025-03-30 04:08:23,684 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,700 - translations - WARNING - Missing translation for 'cars_step' in 'he'
+2025-03-30 04:08:23,700 - translations - WARNING - Missing translation for 'products_step' in 'he'
+2025-03-30 04:08:23,701 - translations - WARNING - Missing translation for 'details_step' in 'he'
+2025-03-30 04:08:23,701 - translations - WARNING - Missing translation for 'final_step' in 'he'
+2025-03-30 04:08:23,710 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,711 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'search_submit_tooltip' in 'he'
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'suggestion_parts' in 'he'
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'suggestion_service' in 'he'
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'suggestion_repair' in 'he'
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'suggestion_brands' in 'he'
+2025-03-30 04:08:23,727 - translations - WARNING - Missing translation for 'suggestion_inventory' in 'he'
+2025-03-30 04:08:23,884 - database.car_parts_db - INFO - Thread 8020: Database connection established
+2025-03-30 04:08:24,207 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,209 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,209 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,211 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,211 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,218 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,218 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,221 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,223 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,233 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,234 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,234 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,235 - themes.core - WARNING - Color key 'highlight_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,236 - themes.core - WARNING - Color key 'secondary_text' not found in theme 'dark'. Using fallback.
+2025-03-30 04:08:24,275 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-03-30 04:08:24,276 - translations - INFO - Loaded translations for 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-03-30 04:08:24,276 - translations - INFO - Loaded translations for 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-03-30 04:08:24,277 - translations - INFO - Loaded translations for 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-03-30 04:08:24,277 - translations - INFO - Loaded translations for 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-03-30 04:08:24,277 - translations - INFO - Loaded translations for 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-03-30 04:08:24,277 - translations - INFO - Loaded translations for 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-03-30 04:08:24,278 - translations - INFO - Loaded translations for 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-03-30 04:08:24,278 - translations - INFO - Loaded translations for 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-03-30 04:08:24,278 - translations - INFO - Loaded translations for 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-03-30 04:08:24,279 - translations - INFO - Loaded translations for 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-03-30 04:08:24,279 - translations - INFO - Loaded translations for 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-03-30 04:08:24,280 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-03-30 04:08:24,280 - UsersDB - INFO - Database tables created successfully
+2025-03-30 04:08:28,943 - main - INFO - Cleaning up application resources...
+2025-03-30 04:08:28,945 - main - INFO - Closing database connection...
+2025-03-30 04:08:28,946 - main - INFO - Application shutdown complete

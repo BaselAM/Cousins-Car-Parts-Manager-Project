@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: mtopencv
+Version: 1.11.2
+Summary: Minh-Tri Pham's extra modules using OpenCV
+Author: ['Minh-Tri Pham']
+License-File: LICENSE
+Requires-Dist: ansicolors
+Requires-Dist: pyturbojpeg
+Requires-Dist: mtbase >=4.27.2
+Requires-Dist: mtgeo >=1.1
+

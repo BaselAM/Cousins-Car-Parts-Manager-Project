@@ -1,0 +1,188 @@
+2025-03-31 00:16:07,550 - widgets.header.chatbot.direct_chat_widget - ERROR - [direct_chat_widget.py:330] - process_message - Error generating response: wrapped C/C++ object of type SignalBridge has been deleted
+2025-03-31 09:49:40,992 - brand_widget - ERROR - [brand_widget.py:253] - load_brands - Error loading brands: 'GlobalColor' object has no attribute 'name'
+2025-03-31 09:52:33,493 - brand_widget - ERROR - [brand_widget.py:253] - load_brands - Error loading brands: 'GlobalColor' object has no attribute 'name'
+2025-03-31 09:54:49,666 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'QColor' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 71, in preload_views
+    self.parts_navigation_widget = PartsNavigationContainer(self.translator,
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 45, in __init__
+    self.apply_theme()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 653, in apply_theme
+    background-color: {QColor(highlight).darker(110).name()};
+NameError: name 'QColor' is not defined
+2025-03-31 09:55:10,476 - brand_widget - ERROR - [brand_widget.py:253] - load_brands - Error loading brands: 'GlobalColor' object has no attribute 'name'
+2025-03-31 09:55:10,787 - parts_navigation - ERROR - [main_container.py:363] - load_initial_data - Error loading initial data: wrapped C/C++ object of type QLabel has been deleted
+2025-03-31 09:55:45,326 - brand_widget - ERROR - [brand_widget.py:253] - load_brands - Error loading brands: 'GlobalColor' object has no attribute 'name'
+2025-03-31 09:55:45,655 - parts_navigation - ERROR - [main_container.py:363] - load_initial_data - Error loading initial data: wrapped C/C++ object of type QLabel has been deleted
+2025-03-31 09:56:01,521 - parts_navigation - ERROR - [main_container.py:363] - load_initial_data - Error loading initial data: wrapped C/C++ object of type QLabel has been deleted
+2025-03-31 10:33:14,794 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: 'ProductsWidget' object has no attribute 'product_cards'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 71, in preload_views
+    self.parts_navigation_widget = PartsNavigationContainer(self.translator,
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 113, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 159, in setup_ui
+    self.create_step_widgets()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 269, in create_step_widgets
+    self.products_widget = ProductsWidget(self.translator, self.db)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\products_widget.py", line 213, in __init__
+    super().__init__(translator, db, parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\base_step_widget.py", line 26, in __init__
+    self.apply_theme()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\products_widget.py", line 274, in apply_theme
+    for card in self.product_cards:
+AttributeError: 'ProductsWidget' object has no attribute 'product_cards'
+2025-03-31 10:34:21,798 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: 'ProductsWidget' object has no attribute 'product_cards'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 71, in preload_views
+    self.parts_navigation_widget = PartsNavigationContainer(self.translator,
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 113, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 159, in setup_ui
+    self.create_step_widgets()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 269, in create_step_widgets
+    self.products_widget = ProductsWidget(self.translator, self.db)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\products_widget.py", line 213, in __init__
+    super().__init__(translator, db, parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\base_step_widget.py", line 26, in __init__
+    self.apply_theme()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\products_widget.py", line 274, in apply_theme
+    for card in self.product_cards:
+AttributeError: 'ProductsWidget' object has no attribute 'product_cards'
+2025-03-31 10:36:17,305 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'QWidget' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 71, in preload_views
+    self.parts_navigation_widget = PartsNavigationContainer(self.translator,
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 113, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 159, in setup_ui
+    self.create_step_widgets()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 274, in create_step_widgets
+    self.details_widget = DetailsWidget(self.translator, self.db)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\details_widget.py", line 28, in __init__
+    super().__init__(translator, db, parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\base_step_widget.py", line 25, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\details_widget.py", line 68, in setup_ui
+    quality_container = QWidget()
+NameError: name 'QWidget' is not defined
+2025-03-31 10:36:58,451 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'QWidget' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 71, in preload_views
+    self.parts_navigation_widget = PartsNavigationContainer(self.translator,
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 113, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 159, in setup_ui
+    self.create_step_widgets()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\main_container.py", line 279, in create_step_widgets
+    self.final_widget = FinalWidget(self.translator, self.db)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\final_widget.py", line 27, in __init__
+    super().__init__(translator, db, parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\base_step_widget.py", line 25, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\parts_navigation\final_widget.py", line 138, in setup_ui
+    details_widget = QWidget()
+NameError: name 'QWidget' is not defined
+2025-03-31 11:32:34,457 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: t() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 37, in __init__
+    ui_components = self.ui_handler.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 168, in setup_ui
+    self.product_table = ProductsTable(self.translator, self.widget) # Pass widget as parent
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_table.py", line 87, in __init__
+    self.empty_label = QLabel(self.translator.t('no_products_found', "No products found."), self.table) # Child of table
+TypeError: t() takes 2 positional arguments but 3 were given
+2025-03-31 11:33:03,334 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: t() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 37, in __init__
+    ui_components = self.ui_handler.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 168, in setup_ui
+    self.product_table = ProductsTable(self.translator, self.widget) # Pass widget as parent
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_table.py", line 87, in __init__
+    self.empty_label = QLabel(self.translator.t('no_products_found', "No products found."), self.table) # Child of table
+TypeError: t() takes 2 positional arguments but 3 were given
+2025-03-31 19:46:04,249 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: t() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 44, in __init__
+    ui_components = self.ui_handler.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 71, in setup_ui
+    header_panel = self._create_header_panel()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 151, in _create_header_panel
+    subtitle_label = QLabel(self.translator.t('products_subtitle', 'Manage your inventory'))
+TypeError: t() takes 2 positional arguments but 3 were given
+2025-03-31 20:12:34,068 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: __init__() got an unexpected keyword argument 'parent'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+TypeError: __init__() got an unexpected keyword argument 'parent'
+2025-03-31 20:52:14,701 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: __init__() got an unexpected keyword argument 'parent'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+TypeError: __init__() got an unexpected keyword argument 'parent'
+2025-03-31 22:53:56,294 - database.car_parts_db - ERROR - [car_parts_db.py:439] - update_part - Error updating part 2890: Transaction already in progress
+2025-03-31 23:18:46,613 - database.car_parts_db - ERROR - [car_parts_db.py:439] - update_part - Error updating part 2890: Transaction already in progress
+2025-03-31 23:42:21,975 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: setItemDelegateForColumn(self, column: int, delegate: Optional[QAbstractItemDelegate]): argument 2 has unexpected type 'ThemedItemDelegate'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 48, in __init__
+    self.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui.py", line 66, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 47, in __init__
+    self._setup_components()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 82, in _setup_components
+    self.product_table = ProductsTable(self.translator, self)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_table.py", line 80, in __init__
+    self._setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_table.py", line 136, in _setup_ui
+    self.table.setItemDelegateForColumn(self.COL_CATEGORY, self.item_delegate)
+TypeError: setItemDelegateForColumn(self, column: int, delegate: Optional[QAbstractItemDelegate]): argument 2 has unexpected type 'ThemedItemDelegate'
+2025-04-01 00:27:47,899 - database.car_parts_db - ERROR - [car_parts_db.py:439] - update_part - Error updating part 2892: Transaction already in progress

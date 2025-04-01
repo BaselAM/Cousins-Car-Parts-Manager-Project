@@ -1,24 +1,78 @@
+# ============== Force UTF-8 console encoding ==============
 import sys
+import io
 import logging
+
+# Force Windows console to use UTF-8
+if sys.platform == 'win32':
+    import ctypes
+
+    # Try to set console code page to UTF-8
+    try:
+        ctypes.windll.kernel32.SetConsoleOutputCP(65001)  # 65001 is the code page for UTF-8
+        ctypes.windll.kernel32.SetConsoleCP(65001)
+    except Exception as e:
+        print(f"Warning: Failed to set console to UTF-8: {e}")
+
+    # Reconfigure stdout and stderr to use UTF-8
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='backslashreplace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='backslashreplace')
+
+# Monkey patch the Python logging StreamHandler to handle UTF-8 properly
+original_emit = logging.StreamHandler.emit
+
+
+def utf8_emit(self, record):
+    try:
+        msg = self.format(record)
+        stream = self.stream
+
+        # Try to write with UTF-8 encoding
+        try:
+            stream.write(msg + self.terminator)
+            self.flush()
+        except UnicodeEncodeError:
+            # If encoding fails, write directly to the buffer with UTF-8 encoding
+            if hasattr(stream, 'buffer'):
+                stream.buffer.write((msg + self.terminator).encode('utf-8'))
+                self.flush()
+            else:
+                # Fallback - replace characters that can't be encoded
+                stream.write(msg.encode('utf-8', 'replace').decode('utf-8') + self.terminator)
+                self.flush()
+    except Exception:
+        self.handleError(record)
+
+
+# Replace the original emit method with our UTF-8 aware version
+logging.StreamHandler.emit = utf8_emit
+# =========================================================
+
+# Now import the custom logging system
+from logger import initialize_logging, get_logger
+
+# Initialize logging with desired settings (do this ONCE at program start)
+initialize_logging(level="INFO")
+
+# Then get the logger for main
+logger = get_logger(__name__)
+
+# Standard imports
 from datetime import datetime
-from shared_imports import *
-from widgets.splash import SplashScreen
-from gui import GUI
-from database.car_parts_db import CarPartsDB
-from widgets.login.login_widget import LoginWidget
+from pathlib import Path
+
+# PyQt imports
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('app.log')
-    ]
-)
-logger = logging.getLogger('main')
+# App-specific imports
+from config import RESOURCE_DIR
+from widgets.splash import SplashScreen
+from gui import GUI
+from widgets.login.login_widget import LoginWidget
+
+# Import the translator function
+from translations import get_translator
 
 # Global variables to hold references
 login_widget = None
@@ -71,13 +125,13 @@ if __name__ == "__main__":
 
     try:
         # Validate resources
-        for fname in ["resources/intro.jpg", "resources/car-icon.jpg",
-                      "resources/search_icon.png"]:
-            if not (SCRIPT_DIR / fname).exists():
-                raise FileNotFoundError(f"Missing file: {SCRIPT_DIR / fname}")
+        for fname in ["intro.jpg", "car-icon.jpg", "search_icon.png"]:
+            resource_path = RESOURCE_DIR / fname
+            if not resource_path.exists():
+                raise FileNotFoundError(f"Missing file: {resource_path}")
 
         # Create resources folder and icons if they don't exist
-        resources_dir = SCRIPT_DIR / "resources"
+        resources_dir = RESOURCE_DIR
         if not resources_dir.exists():
             resources_dir.mkdir(exist_ok=True)
             logger.info("Created resources directory")
@@ -95,8 +149,14 @@ if __name__ == "__main__":
             if not (resources_dir / icon).exists():
                 logger.warning(f"Missing icon file: {icon}")
 
+        # Import database here to avoid circular imports
+        from database.car_parts_db import CarPartsDB
+
         # Initialize database once and share the instance
         db_instance = create_db_instance()
+
+        # Initialize a translator with default language 'en'
+        translator = get_translator('en')
 
         # Show splash screen
         splash = SplashScreen()
@@ -106,9 +166,10 @@ if __name__ == "__main__":
         main_gui = GUI(car_parts_db=db_instance)
         main_gui.hide()
 
-        # Create the login widget
-        login_widget = LoginWidget()
+        # Create the login widget with the translator
+        login_widget = LoginWidget(translator=translator)
         login_widget.hide()  # start hidden
+
 
         # When login is successful, close the login widget and show the main GUI
         def on_login(username):
@@ -117,14 +178,17 @@ if __name__ == "__main__":
             main_gui.set_current_user(username)
             main_gui.show()
 
+
         # Suppress linter warning for unresolved attribute reference on the signal
         # noinspection PyUnresolvedReferences
         login_widget.login_successful.connect(on_login)
+
 
         # After the splash, show the login widget
         def show_login():
             splash.close()
             login_widget.show()
+
 
         QTimer.singleShot(2000, show_login)
 

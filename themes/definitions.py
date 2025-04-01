@@ -26,7 +26,8 @@ THEMES = {
         "divider": "#2C5282",
         "accent": "#805AD5",
         "overlay": "#0F2942DD",
-        "title": "#E2E8F0"
+        "title": "#E2E8F0",
+
     },
     "dark": {
         "primary": "#121212",
@@ -52,7 +53,10 @@ THEMES = {
         "divider": "#2D3748",
         "accent": "#9F7AEA",
         "overlay": "#000000E6",
-        "title": "#F7FAFC"
+        "title": "#F7FAFC",
+"highlight_text": "#FFFFFF",
+"secondary_text": "#A0AEC0"
+
     },
     "light": {
         "primary": "#FFFFFF",

@@ -1,78 +1,126 @@
 {
-  "parts_button": {
+  "select_product": {
+    "en": "Select Product",
+    "he": "בחר מוצר"
+  },
+  "search_products_placeholder": {
+    "en": "Search products by name, brand or category...",
+    "he": "חפש מוצרים לפי שם, מותג או קטגוריה..."
+  },
+  "select_product_help": {
+    "en": "Select a product from the list",
+    "he": "בחר מוצר מהרשימה"
+  },
+  "select_details": {
+    "en": "Product Details Selection",
+    "he": "בחירת פרטי מוצר"
+  },
+  "manufacturer": {
+    "en": "Manufacturer",
+    "he": "יצרן"
+  },
+  "material": {
+    "en": "Material",
+    "he": "חומר"
+  },
+  "quality": {
+    "en": "Quality",
+    "he": "איכות"
+  },
+  "quality_standard": {
+    "en": "Standard",
+    "he": "סטנדרטי"
+  },
+  "quality_premium": {
+    "en": "Premium",
+    "he": "פרימיום"
+  },
+  "quality_oem": {
+    "en": "OEM",
+    "he": "מקורי"
+  },
+  "comments": {
+    "en": "Comments",
+    "he": "הערות"
+  },
+  "comments_placeholder": {
+    "en": "Add any specific requirements or notes here...",
+    "he": "הוסף דרישות או הערות ספציפיות כאן..."
+  },
+  "continue_button": {
+    "en": "Continue",
+    "he": "המשך"
+  },
+  "select_details_help": {
+    "en": "Specify additional details about the product",
+    "he": "ציין פרטים נוספים על המוצר"
+  },
+  "part_details": {
+    "en": "Part Details",
+    "he": "פרטי חלק"
+  },
+  "no_image": {
+    "en": "No image available",
+    "he": "אין תמונה זמינה"
+  },
+  "part_name": {
+    "en": "Part Name",
+    "he": "שם החלק"
+  },
+  "car_info": {
+    "en": "Car Information",
+    "he": "מידע על הרכב"
+  },
+  "back_button": {
+    "en": "Back",
+    "he": "חזור"
+  },
+  "add_to_cart": {
+    "en": "Add to Cart",
+    "he": "הוסף לסל"
+  },
+  "print_details": {
+    "en": "Print Details",
+    "he": "הדפס פרטים"
+  },
+  "cars_step": {
+    "en": "Select Car",
+    "he": "בחר רכב"
+  },
+  "products_step": {
+    "en": "Select Product",
+    "he": "בחר מוצר"
+  },
+  "details_step": {
+    "en": "Product Details",
+    "he": "פרטי מוצר"
+  },
+  "final_step": {
+    "en": "Confirmation",
+    "he": "אישור"
+  },
+  "search_submit_tooltip": {
+    "en": "Search",
+    "he": "חיפוש"
+  },
+  "suggestion_parts": {
     "en": "Parts",
     "he": "חלקים"
   },
-  "web_search_button": {
-    "en": "Web Search",
-    "he": "חיפוש באינטרנט"
+  "suggestion_service": {
+    "en": "Service",
+    "he": "שירות"
   },
-  "products_button": {
-    "en": "Products Table",
-    "he": "טבלת חלקים"
+  "suggestion_repair": {
+    "en": "Repair",
+    "he": "תיקון"
   },
-  "statistics_button": {
-    "en": "Statistics",
-    "he": "סטטיסטיקה"
+  "suggestion_brands": {
+    "en": "Brands",
+    "he": "מותגים"
   },
-  "settings_button": {
-    "en": "Settings",
-    "he": "הגדרות"
-  },
-  "help_button": {
-    "en": "Help",
-    "he": "עזרה"
-  },
-  "exit_button": {
-    "en": "Exit",
-    "he": "יציאה"
-  },
-  "refresh_statistics": {
-    "en": "Refresh Statistics",
-    "he": "רענן סטטיסטיקות"
-  },
-  "products_list_button": {
-    "en": "Products List",
-    "he": "רשימת חלקים"
-  },
-  "select_button": {
-    "en": "Select",
-    "he": "בחר"
-  },
-  "remove": {
-    "en": "Remove",
-    "he": "מחק"
-  },
-  "filter_button": {
-    "en": "Filter",
-    "he": "סינון"
-  },
-  "apply_filter": {
-    "en": "Apply Filter",
-    "he": "החל סינון"
-  },
-  "add_product": {
-    "en": "Add Product",
-    "he": "הוסף חלק"
-  },
-  "clear_all": {
-    "en": "Clear All",
-    "he": "נקה הכל"
-  },
-  "export": {
-    "en": "Export",
-    "he": "ייצוא"
-  },
-  "refresh": {
-    "en": "Refresh",
-    "he": "רענון"
-  },
-  "yes_btn": {
-    "en": "Yes, delete {count}",
-    "he": "כן, מחק {count}"
-  },
-  "no_btn": {
-    "en": "No",
-    "he": "לא"
+  "suggestion_inventory": {
+    "en": "Inventory",
+    "he": "מלאי"
   }
 }

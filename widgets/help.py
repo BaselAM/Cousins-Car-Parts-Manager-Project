@@ -5,8 +5,8 @@ from themes import get_color  # Import for theming
 
 
 class HelpWidget(QWidget):
-    def __init__(self, translator):
-        super().__init__()
+    def __init__(self, translator,parent=None):
+        super().__init__(parent)
         self.setObjectName("helpContainer")  # Added for CSS styling
         self.translator = translator
         self.setup_ui()

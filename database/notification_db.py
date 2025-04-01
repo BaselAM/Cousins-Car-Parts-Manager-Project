@@ -2,22 +2,22 @@ import sqlite3
 from datetime import datetime, timedelta
 import os
 from pathlib import Path
-
+from config import DATABASE_DIR
 
 class NotificationDatabaseConnector:
     """Connector for handling notification database operations"""
 
     def __init__(self, db_path=None):
         """Initialize the database connector with optional custom path"""
+
         if db_path is None:
-            # Default path in the application directory
-            app_dir = Path(__file__).resolve().parent.parent
-            db_path = os.path.join(app_dir, 'data', 'notifications.db')
+            # Default path from config
+            db_path = DATABASE_DIR / 'notifications.db'
 
             # Ensure data directory exists
-            os.makedirs(os.path.dirname(db_path), exist_ok=True)
+            db_path.parent.mkdir(exist_ok=True)
 
-        self.db_path = db_path
+        self.db_path = str(db_path)  # Convert to string for sqlite3
         self._create_tables_if_not_exist()
 
     def _create_tables_if_not_exist(self):

@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-
-
+import mysql.connector  # Add this import
 
 
 class DatabaseWorker(QThread):
@@ -14,19 +13,28 @@ class DatabaseWorker(QThread):
         self.kwargs = kwargs
 
     def run(self):
+        """Run the worker thread"""
         try:
-            # Each worker thread will get its own database connection
+            # Ensure we have a connection for this thread
+            self.db.ensure_connection()
+
             if self.operation == "load":
-                # Get all parts using the thread-local connection
-                result = self.db.get_all_parts()
-                self.finished.emit(result)
-            elif self.operation == "delete":
-                # Delete using thread-local connection
-                part_id = self.kwargs.get('part_id')
-                success = self.db.delete_part(part_id)
-                self.finished.emit(success)
+                # Get all products
+                products = self.db.get_all_parts()
+                self.finished.emit(products)
             # Add other operations as needed
+
         except Exception as e:
+            # Log the error
+            print(f"MySQL error in worker thread: {str(e)}")
             import traceback
-            self.error.emit(f"Database worker error: {str(e)}")
-            print(f"Worker thread error: {traceback.format_exc()}")
+            error_details = traceback.format_exc()
+            print(f"Worker thread error details: {error_details}")
+            self.error.emit(f"Database error: {str(e)}")
+        finally:
+            # Always clean up the connection when done
+            try:
+                if hasattr(self.db, 'close_connection'):
+                    self.db.close_connection()
+            except:
+                pass

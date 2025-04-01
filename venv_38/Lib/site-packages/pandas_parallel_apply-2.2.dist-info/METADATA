@@ -1,0 +1,110 @@
+Metadata-Version: 2.1
+Name: pandas-parallel-apply
+Version: 2.2
+Summary: Wrapper for df and df[col].apply parallelized
+Home-page: https://gitlab.com/meehai/pandas-parallel-apply
+License: WTFPL
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: tqdm (>=4.65.0)
+Requires-Dist: pandas (>=1.5.3)
+Requires-Dist: numpy (>=1.23.5)
+Requires-Dist: colorama (==0.4.6)
+
+# pandas-parallel-apply
+
+<div align="center">
+  <a href="https://gitlab.com/meehai/pandas-parallel-apply/-/blob/main/LICENSE">
+    <img src="https://img.shields.io/gitlab/license/meehai/pandas-parallel-apply" alt="License"/>
+  </a>
+  <a href="https://pypi.org/project/pandas-parallel-apply/">
+    <img src="https://img.shields.io/pypi/v/pandas-parallel-apply" alt="PyPi Latest Release"/>
+  </a>
+</div>
+
+Parallel wrappers for `df.apply(fn)`, `df[col].apply(fn)`, `series.apply(fn)`, and `df.groupby([cols]).apply(fn)`, with tqdm progress bars included.
+
+## Installation
+
+`pip install pandas-parallel-apply`
+
+Import with:
+```python
+from pandas_parallel_apply import DataFrameParallel, SeriesParallel
+```
+
+## Examples
+See `examples/` for usage on some dummy dataframes and series.
+
+## Usage
+
+```python
+# Apply on each row of a dataframe
+df.apply(fn)
+# ->
+DataFrameParallel(df, n_cores: int = None, pbar: bool = True).apply(fn)
+
+# Apply on a column of a dataframe (returns a Series)
+df[col].apply(fn, axis=1)
+# ->
+DataFrameParallel(df, n_cores: int = None, pbar: bool = True)[col].apply(fn, axis=1)
+
+# Apply on a series
+series.apply(fn)
+# -> 
+SeriesParallel(series, n_cores: int = None, pbar: bool = True).apply(fn)
+
+# GroupBy apply
+df.groupby([cols]).apply(fn)
+# ->
+DataFrameParallel(df, n_cores: int = None, pbar: bool = True).groupby([cols]).apply(fn)
+```
+
+## How it works
+
+It takes the length of your dataframe (or series, or grouper) = N and the `n_cores` provided to the constructors (K).
+It then splits the dataframe in K chunks of N/K size and spawns K new processes, each processing the desired chunks.
+
+Only row-wise (perfect parallelable) operations are supported, so `df.apply(fn, axis=1)` is okay, but
+`df.apply(fn, axis=0)` is not because it may require rows that are on other workers.
+
+It is assumed that each row is processed in similar time, so the N/K chunks will finishe more or less at the same time.
+
+### Future Improvement
+
+Not supported but may be interesting: define also a number of chunks (C>K), so the df is actually split in N/C chunks,
+and theses are passed using a round-robin approach to the K processes. Right now, C=K, so whenever one process
+finishes, it will not be assigned any more work.
+
+## n_cores semantics
+- `n_cores < -1` -> throws an error
+- `n_cores == -1` -> uses `cpu_count()` - 1 cores
+- `n_cores == 0` -> uses serial/standard pandas functions
+- `n_cores == 1` -> spawns a single process alongside the main one
+- `n_cores > 1` -> spanws N processes and chunks the df
+- `n_cores > cpu_cpunt()` -> throws an warning
+- `n_cores > len(df)` -> limits to `len(df)`
+
+On CPU-bound tasks (calculations), `n_cores = -1` is likely to be fastest. On network-bound operations (e.g., where
+threads may invoke network calls), using a very high `n_cores` value may be beneficial.
+
+## Disclaimers
+
+- This is an experimental repository. It may lead to unexpected behaviour.
+
+- Not all the merging semantics of pandas are supported. Pandas has weird and complex methods of converting an apply
+return. For example, a series apply function may return a dataframe, a series, a dict, a list, etc. All of these are
+converted in some specific way. Some cases may not be supported.
+
+- Groupby apply functions are **much** slower than their serial variant currently. Still experimenting with how to make
+it faster. It looks correct, just 10-100x slower for some small examples. May be better as dataframe get bigger.
+
+- Using `n_cores = 1` will create a multiprocessing pool of just 1 core, so the code is parallel (thus not running on
+the main process), but may not yield much speed improvement, except for not blocking the main process. May be useful
+in some GUI apps.
+
+- You can use `parallelism=multithread` of `parallelism=multiprocess` (2nd is default) for all constructors. Using
+multiprocess requires the functions to be picklable though (lambda for example, must be global)
+
+That's all.

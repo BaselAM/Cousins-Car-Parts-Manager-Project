@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: mttf
+Version: 1.0.4
+Summary: A package to detect and monkey-patch TensorFlow, for Minh-Tri Pham
+Home-page: https://github.com/inteplus/mttf
+Author: ['Minh-Tri Pham']
+Project-URL: Documentation, https://mtdoc.readthedocs.io/en/latest/mt.tf/mt.tf.html
+Project-URL: Source Code, https://github.com/inteplus/mttf
+License-File: LICENSE
+Requires-Dist: mtbase>=4.26
+Requires-Dist: mtnet>=0.2

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QFrame, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
 from PyQt5.QtGui import QPixmap, QFont, QColor
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, pyqtSignal, QParallelAnimationGroup
 
 
 class StatusBar(QFrame):
@@ -13,6 +13,8 @@ class StatusBar(QFrame):
       - "loaded": for loaded products messages (white text)
       - "select": for select mode (blue text)
     """
+    # Add state_changed signal
+    state_changed = pyqtSignal(bool)  # True when expanded, False when collapsed
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -22,24 +24,63 @@ class StatusBar(QFrame):
         self.auto_hide_timer.timeout.connect(self.collapse)
         self.collapsed_height = 20  # Slim height when idle
         self.expanded_height = 60  # Expanded height to display messages
-        self.animation_duration = 300  # Animation duration (ms)
-        self.animation = QPropertyAnimation(self, b"maximumHeight")
-        self.animation.setDuration(self.animation_duration)
-        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+        self.animation_duration = 200  # Animation duration (ms) - REDUCED for smoother feel
         self.theme = {}  # To be set via set_theme()
+
+        # Add state tracking
+        self.is_expanded = False
+        self.is_animating = False
+
+        # Configure animations for smoother transitions
+        self.setup_animations()
+
+        # Create message durations for different types
+        self.message_durations = {
+            "success": 2500,  # 2.5 seconds for success messages
+            "error": 8000,  # 8 seconds for errors
+            "warning": 5000,  # 5 seconds for warnings
+            "info": 4000,  # 4 seconds for info messages
+            "loaded": 2500,  # 2.5 seconds for loaded messages
+            "select": 1500  # 1.5 seconds for selection mode messages
+        }
 
         self.setup_ui()
         self.setObjectName("statusBar")
         self.setMinimumHeight(self.collapsed_height)
         self.setMaximumHeight(self.collapsed_height)
 
-        # Add a premium drop shadow for a floating effect
+        # Add a premium drop shadow for a floating effect - IMPROVED for better performance
         shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(25)
+        shadow.setBlurRadius(15)  # Reduced blur radius for better performance
         shadow.setXOffset(0)
-        shadow.setYOffset(4)
-        shadow.setColor(QColor(0, 0, 0, 100))
+        shadow.setYOffset(3)
+        shadow.setColor(QColor(0, 0, 0, 80))  # Reduced opacity for better performance
         self.setGraphicsEffect(shadow)
+
+    def setup_animations(self):
+        """Set up smoother animations with improved performance"""
+        # Height animation with optimized easing curve
+        self.height_animation = QPropertyAnimation(self, b"maximumHeight")
+        self.height_animation.setDuration(self.animation_duration)
+        self.height_animation.setEasingCurve(QEasingCurve.OutQuad)  # Smoother curve
+
+        # Opacity animation for fade effects (optional, not used yet)
+        self.opacity_animation = QPropertyAnimation(self, b"windowOpacity")
+        self.opacity_animation.setDuration(self.animation_duration)
+        self.opacity_animation.setEasingCurve(QEasingCurve.OutQuad)
+
+        # Animation group for coordinated animations
+        self.animation_group = QParallelAnimationGroup()
+        self.animation_group.addAnimation(self.height_animation)
+
+        # Connect finished signal to handle state after animation
+        self.animation_group.finished.connect(self._handle_animation_finished)
+
+    def _handle_animation_finished(self):
+        """Handle state after animation finishes"""
+        self.is_animating = False
+        if not self.is_expanded:
+            self._clear_message()
 
     def setup_ui(self):
         # Use a styled panel so the frame is rendered
@@ -152,15 +193,43 @@ class StatusBar(QFrame):
             }}
         """
 
-    def show_message(self, message, type="info", duration=10000):
+    def show_message(self, message, type="info", duration=None):
         """
         Expands the status bar to show a message with an icon,
         applies the premium style based on the message type,
         then auto-collapses after `duration` milliseconds.
+
+        If duration is None, will use type-specific duration.
         """
+        # Skip showing messages for selection deactivation
+        # This fixes the unwanted "Selection mode deactivated" message
+        if message and (
+                "selection mode deactivate" in message.lower() or
+                "selection disabled" in message.lower() or
+                "selection mode off" in message.lower()
+        ):
+            self.collapse()
+            return
+
+        # Use type-specific duration if none provided
+        if duration is None:
+            duration = self.message_durations.get(type, 5000)
+
+        # Cancel existing auto-hide timer
         if self.auto_hide_timer.isActive():
             self.auto_hide_timer.stop()
+
         self.current_type = type
+
+        # If we're already animating, stop current animation
+        if self.is_animating:
+            self.animation_group.stop()
+
+        # Update state and emit signal
+        was_expanded = self.is_expanded
+        self.is_expanded = True
+        if not was_expanded:
+            self.state_changed.emit(True)
 
         # Set the icon based on message type
         icon_map = {
@@ -179,7 +248,7 @@ class StatusBar(QFrame):
         except Exception:
             self.status_icon.setText("")
 
-        # If the message contains untranslated placeholders, don't crash
+        # Handle message with placeholder protection
         safe_message = message
         try:
             # Check if it's a formatting string with {placeholders}
@@ -197,11 +266,12 @@ class StatusBar(QFrame):
         self.status_text.setText(safe_message)
         self.setStyleSheet(self._get_premium_style(type))
 
-        # Animate expansion to show the message
-        self.animation.stop()
-        self.animation.setStartValue(self.height())
-        self.animation.setEndValue(self.expanded_height)
-        self.animation.start()
+        # Execute smooth expansion animation
+        self.height_animation.setStartValue(self.height())
+        self.height_animation.setEndValue(self.expanded_height)
+
+        self.is_animating = True
+        self.animation_group.start()
 
         # Start auto-collapse timer
         self.auto_hide_timer.start(duration)
@@ -210,13 +280,31 @@ class StatusBar(QFrame):
         """
         Animate the collapse back to the slim state and clear the message.
         """
-        self.animation.stop()
-        self.animation.setStartValue(self.height())
-        self.animation.setEndValue(self.collapsed_height)
-        self.animation.start()
-        QTimer.singleShot(self.animation_duration, self._clear_message)
+        # Don't do anything if we're already collapsed or collapsing
+        if not self.is_expanded or (self.is_animating and self.height() < self.expanded_height):
+            return
+
+        # Cancel auto-hide timer
+        if self.auto_hide_timer.isActive():
+            self.auto_hide_timer.stop()
+
+        # If we're already animating, stop current animation
+        if self.is_animating:
+            self.animation_group.stop()
+
+        # Update state
+        self.is_expanded = False
+        self.state_changed.emit(False)
+
+        # Execute smooth collapse animation
+        self.height_animation.setStartValue(self.height())
+        self.height_animation.setEndValue(self.collapsed_height)
+
+        self.is_animating = True
+        self.animation_group.start()
 
     def _clear_message(self):
+        """Clear message text and icon after collapse animation completes"""
         self.status_text.setText("")
         self.status_icon.clear()
 
@@ -231,8 +319,8 @@ class StatusBar(QFrame):
 
     def show_sequential_messages(self, first_message, second_message,
                                  first_type="success",
-                                 second_type="info", first_duration=3000,
-                                 second_duration=5000):
+                                 second_type="info", first_duration=None,
+                                 second_duration=None):
         """
         Shows a sequence of two messages:
         1. First message (typically a success message) for first_duration milliseconds
@@ -240,31 +328,61 @@ class StatusBar(QFrame):
         3. Then collapses the status bar
 
         This creates a smooth flow of information for the user after operations.
-        """
-        print(f"StatusBar: Showing first message: '{first_message}' (type: {first_type})")
 
-        # Cancel any previous timers to prevent message conflicts
+        If durations are None, will use type-specific durations.
+        """
+        # Skip showing messages for selection deactivation
+        if first_message and any(txt in first_message.lower() for txt in [
+            "selection mode deactivate", "selection disabled", "selection mode off"
+        ]):
+            # If first message should be skipped but second message exists,
+            # just show the second message
+            if second_message and not any(txt in second_message.lower() for txt in [
+                "selection mode deactivate", "selection disabled", "selection mode off"
+            ]):
+                self.show_message(second_message, second_type, second_duration)
+            else:
+                self.collapse()
+            return
+
+        # Use type-specific durations if none provided
+        if first_duration is None:
+            first_duration = self.message_durations.get(first_type, 2500)
+        if second_duration is None:
+            second_duration = self.message_durations.get(second_type, 4000)
+
+        # Cancel any previous timers
         if self.auto_hide_timer.isActive():
             self.auto_hide_timer.stop()
 
         # Make sure any pending message updates are cancelled
         for timer in self.findChildren(QTimer):
-            if timer != self.auto_hide_timer:
+            if timer != self.auto_hide_timer and timer.isSingleShot():
                 timer.stop()
 
         # Show the first message immediately
-        self.show_message(first_message, first_type,
-                          first_duration + 500)  # Add buffer to prevent early switching
+        self.show_message(first_message, first_type, first_duration + 100)
 
-        # Create a dedicated timer for the second message to avoid conflicts
+        # Skip second message if it's empty or a deactivation message
+        if not second_message or any(txt in second_message.lower() for txt in [
+            "selection mode deactivate", "selection disabled", "selection mode off"
+        ]):
+            return
+
+        # Schedule the second message with a dedicated timer
         second_msg_timer = QTimer(self)
         second_msg_timer.setSingleShot(True)
         second_msg_timer.timeout.connect(
-            lambda: self._show_second_message(second_message, second_type,
-                                              second_duration))
+            lambda: self._show_second_message(second_message, second_type, second_duration))
         second_msg_timer.start(first_duration)
 
     def _show_second_message(self, message, type, duration):
         """Helper method to show the second message in the sequence."""
-        print(f"StatusBar: Showing second message: '{message}' (type: {type})")
+        # Skip if deactivation message
+        if message and any(txt in message.lower() for txt in [
+            "selection mode deactivate", "selection disabled", "selection mode off"
+        ]):
+            self.collapse()
+            return
+
         self.show_message(message, type, duration)

@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: mtglm
+Version: 0.2.0
+Summary: Minh-Tri Pham's extra modules for dealing with GLM in Python
+Author: ['Minh-Tri Pham']
+License-File: LICENSE
+Requires-Dist: pyglm
+
