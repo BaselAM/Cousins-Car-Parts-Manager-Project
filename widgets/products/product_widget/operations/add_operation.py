@@ -102,11 +102,7 @@ class AddOperation:
             # Handle dialog cancellation/rejection
             print("Add Product Dialog Rejected/Cancelled.")
             if self.status_bar:
-                # *** CORRECTED USAGE ***
-                # 1. Translate the message text first
-                message_text = self.translator.t('operation_cancelled')
-                # 2. Call show_message with text, type ('info'), and duration (3000)
-                self.status_bar.show_message(message_text, "info", 3000)
+               pass
 
     def process_add_product(self, data):
         """

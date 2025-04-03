@@ -186,3 +186,138 @@ Traceback (most recent call last):
     self.table.setItemDelegateForColumn(self.COL_CATEGORY, self.item_delegate)
 TypeError: setItemDelegateForColumn(self, column: int, delegate: Optional[QAbstractItemDelegate]): argument 2 has unexpected type 'ThemedItemDelegate'
 2025-04-01 00:27:47,899 - database.car_parts_db - ERROR - [car_parts_db.py:439] - update_part - Error updating part 2892: Transaction already in progress
+2025-04-01 04:26:10,909 - parts_navigation.container - ERROR - [main_container.py:323] - create_step_widgets - Error creating step widgets: 'ProductsWidget' object has no attribute 'product_cards'
+2025-04-01 04:28:10,788 - parts_navigation.container - ERROR - [main_container.py:323] - create_step_widgets - Error creating step widgets: 'ProductsWidget' object has no attribute 'product_cards'
+2025-04-02 04:40:18,804 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: QWidget(parent: Optional[QWidget] = None, flags: Union[Qt.WindowFlags, Qt.WindowType] = Qt.WindowFlags()): argument 1 has unexpected type 'Translator'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 86, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 46, in setup_ui
+    self.home_page = self.view_manager.create_home_page(navigation_functions)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\view_manager.py", line 65, in create_home_page
+    self.home_page = HomePageWidget(self.translator, navigation_functions, parent=self.parent)
+TypeError: QWidget(parent: Optional[QWidget] = None, flags: Union[Qt.WindowFlags, Qt.WindowType] = Qt.WindowFlags()): argument 1 has unexpected type 'Translator'
+2025-04-02 05:17:22,863 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 05:17:27,584 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 05:17:36,794 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 05:17:52,211 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 09:14:15,483 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'color' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 86, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 46, in setup_ui
+    self.home_page = self.view_manager.create_home_page(navigation_functions)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\view_manager.py", line 65, in create_home_page
+    self.home_page = HomePageWidget(self.translator, navigation_functions, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\home_page.py", line 91, in __init__
+    self.apply_theme()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\home_page.py", line 425, in apply_theme
+    #appGridContainer {{
+NameError: name 'color' is not defined
+2025-04-02 10:09:09,211 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'ModernSearchWidget' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 89, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 48, in setup_ui
+    self.top_bar = TopBarWidget(self.translator, self.parts_db, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 56, in __init__
+    self._setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 103, in _setup_ui
+    self.search_widget = ModernSearchWidget(self.translator, self.database)
+NameError: name 'ModernSearchWidget' is not defined
+2025-04-02 10:48:24,375 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'QApplication' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 89, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 48, in setup_ui
+    self.top_bar = TopBarWidget(self.translator, self.parts_db, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 56, in __init__
+    self._setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 103, in _setup_ui
+    self.search_widget = ModernSearchWidget(self.translator, self.database)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\search_widget.py", line 155, in __init__
+    self.is_rtl = self._detect_rtl_setting(parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\search_widget.py", line 166, in _detect_rtl_setting
+    if QApplication.layoutDirection() == Qt.RightToLeft:
+NameError: name 'QApplication' is not defined
+2025-04-02 10:52:09,573 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 10:52:41,556 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-02 11:22:15,031 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: 'ExquisiteTitleLabel' object has no attribute 'setAlignment'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 89, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 47, in setup_ui
+    self.header = HeaderWidget(self.translator, self.parent.show_home, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\layout.py", line 178, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\layout.py", line 196, in setup_ui
+    self.title_label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)  # Align to top
+AttributeError: 'ExquisiteTitleLabel' object has no attribute 'setAlignment'
+2025-04-02 11:22:34,247 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: 'ExquisiteTitleLabel' object has no attribute 'setAlignment'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 89, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 47, in setup_ui
+    self.header = HeaderWidget(self.translator, self.parent.show_home, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\layout.py", line 178, in __init__
+    self.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\layout.py", line 196, in setup_ui
+    self.title_label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)  # Align to top
+AttributeError: 'ExquisiteTitleLabel' object has no attribute 'setAlignment'
+2025-04-03 05:31:44,010 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: 'NoneType' object has no attribute 'name'
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 80, in setup
+    self.view_manager.preload_views()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\view_manager.py", line 45, in preload_views
+    self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_class.py", line 57, in __init__
+    ui_components = self.ui_handler.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 274, in setup_ui
+    self.apply_theme()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\handlers\ui_handler.py", line 451, in apply_theme
+    box-shadow: 0 0 5px {QColor(highlight_color).lighter(150).setAlpha(100).name()};  /* Subtle glow effect */
+AttributeError: 'NoneType' object has no attribute 'name'
+2025-04-03 06:10:16,195 - __main__ - CRITICAL - [main.py:199] - <module> - Fatal error: name 'QTimer' is not defined
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\main.py", line 166, in <module>
+    main_gui = GUI(car_parts_db=db_instance)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 69, in __init__
+    self.setup()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\gui_main.py", line 89, in setup
+    self.ui_builder.setup_ui()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\gui\ui_builder.py", line 53, in setup_ui
+    self.footer = FooterWidget(self.translator, parent=self.parent)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\layout.py", line 267, in __init__
+    self.animation_timer = QTimer(self)
+NameError: name 'QTimer' is not defined
+2025-04-03 09:56:33,395 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-03 09:57:00,576 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-03 20:32:17,234 - gui.view_manager - ERROR - [view_manager.py:225] - show_parts - Error showing parts navigation: 'QParallelAnimationGroup' object has no attribute 'started'

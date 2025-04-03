@@ -581,27 +581,16 @@ class ProductsTable(QFrame):
 
     # --- Data Handling and Updates (Optimized) ---
 
-    def update_table_data(self, products: List[Union[Dict, Tuple]], view_state: Optional[Dict] = None):
-        """
-        Update table with data, preserving state and handling empty view.
-        Optimized for better performance and reduced flickering.
-        """
-        view_state = view_state or {}
-        is_empty = not products
-
-        # Handle empty state
-        self.empty_label.setVisible(is_empty)
-        if is_empty:
-            if self.table.rowCount() > 0:
-                self.table.setRowCount(0)
-            self._update_empty_label_geometry()
-            return True
-
-        # Prevent recursive updates
-        if self._is_updating_table:
+    def update_table_data(self, products):
+        """Update table efficiently without triggering edit events"""
+        # Already being updated - prevent recursion
+        if hasattr(self, '_is_updating_table') and self._is_updating_table:
             return False
 
         self._is_updating_table = True
+
+        # Check if signals are already blocked externally
+        externally_blocked = self.table.signalsBlocked()
 
         try:
             # Save current state
@@ -609,58 +598,60 @@ class ProductsTable(QFrame):
             selected_ids = self._save_selection()
             sort_settings = self._get_current_sort()
 
+            # Only block signals if not already blocked
+            if not externally_blocked:
+                self.table.blockSignals(True)
+
             # Batch update for better performance
             self.table.setUpdatesEnabled(False)
-            self.table.blockSignals(True)
             self.table.setSortingEnabled(False)
 
-            try:
-                # Efficient row management
-                current_row_count = self.table.rowCount()
-                needed_row_count = len(products)
+            # Handle empty state
+            if not products:
+                self.table.setRowCount(0)
+                self.empty_label.setVisible(True)
+                self._update_empty_label_geometry()
+                return True
 
-                if current_row_count < needed_row_count:
-                    # Add needed rows
-                    self.table.setRowCount(needed_row_count)
-                elif current_row_count > needed_row_count:
-                    # Remove excess rows but don't redraw yet
-                    self.table.setRowCount(needed_row_count)
+            # Hide empty label if we have products
+            self.empty_label.setVisible(False)
 
-                # Update data in all rows
-                for row, prod in enumerate(products):
-                    self._populate_row(row, prod)
+            # Rest of your existing update code...
+            current_row_count = self.table.rowCount()
+            needed_row_count = len(products)
+            self.table.setRowCount(needed_row_count)
 
-            finally:
-                # Always restore signals and updates
-                self.table.blockSignals(False)
-                self.table.setUpdatesEnabled(True)
+            # Update data in all rows
+            for row, prod in enumerate(products):
+                self._populate_row(row, prod)
 
-            # Sorting and selection restoration with a controlled sequence
-            # First restore sorting
+            # Re-enable features and restore state
+            self.table.setUpdatesEnabled(True)
             self.table.setSortingEnabled(True)
 
-            # Sequence the operations to reduce visual jumpiness
+            # Apply sort settings
             if sort_settings['column'] >= 0:
                 self.table.horizontalHeader().setSortIndicator(
-                    sort_settings['column'],
-                    sort_settings['order']
+                    sort_settings['column'], sort_settings['order']
                 )
 
-            # Restore scroll after a slight delay to let layout settle
+            # Restore scroll and selection after processing events
             QTimer.singleShot(10, lambda: self.table.verticalScrollBar().setValue(scroll_value))
-
-            # Restore selection after scroll is restored
             QTimer.singleShot(20, lambda ids=selected_ids: self._restore_selection(ids))
-
-            # Do a final column width adjustment after everything else
             QTimer.singleShot(50, self.adjust_column_widths)
 
             return True
 
         except Exception as e:
-            self._handle_error(e, "update_table_data")
+            print(f"Error updating table: {e}")
+            import traceback
+            print(traceback.format_exc())
             return False
+
         finally:
+            # Only unblock signals if we blocked them (not if they were blocked externally)
+            if not externally_blocked:
+                self.table.blockSignals(False)
             self._is_updating_table = False
 
     def update_single_product(self, product: Union[Dict, Tuple]) -> bool:
@@ -829,7 +820,7 @@ class ProductsTable(QFrame):
             price_item = self.table.item(row, self.COL_PRICE)
             if not price_item:
                 price_item = QTableWidgetItem(price_value)
-                price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                price_item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, self.COL_PRICE, price_item)
             else:
                 price_item.setText(price_value)

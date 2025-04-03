@@ -3,8 +3,9 @@ Products selection widget for the parts navigation system.
 The fifth step in the parts navigation hierarchy.
 """
 from PyQt5.QtWidgets import (QScrollArea, QVBoxLayout, QFrame, QHBoxLayout,
-                             QLabel, QGridLayout)
+                             QLabel, QGridLayout, QSizePolicy)
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QFont
 
 from .base_step_widget import BaseStepWidget
 from .ui_utils import SearchBox, InfoHeader
@@ -31,23 +32,37 @@ class ProductCard(QFrame):
         self.setObjectName("productCardSelected" if self.is_selected else "productCard")
         self.setCursor(Qt.PointingHandCursor)
 
+        # Use adaptive sizing
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
         # Layout
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(15, 15, 15, 15)
-        layout.setSpacing(15)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
 
         # Left side - Basic info
         info_layout = QVBoxLayout()
+        info_layout.setSpacing(2)
 
         # Product name
         self.name_label = QLabel(self.product['name'])
         self.name_label.setObjectName("productName")
         self.name_label.setWordWrap(True)
+
+        # Use appropriate size policy
+        self.name_label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+
+        # Use smaller font
+        font = QFont()
+        font.setBold(True)
+        self.name_label.setFont(font)
+
         info_layout.addWidget(self.name_label)
 
         # Category
         self.category_label = QLabel(self.product['category'])
         self.category_label.setObjectName("productCategory")
+        self.category_label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         info_layout.addWidget(self.category_label)
 
         # Add info layout to main layout
@@ -56,10 +71,12 @@ class ProductCard(QFrame):
         # Right side - Price and availability
         details_layout = QVBoxLayout()
         details_layout.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        details_layout.setSpacing(2)
 
         # Price
         self.price_label = QLabel()
         self.price_label.setObjectName("productPrice")
+        self.price_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.update_price_label()
         details_layout.addWidget(self.price_label, 0, Qt.AlignRight)
 
@@ -67,6 +84,7 @@ class ProductCard(QFrame):
         self.stock_label = QLabel()
         self.stock_label.setObjectName("productStock")
         self.stock_label.setTextFormat(Qt.RichText)
+        self.stock_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.update_stock_label()
         details_layout.addWidget(self.stock_label, 0, Qt.AlignRight)
 
@@ -116,10 +134,10 @@ class ProductCard(QFrame):
         button_hover = get_color('button_hover')
         secondary_text = get_color('secondary_text')
 
-        # Base style properties
+        # Base style with no fixed dimensions
         base_style = """
-            border-radius: 8px;
-            min-height: 80px;
+            border-radius: 5px;
+            padding: 2px;
         """
 
         # Different styling based on selection state
@@ -127,25 +145,22 @@ class ProductCard(QFrame):
             self.setStyleSheet(f"""
                 #productCardSelected {{
                     background-color: {button_hover};
-                    border: 2px solid {highlight};
+                    border: 1px solid {highlight};
                     {base_style}
                 }}
                 
                 #productName {{
                     color: {text_color};
-                    font-size: 16px;
                     font-weight: bold;
                 }}
                 
                 #productCategory {{
                     color: {secondary_text};
-                    font-size: 13px;
                     font-style: italic;
                 }}
                 
                 #productPrice {{
                     color: {highlight};
-                    font-size: 15px;
                     font-weight: bold;
                 }}
             """)
@@ -158,25 +173,22 @@ class ProductCard(QFrame):
                 }}
                 
                 #productCard:hover {{
-                    border: 2px solid {highlight};
+                    border: 1px solid {highlight};
                     background-color: {button_hover};
                 }}
                 
                 #productName {{
                     color: {text_color};
-                    font-size: 16px;
                     font-weight: bold;
                 }}
                 
                 #productCategory {{
                     color: {secondary_text};
-                    font-size: 13px;
                     font-style: italic;
                 }}
                 
                 #productPrice {{
                     color: {highlight};
-                    font-size: 15px;
                     font-weight: bold;
                 }}
             """)
@@ -251,12 +263,14 @@ class ProductsWidget(BaseStepWidget):
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(QFrame.NoFrame)
+        scroll_area.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
 
         # Container for the products
         self.products_container = QFrame()
+        self.products_container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.products_layout = QVBoxLayout(self.products_container)
-        self.products_layout.setContentsMargins(5, 5, 5, 5)
-        self.products_layout.setSpacing(10)
+        self.products_layout.setContentsMargins(3, 3, 3, 3)
+        self.products_layout.setSpacing(3)
 
         # Add scroll area to main layout
         scroll_area.setWidget(self.products_container)

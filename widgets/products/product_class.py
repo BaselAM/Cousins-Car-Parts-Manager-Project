@@ -14,34 +14,56 @@ from .product_widget.handlers.selection_handler import SelectionHandler
 from .product_widget.operations.add_operation import AddOperation
 from .product_widget.operations.delete_operation import DeleteOperation
 from .product_widget.operations.export_operation import ExportOperation
+from .product_widget.operations.print_operation import PDFPrintOperation  # New import
 
 from .utils import ProductValidator
 from .dialogs import FilterDialog
-# Assuming Translator and DBInterface types if needed for hints in the original
-from typing import TYPE_CHECKING, Optional
+
+
+class SignalBlocker:
+    """Context manager to block signals during UI operations"""
+
+    def __init__(self, *widgets):
+        self.widgets = widgets
+        self.states = {}
+
+    def __enter__(self):
+        # Store and block signals for all widgets
+        for widget in self.widgets:
+            if widget is not None:
+                self.states[widget] = widget.signalsBlocked()
+                widget.blockSignals(True)
+        return self
+
+    def __exit__(self, *args):
+        # Restore original signal blocking state
+        for widget, state in self.states.items():
+            widget.blockSignals(state)
 
 
 # Use the original class signature (add type hints only if they were in the original)
 class ProductsWidget(QWidget):
-    def __init__(self, translator, db, parent=None):  # Keep original signature
+    def __init__(self, translator, db, parent=None):
         super().__init__(parent)
         self._is_closing = False
         self.translator = translator
         self.db = db
 
-        # Initialize validator (Original Structure)
+        # Initialize validator
         self.validator = ProductValidator(translator)
 
-        # Initialize UI handler (Original Structure)
+        # Initialize UI handler
         self.ui_handler = UIHandler(self, translator)
         ui_components = self.ui_handler.setup_ui()
 
-        # Store UI components (Original Structure)
+        # Store UI components
         self.add_btn = ui_components['add_btn']
         self.select_toggle = ui_components['select_toggle']
         self.remove_btn = ui_components['remove_btn']
         self.filter_btn = ui_components['filter_btn']
+        self.clear_filter_btn = ui_components['clear_filter_btn']
         self.export_btn = ui_components['export_btn']
+        self.print_btn = ui_components['print_btn']
         self.refresh_btn = ui_components['refresh_btn']
         self.search_input = ui_components['search_input']
         self.product_table = ui_components['product_table']
@@ -50,47 +72,40 @@ class ProductsWidget(QWidget):
         # Connect to status bar state changes
         self.status_bar.state_changed.connect(self._handle_status_bar_state_change)
 
-        # Initialize search timer (Original Structure)
+        # Initialize search timer
         self.search_timer = QTimer(self)
         self.search_timer.setSingleShot(True)
         self.search_timer.timeout.connect(self._delayed_search)
 
-        # Apply theme (Original Structure) - Check if UIHandler still needs this called separately
-        # If setup_ui in your UIHandler already calls apply_theme, you might not need this line.
+        # Apply theme
         self.ui_handler.apply_theme()
 
-        # Initialize core components (Original Structure)
+        # Initialize core components
         self.product_manager = ProductManager(db)
         self.product_loader = ProductLoader(db, self)
 
-        # Initialize handlers (Original Structure - VERIFY ARGUMENTS MATCH YOUR ORIGINAL)
-        # Pay attention to the arguments passed, especially to SelectionHandler
+        # Initialize handlers
         self.search_handler = SearchHandler(translator)
         self.filter_handler = FilterHandler(translator)
         self.edit_handler = EditHandler(translator, db)
-        # *** Check if YOUR original passed ui_handler here ***
-        self.selection_handler = SelectionHandler(translator, self.product_table,
-                                                  self.ui_handler)  # Original code had ui_handler here
+        self.selection_handler = SelectionHandler(translator, self.product_table, self.ui_handler)
 
-        # Initialize operations (Original Structure)
+        # Initialize operations
         self.add_operation = AddOperation(self, translator, db, self.validator, self.status_bar)
         self.delete_operation = DeleteOperation(self, translator, db, self.status_bar)
         self.export_operation = ExportOperation(self, translator, self.status_bar)
+        self.print_operation = PDFPrintOperation(self, translator, self.status_bar)
 
-        # Connect signals (Original Structure)
+        # Connect signals
         self._connect_signals()
 
-        # Load products after initialization (Original Structure)
+        # Load products after initialization
         QTimer.singleShot(100, self.load_products)
 
     def toggle_selection_mode(self, checked):
         """Toggle product selection mode"""
         # *** Pass arguments YOUR SelectionHandler expects ***
         success, message = self.selection_handler.toggle_selection_mode(checked)
-
-        # ---------- ONLY CHANGE MADE: Line below is removed ----------
-        # REMOVED -> self.ui_handler.update_toggle_button_style(self.select_toggle, checked)
-        # --------------------------------------------------------------
 
         # Original error handling and status messages
         if not success:
@@ -114,36 +129,27 @@ class ProductsWidget(QWidget):
         if self.export_btn:
             self.export_btn.setEnabled(checked)
 
-    # --- Keep all other methods exactly as they were in the first version you provided ---
-    # on_cell_changed, show_filter_dialog, apply_filters, delete_selected_products,
-    # export_products, load_products, handle_loaded_products, on_product_added,
-    # on_products_deleted, _highlight_product, cancel_status_timer, show_error,
-    # highlight_product, update_translations, closeEvent, _connect_signals,
-    # _on_search_input_changed, _delayed_search, on_search
-    # --- Make sure these methods below are exactly from your first version ---
-
     def on_cell_changed(self, row, column):
         """Handle cell value changes"""
-        # Guard against recursive calls
-        if hasattr(self, '_updating_cell') and self._updating_cell:
+        # Comprehensive guard conditions
+        if (hasattr(self, '_updating_ui') and self._updating_ui or
+                hasattr(self, '_updating_cell') and self._updating_cell or
+                self.product_table.table.signalsBlocked()):
             return
 
         try:
             self._updating_cell = True
-            # *** Pass arguments YOUR EditHandler expects ***
+            # Rest of your existing code...
             success, product_id, field, new_value, message = self.edit_handler.handle_cell_change(
                 row, column, self.product_table.table, self.product_manager.get_products()
             )
 
             if success:
-                # Update in-memory product data (Original Structure)
-                self.product_manager.update_product_in_memory(product_id, field, new_value,
-                                                              column)
+                # Update in-memory product data
+                self.product_manager.update_product_in_memory(product_id, field, new_value, column)
                 self.status_bar.show_message(message, "success", 3000)
-            # NOTE: Original didn't explicitly handle message on failure here
         except Exception as e:
             print(f"Cell change error: {e}")
-            # NOTE: Original didn't necessarily call self.show_error here
         finally:
             self._updating_cell = False
 
@@ -360,12 +366,13 @@ class ProductsWidget(QWidget):
 
     def _connect_signals(self):
         """Connect all signals for the widget"""
-        # Keep original implementation
         self.add_btn.clicked.connect(self.add_operation.show_add_dialog)
         self.select_toggle.toggled.connect(self.toggle_selection_mode)
         self.remove_btn.clicked.connect(self.delete_selected_products)
         self.filter_btn.clicked.connect(self.show_filter_dialog)
+        self.clear_filter_btn.clicked.connect(lambda: self.filter_handler.reset_filters())
         self.export_btn.clicked.connect(self.export_products)
+        self.print_btn.clicked.connect(self.print_products)  # Single print button with integrated preview
         self.refresh_btn.clicked.connect(self.load_products)
 
         # self.search_timer connected in __init__
@@ -379,8 +386,7 @@ class ProductsWidget(QWidget):
         self.product_loader.products_loaded.connect(self.handle_loaded_products)
         self.product_loader.error_occurred.connect(self.show_error)
 
-        # NOTE: Original didn't explicitly connect delete_operation signal here
-        # Add if your DeleteOperation emits 'products_deleted' and you need it
+        # Connect delete_operation signal if available
         if hasattr(self.delete_operation, 'products_deleted'):
             self.delete_operation.products_deleted.connect(self.on_products_deleted)
 
@@ -430,34 +436,36 @@ class ProductsWidget(QWidget):
             self.on_search(search_text)
 
     def on_search(self, text):
-        """Handle search text changes using improved search"""
-        # Keep original implementation
-        if hasattr(self, '_updating_ui') and self._updating_ui: return  # Guard added
+        """Handle search with optimized performance"""
+        # Skip if already in update mode
+        if hasattr(self, '_updating_ui') and self._updating_ui:
+            return
 
         try:
             self._updating_ui = True
-            # Use the search handler (Original structure)
-            # NOTE: Original searched *all* products, not filtered ones
+
+            # Filter products
             filtered_products, message = self.search_handler.search_products(
-                self.product_manager.get_products(),  # Searching all products
+                self.product_manager.get_products(),
                 text
             )
 
-            self.product_table.table.blockSignals(True)
-            self.product_table.update_table_data(filtered_products)
-            self.product_table.table.blockSignals(False)
+            # Block signals during update
+            with SignalBlocker(self.product_table.table):
+                self.product_table.update_table_data(filtered_products)
 
-            if text.strip() and hasattr(self.product_table, 'highlight_matching_text'):
-                self.product_table.highlight_matching_text(text)
+                # Highlight if needed
+                if text.strip() and hasattr(self.product_table, 'highlight_matching_text'):
+                    self.product_table.highlight_matching_text(text)
 
+            # Show message if applicable
             if message:
                 self.status_bar.show_message(message, "info")
             else:
                 self.status_bar.clear()
+
         finally:
             self._updating_ui = False
-
-    # ---- New Methods for Enhanced Status Bar Interaction ----
 
     def _handle_status_bar_state_change(self, is_expanded):
         """Handle status bar expansion/collapse by updating layouts"""
@@ -488,3 +496,29 @@ class ProductsWidget(QWidget):
         if hasattr(self, 'product_table') and self.product_table:
             # Use delayed execution to ensure layout is settled
             QTimer.singleShot(0, self.product_table.adjust_column_widths)
+
+    def handle_theme_change(self):
+        """Handle theme changes from the application level"""
+        if hasattr(self, 'ui_handler'):
+            # Temporarily disable signal handling to prevent side effects
+            self._updating_ui = True
+            try:
+                # Force a complete theme refresh
+                self.ui_handler.apply_theme()
+
+                # Ensure all styling is updated
+                self.update()
+
+                # Process events to ensure theme is applied
+                from PyQt5.QtCore import QCoreApplication
+                QCoreApplication.processEvents()
+            finally:
+                self._updating_ui = False
+
+    def print_products(self):
+        """Print products table with integrated preview"""
+        self.print_operation.print_table(
+            self.product_table,
+            self.product_manager.get_products(),
+            self.select_toggle.isChecked()
+        )

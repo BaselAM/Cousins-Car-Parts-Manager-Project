@@ -1,12 +1,13 @@
-from PyQt5.QtCore import Qt, QRect, QPoint, QSize, QPropertyAnimation, QEasingCurve
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt5.QtGui import (QFont, QFontMetrics, QColor, QPainter, QPainterPath,
                          QLinearGradient, QRadialGradient, QPen, QBrush)
 
-from themes import get_color
+from themes import get_color, get_size, get_font_size
+from size_policy import SizePolicyMixin, ResponsiveFontMixin
 
 
-class ExquisiteTitleLabel(QWidget):
+class ExquisiteTitleLabel(QWidget, ResponsiveFontMixin):
     """
     Ultra-premium title with advanced visual effects and meticulous styling.
     """
@@ -15,12 +16,12 @@ class ExquisiteTitleLabel(QWidget):
         super().__init__(parent)
         self.translator = translator
 
-        # Set generous size for visual prominence
-        self.setMinimumHeight(60)
-        self.setMinimumWidth(400)
+        # Keep original dimensions - don't change them
+        self.setMinimumHeight(get_size("xxlarge"))
+        self.setMinimumWidth(get_size("button_min_width") * 2)
 
         # Create premium typography
-        self.font_primary = QFont("Arial", 32)  # Luxury size
+        self.font_primary = QFont("Arial", get_font_size("header"))
         self.font_primary.setWeight(QFont.Black)
         self.font_primary.setLetterSpacing(QFont.AbsoluteSpacing, 3)  # Expansive spacing
 
@@ -39,15 +40,25 @@ class ExquisiteTitleLabel(QWidget):
         """Update the title text based on current language"""
         try:
             if getattr(self.translator, 'language', 'en') == 'he':
-                self.text = "חלקי חילוף אבו מוך"
+                self.text = self.translator.t('app_title_1')
                 # Right-to-left layout
                 self.setLayoutDirection(Qt.RightToLeft)
             else:
-                self.text = "ABU MUKH CAR PARTS"  # All caps for luxury feel
+                self.text = self.translator.t('app_title_1').upper()  # All caps for luxury feel
                 self.setLayoutDirection(Qt.LeftToRight)
         except:
             self.text = "ABU MUKH CAR PARTS"
             self.setLayoutDirection(Qt.LeftToRight)
+
+    def resizeEvent(self, event):
+        """Handle resizing to adjust the font size"""
+        # Adjust font size based on widget height
+        base_size = get_font_size("header")
+        height = self.height()
+        new_size = max(base_size * height / get_size("header_height"), get_font_size("large"))
+
+        self.font_primary.setPointSize(int(new_size))
+        super().resizeEvent(event)
 
     def enterEvent(self, event):
         """Subtle hover effect"""
@@ -84,9 +95,10 @@ class ExquisiteTitleLabel(QWidget):
             self.text)
         text_height = fm.height()
 
-        # Calculate perfect centering position
+        # IMPORTANT CHANGE: Position the text higher in the available space
+        # Instead of centering (50%), we position at 40% of the height
         x = (self.width() - text_width) / 2
-        y = (self.height() + text_height) / 2 - fm.descent()
+        y = (self.height() * 0.4) + (text_height * 0.3)  # Move text upward
 
         # Create refined text path for advanced effects
         text_path = QPainterPath()
@@ -135,10 +147,12 @@ class ExquisiteTitleLabel(QWidget):
         accent_pen = QPen(accent_color)
         accent_pen.setWidthF(1)
 
-        # Draw two thin accent lines above and below
+        # Draw two thin accent lines - also repositioned higher
         line_width = min(text_width + 100, self.width() - 60)
-        line_y_top = y - text_height - 10
-        line_y_bottom = y + 12
+
+        # Position the lines relative to the repositioned text
+        line_y_top = y - text_height - 5
+        line_y_bottom = y + 8  # Closer to text
 
         # Calculate line positions
         line_x_start = (self.width() - line_width) / 2
@@ -157,7 +171,7 @@ class ExquisiteTitleLabel(QWidget):
         self.update()
 
 
-class HeaderWidget(QWidget):
+class HeaderWidget(QWidget, SizePolicyMixin):
     """Refined luxury header for the application"""
 
     def __init__(self, translator, home_callback=None, parent=None):
@@ -168,27 +182,31 @@ class HeaderWidget(QWidget):
         self.apply_theme()
 
     def setup_ui(self):
-        # Create layout with generous spacing
+        # Create layout with improved vertical alignment
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(40, 20, 40, 20)  # Extremely generous margins
 
-        # Add exquisite title
+        # Adjust margins to position title closer to the top
+        # Reduce bottom margin to position title higher in the header
+        layout.setContentsMargins(
+            get_size("spacing_large"),  # left margin
+            get_size("spacing_medium") - 5,  # reduced top margin to move title up
+            get_size("spacing_large"),  # right margin
+            get_size("spacing_medium") + 10  # increased bottom margin for more space
+        )
+
+        # Add title to layout (removed setAlignment call)
         self.title_label = ExquisiteTitleLabel(self.translator, self)
         layout.addWidget(self.title_label)
-
-        # Expansive header height for dramatic presence
-        self.setFixedHeight(90)  # Commanding presence
 
     def paintEvent(self, event):
         """Enhanced header background with subtle gradient"""
         super().paintEvent(event)
-
         # Background will be handled by stylesheet and theme
-        # This allows for custom gradient if desired later
 
     def apply_theme(self):
         header_bg = get_color('header')
         text_color = get_color('text')
+        highlight_color = get_color('highlight')
 
         # Determine if using dark theme for effect adjustments
         is_dark_theme = QColor(header_bg).lightness() < 128
@@ -197,64 +215,26 @@ class HeaderWidget(QWidget):
         border_color = QColor(text_color)
         border_color.setAlpha(30)  # Very subtle
 
-        # Apply luxurious styling to the header
+        # Apply modern styling to the header with gradient effect
         self.setStyleSheet(f"""
             QWidget {{
-                background-color: {header_bg};
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+                                          stop:0 {header_bg}, 
+                                          stop:1 {QColor(header_bg).darker(110).name()});
                 color: {text_color};
                 border-bottom: 1px solid rgba({border_color.red()}, {border_color.green()}, {border_color.blue()}, 0.3);
             }}
         """)
-
-        # Title label styling is mostly handled in paint event for maximum control
 
     def update_translations(self):
         # Update the title for language change
         self.title_label.update_translations()
 
 
-class FooterWidget(QWidget):
-    """The footer widget shown at the bottom of the application"""
-
-    def __init__(self, translator,parent=None):
-        super().__init__(parent)
-        self.translator = translator
-        self.setup_ui()
-        self.apply_theme()
-
-    def setup_ui(self):
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 5, 10, 5)
-
-        self.status_label = QLabel(self.translator.t("status_ready"))
-        layout.addWidget(self.status_label)
-
-        layout.addStretch()
-
-        self.version_label = QLabel(f"v1.0.0")
-        layout.addWidget(self.version_label)
-
-        self.setFixedHeight(30)
-
-    def apply_theme(self):
-        footer_bg = get_color('footer')
-        text_color = get_color('text')
-
-        self.setStyleSheet(f"""
-            QWidget {{
-                background-color: {footer_bg};
-                color: {text_color};
-            }}
-        """)
-
-    def update_translations(self):
-        self.status_label.setText(self.translator.t("status_ready"))
-
-
-class CopyrightWidget(QWidget):
+class CopyrightWidget(QWidget, SizePolicyMixin):
     """A small copyright notice at the bottom of the application"""
 
-    def __init__(self, translator , parent=None):
+    def __init__(self, translator, parent=None):
         super().__init__(parent)
         self.translator = translator
         self.setup_ui()
@@ -262,30 +242,40 @@ class CopyrightWidget(QWidget):
 
     def setup_ui(self):
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 2, 0, 2)
+        layout.setContentsMargins(0, get_size("spacing_tiny"), 0, get_size("spacing_tiny"))
 
-        copyright_text = "© 2023 Auto Parts Ltd. All rights reserved."
-        self.copyright_label = QLabel(copyright_text)
+        self.copyright_label = QLabel(self.translator.t("copyright"))
         self.copyright_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.copyright_label)
 
-        self.setFixedHeight(20)
+        # Set copyright height using size policy
+        self.set_fixed_height_policy("copyright_height")
+
+        # Set object name to make it easy to find
+        self.setObjectName("copyrightWidget")
 
     def apply_theme(self):
         bg_color = get_color('background')
         text_color = get_color('text')
 
-        self.setStyleSheet(f"""
-            QWidget {{
-                background-color: {bg_color};
-                color: {text_color};
-            }}
-            QLabel {{
-                font-size: 8pt;
-                color: {text_color};
-            }}
+        # Make copyright more elegant with direct style application
+        stylesheet = f"""
+            background-color: {bg_color};
+            color: {text_color};
+        """
+        self.setStyleSheet(stylesheet)
+
+        # Update label directly with no intermediate stylesheet
+        label_color = QColor(text_color).lighter(150).name() if QColor(bg_color).lightness() < 128 else QColor(
+            text_color).darker(150).name()
+        self.copyright_label.setStyleSheet(f"""
+            font-size: {get_font_size("small")}pt;
+            color: {label_color};
+            font-style: italic;
         """)
 
+        # Force immediate repaint
+        self.update()
+
     def update_translations(self):
-        # No translation needed for copyright
-        pass
+        self.copyright_label.setText(self.translator.t("copyright"))

@@ -9,7 +9,8 @@ from PyQt5.QtWidgets import (
 from themes import set_theme
 from .settings_groups import SettingsGroupCreator
 from .settings_styling import SettingsStyling
-
+from logger import get_logger
+logger = get_logger(__name__)
 
 class SettingsWidget(QWidget):
     def __init__(self, translator, on_save, gui, parent=None):
@@ -224,25 +225,44 @@ class SettingsWidget(QWidget):
                 'measurement_units': str(self.units_combo.currentIndex())
             }
 
+            # Save all settings to database
             for key, value in settings.items():
                 self.gui.settings_db.save_setting(key, value)
+                logger.debug(f"Saved setting: {key}={value}")
 
             self.initial_settings = self.get_current_settings()
 
+            # Handle language changes
             try:
                 if settings['language'] != self.translator.language:
+                    logger.info(f"Changing language from {self.translator.language} to {settings['language']}")
                     self.on_save_callback(settings['language'])
             except Exception as lang_error:
-                print(f"Error applying language change: {lang_error}")
+                logger.error(f"Error applying language change: {str(lang_error)}")
 
+            # Handle theme changes
             try:
-                set_theme(settings['theme'])
-                if hasattr(self.gui, 'apply_theme_to_all') and callable(self.gui.apply_theme_to_all):
-                    self.gui.apply_theme_to_all()
+                current_theme = settings['theme']
+                logger.info(f"Changing theme to {current_theme}")
+
+                # Use the new dedicated method if available
+                if hasattr(self.gui, 'update_theme') and callable(self.gui.update_theme):
+                    self.gui.update_theme(current_theme)
+                    logger.debug("Used GUI.update_theme method")
                 else:
-                    self.apply_theme()
+                    # Fallback - set theme and use theme manager if available
+                    set_theme(current_theme)
+                    if hasattr(self.gui, 'theme_manager') and hasattr(self.gui.theme_manager, 'apply_theme'):
+                        self.gui.theme_manager.apply_theme()
+                        logger.debug("Used GUI.theme_manager.apply_theme method")
+                    else:
+                        # Last resort - just update this widget's theme
+                        self.apply_theme()
+                        logger.warning("GUI missing theme_manager, only updated settings widget theme")
             except Exception as theme_error:
-                print(f"Error applying theme change: {theme_error}")
+                logger.error(f"Error applying theme change: {str(theme_error)}")
+                import traceback
+                logger.error(traceback.format_exc())
 
             QMessageBox.information(
                 self,
@@ -250,12 +270,17 @@ class SettingsWidget(QWidget):
                 self.translator.t('settings_saved'),
                 buttons=QMessageBox.Ok
             )
+
+            logger.info("Settings saved successfully")
         except Exception as e:
-            print(f"Settings save error: {e}")
+            logger.error(f"Settings save error: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
+
             QMessageBox.critical(
                 self,
                 self.translator.t('error'),
-                f"{self.translator.t('settings_save_error')}\n{e}",
+                f"{self.translator.t('settings_save_error')}\n{str(e)}",
                 buttons=QMessageBox.Ok
             )
         finally:
