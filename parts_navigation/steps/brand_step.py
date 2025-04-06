@@ -3,7 +3,7 @@ Brand selection step for the parts navigation system.
 
 A premium step for selecting car brands with elegant styling and animations.
 """
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QFrame, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QFrame, QSizePolicy, QApplication
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QFont
 
@@ -216,33 +216,38 @@ class BrandStep(BaseStepWidget):
         self.populate_brands_grid()
 
     def populate_brands_grid(self):
-        """Populate the grid with brand tiles."""
+        """Populate the grid with brand tiles using cached logos when available."""
 
-        # Define function to get icon path
         def get_brand_icon(brand):
-            """Get brand icon with fallbacks for variant names"""
+            """Get brand icon with optimized caching."""
             # Extract brand name from data
-            brand_name = brand['brand'].lower()
+            brand_name = brand['brand']
 
-            # Handle specific brand name variants
-            if 'byd' in brand_name:
+            # Try to get from logo manager cache first for instant display
+            if self.logo_manager:
+                cached_logo = self.logo_manager.get_logo_sync(brand_name)
+                if cached_logo is not None:  # Use is not None check to accept empty pixmaps
+                    return cached_logo
+
+            # Original fallback logic for file paths
+            if 'byd' in brand_name.lower():
                 return "resources/brands/byd.png"
-            elif 'chery' in brand_name or 'cherry' in brand_name:
+            elif 'chery' in brand_name.lower() or 'cherry' in brand_name.lower():
                 return "resources/brands/chery.png"
-            elif 'gaz' in brand_name:
+            elif 'gaz' in brand_name.lower():
                 return "resources/brands/gaz.png"
-            elif brand_name == 'mg' or 'morris garages' in brand_name:
+            elif brand_name.lower() == 'mg' or 'morris garages' in brand_name.lower():
                 return "resources/brands/mg.png"
-            elif 'iveco' in brand_name:
+            elif 'iveco' in brand_name.lower():
                 return "resources/brands/iveco.png"
-            elif 'mini' in brand_name:
+            elif 'mini' in brand_name.lower():
                 return "resources/brands/mini.png"
 
             # Standard approach for other brands
-            normalized_name = brand_name.replace(' ', '_')
+            normalized_name = brand_name.lower().replace(' ', '_')
             return f"resources/brands/{normalized_name}.png"
 
-        # Populate the grid
+        # Populate the grid with optimized brand loading
         self.brands_grid.populate(self.filtered_brands, get_brand_icon)
 
     def _update_brand_logo(self, brand_name, pixmap):
@@ -295,7 +300,16 @@ class BrandStep(BaseStepWidget):
         # Call parent first for consistent behavior
         super().on_show()
 
-        # Show immediate loading indicator
+        # If brands are already loaded, just update the UI
+        if self.brands:
+            # Skip loading from database again
+            self.populate_brands_grid()
+            # If selection exists, restore it
+            if self.step_data:
+                self.brands_grid.set_selected(self.step_data)
+            return
+
+        # Otherwise, show immediate loading indicator
         self.show_loading(True)
 
         # IMPORTANT: Use a timer to allow the UI to update
@@ -325,6 +339,48 @@ class BrandStep(BaseStepWidget):
             self.on_brands_loaded,
             self.on_database_error
         )
+
+    def setup_preloading(self, db_operator=None):
+        """Set up preloading of brands and logos.
+
+        Args:
+            db_operator: Shared database operator (optional)
+        """
+        # Use the provided db_operator or create our own
+        op = db_operator if db_operator else self.db_operator
+
+        # Load brands in background
+        op.execute(
+            "get_brands",
+            self._handle_preloaded_brands,
+            self._handle_preload_error
+        )
+
+    def _handle_preloaded_brands(self, brands):
+        """Handle preloaded brands data for faster display.
+
+        Args:
+            brands: List of brand dictionaries
+        """
+        # Store brands without triggering UI updates
+        self.brands = brands if brands else []
+        self.filtered_brands = self.brands.copy()
+
+        logger.info(f"Preloaded {len(self.brands)} brands")
+
+        # Start preloading logos for all brands
+        brand_names = [brand['brand'] for brand in self.brands if 'brand' in brand]
+        if brand_names and self.logo_manager:
+            self.logo_manager.preload_logos(brand_names)
+
+    def _handle_preload_error(self, error_msg):
+        """Handle error during preloading.
+
+        Args:
+            error_msg: Error message
+        """
+        logger.warning(f"Error preloading brands: {error_msg}")
+        # Don't show UI error since this is background preloading
 
     def on_hide(self):
         """Called when this step is hidden."""

@@ -105,6 +105,15 @@ def cleanup_resources():
             logger.info("Closing database connection...")
             db_instance.close_connection()
 
+        # Proper cleanup for parts navigation
+        if hasattr(main_gui, 'view_manager') and \
+                hasattr(main_gui.view_manager, 'parts_navigation_widget') and \
+                main_gui.view_manager.parts_navigation_widget:
+            parts_nav = main_gui.view_manager.parts_navigation_widget
+            if hasattr(parts_nav, 'cleanup_resources'):
+                logger.info("Cleaning up parts navigation resources...")
+                parts_nav.cleanup_resources()
+
         # Additional cleanup as needed
         logger.info("Application shutdown complete")
     except Exception as e:

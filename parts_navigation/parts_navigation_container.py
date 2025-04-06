@@ -69,7 +69,6 @@ class PartsNavigationContainer(QWidget):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Minimum size is important, but don't make it too large
-        # Reduced from 800x600 which might be too large for some views
         self.setMinimumSize(750, 550)
 
         # Initialize UI with premium styling
@@ -79,8 +78,106 @@ class PartsNavigationContainer(QWidget):
         # Animation properties
         self._current_animation = None
 
+        # Create a shared database operator for preloading
+        from .utils.database_worker import DatabaseOperator
+        self.shared_db_operator = DatabaseOperator(db)
+
+        # Create and connect all the step widgets with preloading enabled
+        self.create_step_widgets(preload=True)
+
         # Initialize with first step
         self.go_to_step(0)
+
+    def create_step_widgets(self, preload=False):
+        """Create all the navigation step widgets with preloading support."""
+        # Step 1: Brand selection with preloading
+        self.brand_step = BrandStep(self.translator, self.db,
+                                    db_operator=getattr(self, 'shared_db_operator', None))
+        self.brand_step.step_completed.connect(self.on_brand_selected)
+        self.steps_stack.addWidget(self.brand_step)
+
+        # Start preloading if requested
+        if preload:
+            QTimer.singleShot(100, self.brand_step.setup_preloading)
+
+        # Step 2: Model selection
+        self.model_step = ModelStep(self.translator, self.db)
+        self.model_step.step_completed.connect(self.on_model_selected)
+        self.steps_stack.addWidget(self.model_step)
+
+        # Step 3: Year selection
+        self.year_step = YearStep(self.translator, self.db)
+        self.year_step.step_completed.connect(self.on_year_selected)
+        self.steps_stack.addWidget(self.year_step)
+
+        # Step 4: Category selection
+        self.category_step = CategoryStep(self.translator, self.db)
+        self.category_step.step_completed.connect(self.on_category_selected)
+        self.steps_stack.addWidget(self.category_step)
+
+        # Step 5: Product selection
+        self.product_step = ProductStep(self.translator, self.db)
+        self.product_step.step_completed.connect(self.on_product_selected)
+        self.steps_stack.addWidget(self.product_step)
+
+        # Step 6: Details selection
+        self.details_step = DetailsStep(self.translator, self.db)
+        self.details_step.step_completed.connect(self.on_details_selected)
+        self.steps_stack.addWidget(self.details_step)
+
+        # Step 7: Final confirmation
+        self.summary_step = SummaryStep(self.translator, self.db)
+        self.summary_step.back_requested.connect(self.on_final_back)
+        self.steps_stack.addWidget(self.summary_step)
+
+    def cleanup_resources(self):
+        """Complete cleanup of all resources when container is closed"""
+        # First clean up animations
+        if hasattr(self, 'cleanup_animations'):
+            self.cleanup_animations()
+
+        # Clean up shared database operator
+        if hasattr(self, 'shared_db_operator'):
+            try:
+                self.shared_db_operator.cleanup()
+            except Exception as e:
+                logger.error(f"Error cleaning up shared_db_operator: {e}")
+
+        # Clean up any threads or workers in steps
+        for i in range(self.steps_stack.count()):
+            step = self.get_step_widget(i)
+            if step:
+                # Clean up logo manager if exists
+                if hasattr(step, 'logo_manager') and hasattr(step.logo_manager, 'thread_pool'):
+                    try:
+                        # Wait for thread pool to finish current tasks
+                        step.logo_manager.thread_pool.waitForDone(100)  # 100ms timeout
+                    except Exception as e:
+                        logger.error(f"Error cleaning up logo_manager in step {i}: {e}")
+
+                # Clean up database operators
+                if hasattr(step, 'db_operator') and step.db_operator:
+                    try:
+                        step.db_operator.cleanup()
+                    except Exception as e:
+                        logger.error(f"Error cleaning up db_operator in step {i}: {e}")
+
+                # Clean up any animations
+                if hasattr(step, '_cancel_animations'):
+                    try:
+                        step._cancel_animations()
+                    except Exception as e:
+                        logger.error(f"Error cancelling animations in step {i}: {e}")
+
+        # Clean up database connections
+        if hasattr(self, 'db') and self.db:
+            try:
+                # Force thread-safe closing
+                self.db.ensure_connection()
+                self.db.close_connection()
+            except Exception as e:
+                logger.error(f"Error closing database connection: {e}")
+
 
     def sizeHint(self):
         """Return a size that works well within the content stack."""
@@ -394,42 +491,7 @@ class PartsNavigationContainer(QWidget):
         self.search_box.search_submitted.connect(self.on_search)
         search_layout.addWidget(self.search_box, 1)
 
-    def create_step_widgets(self):
-        """Create all the navigation step widgets with consistent styling."""
-        # Step 1: Brand selection
-        self.brand_step = BrandStep(self.translator, self.db)
-        self.brand_step.step_completed.connect(self.on_brand_selected)
-        self.steps_stack.addWidget(self.brand_step)
 
-        # Step 2: Model selection
-        self.model_step = ModelStep(self.translator, self.db)
-        self.model_step.step_completed.connect(self.on_model_selected)
-        self.steps_stack.addWidget(self.model_step)
-
-        # Step 3: Year selection
-        self.year_step = YearStep(self.translator, self.db)
-        self.year_step.step_completed.connect(self.on_year_selected)
-        self.steps_stack.addWidget(self.year_step)
-
-        # Step 4: Category selection
-        self.category_step = CategoryStep(self.translator, self.db)
-        self.category_step.step_completed.connect(self.on_category_selected)
-        self.steps_stack.addWidget(self.category_step)
-
-        # Step 5: Product selection
-        self.product_step = ProductStep(self.translator, self.db)
-        self.product_step.step_completed.connect(self.on_product_selected)
-        self.steps_stack.addWidget(self.product_step)
-
-        # Step 6: Details selection
-        self.details_step = DetailsStep(self.translator, self.db)
-        self.details_step.step_completed.connect(self.on_details_selected)
-        self.steps_stack.addWidget(self.details_step)
-
-        # Step 7: Final confirmation
-        self.summary_step = SummaryStep(self.translator, self.db)
-        self.summary_step.back_requested.connect(self.on_final_back)
-        self.steps_stack.addWidget(self.summary_step)
 
     def get_step_widget(self, step_index):
         """
@@ -893,41 +955,6 @@ class PartsNavigationContainer(QWidget):
     # Add this method to the PartsNavigationContainer class
     # This should be placed right before or after the cleanup_animations method
 
-    def cleanup_resources(self):
-        """Complete cleanup of all resources when container is closed"""
-        # First clean up animations
-        if hasattr(self, 'cleanup_animations'):
-            self.cleanup_animations()
-
-        # Clean up any threads or workers in steps
-        for i in range(7):  # There are 7 steps
-            step = self.get_step_widget(i)
-            if step:
-                # Clean up any database operators
-                if hasattr(step, 'db_operator'):
-                    try:
-                        step.db_operator.cleanup()
-                    except Exception as e:
-                        print(f"Error cleaning up db_operator in step {i}: {e}")
-
-                # Clean up any animations
-                if hasattr(step, '_cancel_animations'):
-                    try:
-                        step._cancel_animations()
-                    except Exception as e:
-                        print(f"Error cancelling animations in step {i}: {e}")
-
-        # Clean up database connections
-        if hasattr(self, 'db') and self.db:
-            try:
-                # Force thread-safe closing
-                self.db.ensure_connection()
-                self.db.close_connection()
-            except Exception as e:
-                print(f"Error closing database connection: {e}")
-
-    # Then modify the closeEvent method in GUIEventHandler class
-    # Add this to the event_handlers.py file
 
     def handle_close_event(self, event):
         """

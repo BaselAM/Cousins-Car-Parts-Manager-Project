@@ -39142,3 +39142,164 @@ AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_c
 2025-04-06 09:54:13,630 - __main__ - INFO - Cleaning up application resources...
 2025-04-06 09:54:13,630 - __main__ - INFO - Closing database connection...
 2025-04-06 09:54:13,630 - __main__ - INFO - Application shutdown complete
+2025-04-06 13:31:06,920 - root - INFO - Logging system initialized (level: INFO)
+2025-04-06 13:31:06,921 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-06 13:31:07,651 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-06 13:31:11,033 - __main__ - INFO - Application starting at: 2025-04-06 13:31:11
+2025-04-06 13:31:11,033 - __main__ - INFO - Current user: BaselAM
+2025-04-06 13:31:11,114 - __main__ - INFO - Initializing database connection...
+2025-04-06 13:31:11,586 - database.car_parts_db - INFO - Thread 10856: Database connection established
+2025-04-06 13:31:11,586 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-06 13:31:11,619 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-06 13:31:11,620 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-06 13:31:11,634 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-06 13:31:11,644 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-06 13:31:11,655 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-06 13:31:11,669 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-06 13:31:11,688 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-06 13:31:11,699 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-06 13:31:11,708 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-06 13:31:11,719 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-06 13:31:11,728 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-06 13:31:11,743 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-06 13:31:11,758 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-06 13:31:11,767 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-06 13:31:11,767 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-06 13:31:11,767 - translations - INFO - Loaded 12 translation files
+2025-04-06 13:31:12,044 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-06 13:31:12,045 - UsersDB - INFO - Database tables created successfully
+2025-04-06 13:31:13,081 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-06 13:31:13,190 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-06 13:31:13,190 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-06 13:31:13,239 - translations - WARNING - Missing translation for 'print_with_preview_tooltip' in 'he'
+2025-04-06 13:31:13,465 - translations - WARNING - Missing translation for 'loading' in 'he'
+2025-04-06 13:31:13,465 - translations - WARNING - Missing translation for 'select_brand_subtitle' in 'he'
+2025-04-06 13:31:13,510 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:31:13,536 - translations - WARNING - Missing translation for 'more_options' in 'he'
+2025-04-06 13:31:13,663 - database.car_parts_db - INFO - Thread 6852: New database connection established
+2025-04-06 13:31:13,676 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-06 13:31:13,676 - translations - WARNING - Missing translation for 'Click for details' in 'he'
+2025-04-06 13:31:13,758 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:31:13,758 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:31:13,759 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-06 13:31:13,800 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:31:13,800 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:31:13,800 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-06 13:31:16,987 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-06 13:31:17,000 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-06 13:31:17,785 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:31:17,904 - database.car_parts_db - INFO - Thread 10856: New database connection established
+2025-04-06 13:31:17,934 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:31:17,935 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:31:17,935 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-06 13:31:17,946 - database.car_parts_db - INFO - Thread 10856: New database connection established
+2025-04-06 13:31:17,971 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:31:17,972 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:31:17,972 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-06 13:31:25,467 - translations - WARNING - Missing translation for 'missing_steps_message' in 'he'
+2025-04-06 13:31:25,472 - translations - WARNING - Missing translation for 'navigation_error' in 'he'
+2025-04-06 13:31:43,434 - __main__ - INFO - Cleaning up application resources...
+2025-04-06 13:31:43,434 - __main__ - INFO - Closing database connection...
+2025-04-06 13:31:43,434 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-06 13:31:43,434 - __main__ - ERROR - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
+2025-04-06 13:56:13,568 - root - INFO - Logging system initialized (level: INFO)
+2025-04-06 13:56:13,684 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-06 13:56:13,929 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-06 13:56:16,521 - __main__ - INFO - Application starting at: 2025-04-06 13:56:16
+2025-04-06 13:56:16,521 - __main__ - INFO - Current user: BaselAM
+2025-04-06 13:56:16,625 - __main__ - INFO - Initializing database connection...
+2025-04-06 13:56:17,113 - database.car_parts_db - INFO - Thread 18076: Database connection established
+2025-04-06 13:56:17,113 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-06 13:56:17,149 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-06 13:56:17,150 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-06 13:56:17,152 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-06 13:56:17,153 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-06 13:56:17,154 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-06 13:56:17,155 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-06 13:56:17,156 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-06 13:56:17,156 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-06 13:56:17,158 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-06 13:56:17,159 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-06 13:56:17,159 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-06 13:56:17,160 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-06 13:56:17,162 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-06 13:56:17,162 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-06 13:56:17,162 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-06 13:56:17,163 - translations - INFO - Loaded 12 translation files
+2025-04-06 13:56:17,465 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-06 13:56:17,466 - UsersDB - INFO - Database tables created successfully
+2025-04-06 13:56:18,651 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-06 13:56:18,786 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-06 13:56:18,787 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-06 13:56:18,852 - translations - WARNING - Missing translation for 'print_with_preview_tooltip' in 'he'
+2025-04-06 13:56:19,045 - translations - WARNING - Missing translation for 'loading' in 'he'
+2025-04-06 13:56:19,045 - translations - WARNING - Missing translation for 'select_brand_subtitle' in 'he'
+2025-04-06 13:56:19,100 - translations - WARNING - Missing translation for 'configure_details' in 'he'
+2025-04-06 13:56:19,107 - translations - WARNING - Missing translation for 'configure_details_help' in 'he'
+2025-04-06 13:56:19,116 - translations - WARNING - Missing translation for 'summary_title' in 'he'
+2025-04-06 13:56:19,121 - translations - WARNING - Missing translation for 'summary_help' in 'he'
+2025-04-06 13:56:19,223 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:56:19,281 - translations - WARNING - Missing translation for 'more_options' in 'he'
+2025-04-06 13:56:19,769 - database.car_parts_db - INFO - Thread 15904: New database connection established
+2025-04-06 13:56:19,773 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-06 13:56:19,775 - translations - WARNING - Missing translation for 'Click for details' in 'he'
+2025-04-06 13:56:19,857 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:19,857 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:19,857 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-06 13:56:20,548 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:20,548 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:20,549 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-06 13:56:23,723 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-06 13:56:23,737 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-06 13:56:24,883 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:56:25,074 - database.car_parts_db - INFO - Thread 18076: New database connection established
+2025-04-06 13:56:25,105 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:25,105 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:25,105 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-06 13:56:25,139 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:25,139 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:25,140 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-06 13:56:29,061 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:29,062 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:29,983 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:29,983 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:30,694 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:30,694 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:31,537 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:31,537 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:32,977 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:32,977 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:33,865 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:33,865 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:36,218 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:36,218 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:37,370 - parts_navigation.container - INFO - Navigated to step 1
+2025-04-06 13:56:37,371 - database.car_parts_db - INFO - Thread 18076: New database connection established
+2025-04-06 13:56:37,386 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:37,386 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:37,388 - parts_navigation.steps.model - INFO - Loaded 1 models for Alfa Romeo
+2025-04-06 13:56:39,992 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:56:42,566 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-06 13:56:42,670 - database.car_parts_db - INFO - Thread 18076: New database connection established
+2025-04-06 13:56:42,689 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:42,690 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:42,690 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-06 13:56:43,118 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-06 13:56:43,118 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-06 13:56:43,119 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-06 13:56:45,307 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:45,307 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:45,927 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:45,927 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:46,835 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:46,835 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:47,548 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:47,549 - parts_navigation.container - INFO - Brand selected: {'brand': 'Alfa Romeo'}
+2025-04-06 13:56:48,300 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:48,301 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:48,739 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:48,739 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-06 13:56:51,223 - __main__ - INFO - Cleaning up application resources...
+2025-04-06 13:56:51,223 - __main__ - INFO - Closing database connection...
+2025-04-06 13:56:51,223 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-06 13:56:51,223 - __main__ - ERROR - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted

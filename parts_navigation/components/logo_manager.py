@@ -6,6 +6,7 @@ brand logos with elegant animation and error handling.
 """
 import os
 import hashlib
+from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import (QObject, QUrl, QDir, QStandardPaths,
                           QThreadPool, QRunnable, pyqtSignal, pyqtSlot)
 from PyQt5.QtGui import QPixmap
@@ -217,6 +218,11 @@ class LogoManager(QObject):
         # In-memory cache for already loaded logos
         self.pixmap_cache = {}
 
+        # Set up cache directory
+        cache_location = QStandardPaths.writableLocation(QStandardPaths.CacheLocation)
+        self.cache_dir = os.path.join(cache_location, 'brand_logos')
+        os.makedirs(self.cache_dir, exist_ok=True)
+
     def get_logo(self, brand_name):
         """
         Get a logo for the specified brand.
@@ -237,6 +243,15 @@ class LogoManager(QObject):
         if brand_key in self.pixmap_cache:
             return self.pixmap_cache[brand_key]
 
+        # Check disk cache
+        cached_path = self._get_cached_path(brand_name)
+        if os.path.exists(cached_path):
+            pixmap = QPixmap(cached_path)
+            if not pixmap.isNull():
+                # Store in memory cache
+                self.pixmap_cache[brand_key] = pixmap
+                return pixmap
+
         # Start download if not cached
         downloader = LogoDownloader(brand_name)
         downloader.signals.finished.connect(self._on_logo_downloaded)
@@ -244,6 +259,20 @@ class LogoManager(QObject):
 
         self.thread_pool.start(downloader)
         return None
+
+    def _get_cached_path(self, brand_name):
+        """
+        Get the cached file path for a brand.
+
+        Args:
+            brand_name: Name of the brand
+
+        Returns:
+            str: Full path to the cached file
+        """
+        # Use the same filename format as LogoDownloader
+        filename = f"{brand_name.lower().replace(' ', '_')}.png"
+        return os.path.join(self.cache_dir, filename)
 
     def _on_logo_downloaded(self, brand_name, pixmap):
         """Handle downloaded logo."""
@@ -255,3 +284,70 @@ class LogoManager(QObject):
         """Handle logo download error."""
         logger.error(f"Logo download error for {brand_name}: {error_msg}")
         # Could emit a different signal for errors if needed
+
+    def preload_logos(self, brand_names):
+        """
+        Preload logos for a list of brands in the background.
+
+        Args:
+            brand_names: List of brand names to preload
+        """
+        logger.debug(f"Preloading logos for {len(brand_names)} brands")
+
+        # Set maximum thread count based on available cores
+        import multiprocessing
+        max_threads = min(8, max(2, multiprocessing.cpu_count() - 1))
+        self.thread_pool.setMaxThreadCount(max_threads)
+
+        # Throttling for batch operations
+        batch_size = 5
+        for i in range(0, len(brand_names), batch_size):
+            batch = brand_names[i:i+batch_size]
+            for brand_name in batch:
+                if brand_name and brand_name.lower() not in self.pixmap_cache:
+                    # Check if already in disk cache
+                    cached_path = self._get_cached_path(brand_name)
+                    if os.path.exists(cached_path):
+                        pixmap = QPixmap(cached_path)
+                        if not pixmap.isNull():
+                            self.pixmap_cache[brand_name.lower()] = pixmap
+                            continue
+
+                    # Start download for non-cached logos
+                    downloader = LogoDownloader(brand_name)
+                    downloader.signals.finished.connect(self._on_logo_downloaded)
+                    downloader.signals.error.connect(self._on_logo_error)
+                    self.thread_pool.start(downloader)
+
+            # Allow UI updates between batches
+            QApplication.processEvents()
+
+    def get_logo_sync(self, brand_name):
+        """
+        Get a logo synchronously from cache only.
+
+        Args:
+            brand_name: Name of the brand
+
+        Returns:
+            QPixmap: Cached logo if available, otherwise None
+        """
+        if not brand_name:
+            return None
+
+        brand_key = brand_name.lower()
+
+        # Check in-memory cache
+        if brand_key in self.pixmap_cache:
+            return self.pixmap_cache[brand_key]
+
+        # Check disk cache
+        cached_path = self._get_cached_path(brand_name)
+        if os.path.exists(cached_path):
+            pixmap = QPixmap(cached_path)
+            if not pixmap.isNull():
+                # Store in memory cache
+                self.pixmap_cache[brand_key] = pixmap
+                return pixmap
+
+        return None
