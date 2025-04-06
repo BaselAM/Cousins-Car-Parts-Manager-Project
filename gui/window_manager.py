@@ -1,5 +1,5 @@
 # gui/window_manager.py
-from PyQt5.QtCore import QSize, QRect
+from PyQt5.QtCore import QSize, QRect, QTimer
 from PyQt5.QtWidgets import QDesktopWidget, QApplication
 from themes import get_size
 from logger import get_logger
@@ -21,6 +21,9 @@ class GUIWindowManager:
             parent: The main GUI instance
         """
         self.parent = parent
+        # Initialize resize tracking flags
+        self._in_resize = False
+        self._was_manually_resized = False
 
     def setup_window_properties(self, translator):
         """
@@ -32,12 +35,16 @@ class GUIWindowManager:
         """
         self.parent.setWindowTitle(translator.t("window_title"))
 
+        # Initialize resize tracking flags
+        self._in_resize = False
+        self._was_manually_resized = False
+
         # Get available screen geometry
         screen = QDesktopWidget().availableGeometry()
 
         # Use more generous dimensions as starting size
         width_percent = 0.7
-        height_percent = 0.8  # Increased from 0.75 to make window taller
+        height_percent = 0.8
 
         width = int(screen.width() * width_percent)
         height = int(screen.height() * height_percent)
@@ -62,14 +69,29 @@ class GUIWindowManager:
         min_height = int(screen.height() * 0.6)  # Increased from 0.55
         self.parent.setMinimumSize(min_width, min_height)
 
-        # IMPORTANT: Remove maximum size restrictions to allow full-screen expansion
-        # The parent.setMaximumSize line has been removed
+        # No maximum size - allow fullscreen
+        self.parent.setMaximumSize(16777215, 16777215)  # QWidget's maximum size
 
     def center_window(self):
         """
         Center the window on the screen with exact precision.
         Ensures the window has exactly the same distance from both sides of the monitor.
         """
+        # Skip centering if the window was manually resized
+        if hasattr(self, '_was_manually_resized') and self._was_manually_resized:
+            # Only reset this flag after a significant time has passed (5 seconds)
+            if not hasattr(self, '_reset_manual_resize_timer'):
+                self._reset_manual_resize_timer = QTimer(self.parent)
+                self._reset_manual_resize_timer.setSingleShot(True)
+                self._reset_manual_resize_timer.timeout.connect(self._reset_manual_resize_flag)
+
+            self._reset_manual_resize_timer.start(5000)  # 5 seconds
+            return
+
+        # Only continue if we're not in a resize event
+        if hasattr(self, '_in_resize') and self._in_resize:
+            return
+
         # Get current window size
         window_size = self.parent.size()
 
@@ -88,15 +110,28 @@ class GUIWindowManager:
             window_size.height()
         )
 
-        # Apply the new geometry
-        self.parent.setGeometry(new_position)
+        # Apply the new geometry - but only if not maximized or fullscreen
+        if not self.parent.isMaximized() and not self.parent.isFullScreen():
+            self.parent.setGeometry(new_position)
 
         # Log the margins for verification
         logger.debug(
             f"Left margin: {horizontal_margin}, Right margin: {screen.width() - (horizontal_margin + window_size.width())}")
 
+    def _reset_manual_resize_flag(self):
+        """Reset the manual resize flag to allow centering again"""
+        self._was_manually_resized = False
+
     def optimize_window_size(self):
         """Make final adjustments to window size with improved proportions and exact centering"""
+        # Skip if window is maximized or full screen
+        if self.parent.isMaximized() or self.parent.isFullScreen():
+            return
+
+        # Skip if we're in a resize event
+        if hasattr(self, '_in_resize') and self._in_resize:
+            return
+
         # Calculate the optimal height based on content requirements
         optimal_height = self.calculate_optimal_height()
 

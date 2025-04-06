@@ -321,3 +321,74 @@ NameError: name 'QTimer' is not defined
 2025-04-03 09:56:33,395 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
 2025-04-03 09:57:00,576 - widgets.header.top_bar - ERROR - [top_bar.py:322] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
 2025-04-03 20:32:17,234 - gui.view_manager - ERROR - [view_manager.py:225] - show_parts - Error showing parts navigation: 'QParallelAnimationGroup' object has no attribute 'started'
+2025-04-04 04:40:40,540 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 04:41:33,155 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 04:49:18,707 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 04:49:30,596 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 04:52:05,901 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 04:52:10,530 - widgets.header.top_bar - ERROR - [top_bar.py:242] - _update_layout_mode - Some top bar components are missing
+2025-04-04 04:52:10,532 - widgets.header.top_bar - ERROR - [top_bar.py:242] - _update_layout_mode - Some top bar components are missing
+2025-04-04 04:52:10,552 - widgets.header.top_bar - ERROR - [top_bar.py:242] - _update_layout_mode - Some top bar components are missing
+2025-04-04 04:52:12,386 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 05:03:13,514 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 05:03:49,203 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 05:04:00,177 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 05:07:34,058 - widgets.header.top_bar - ERROR - [top_bar.py:149] - _setup_ui - Error initializing internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 05:24:08,358 - widgets.header.top_bar - ERROR - [top_bar.py:161] - _setup_ui - Error initializing internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:17:55,984 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:18:06,532 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 06:21:50,139 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:21:54,537 - gui.event_handlers - ERROR - [event_handlers.py:56] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-04 06:22:07,177 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:27:47,840 - widgets.header.top_bar - ERROR - [top_bar.py:144] - _setup_ui - Could not initialize internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:35:38,065 - widgets.header.top_bar - ERROR - [top_bar.py:144] - _setup_ui - Could not initialize internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:43:02,131 - widgets.header.top_bar - ERROR - [top_bar.py:192] - _setup_ui - CRITICAL: Failed to initialize InternetStatusWidget: t() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 177, in _setup_ui
+    self.internet_status_widget = InternetStatusWidget(self.translator)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 57, in __init__
+    self._update_display()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 160, in _update_display
+    self._update_tooltip()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 205, in _update_tooltip
+    tooltip_text = self.translator.t("internet_disconnected", "Internet: Disconnected")
+TypeError: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:43:02,133 - gui.gui_main - ERROR - [gui_main.py:125] - setup - Error in setup: t() takes 2 positional arguments but 3 were given
+2025-04-04 06:52:08,516 - widgets.header.top_bar - ERROR - [top_bar.py:144] - _setup_ui - Could not initialize internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 07:03:39,969 - widgets.header.top_bar - ERROR - [top_bar.py:156] - _setup_ui - Could not initialize internet status widget: t() takes 2 positional arguments but 3 were given
+2025-04-04 07:03:39,970 - widgets.header.top_bar - ERROR - [top_bar.py:158] - _setup_ui - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 144, in _setup_ui
+    self.internet_status_widget = InternetStatusWidget(self.translator)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 28, in __init__
+    self.check_connection()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 84, in check_connection
+    self.update_display()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 108, in update_display
+    self._update_tooltip()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\internet_status_widget.py", line 148, in _update_tooltip
+    self.setToolTip(self.translator.t("internet_connected", "Internet: Connected"))
+TypeError: t() takes 2 positional arguments but 3 were given
+
+2025-04-04 07:13:52,768 - gui.gui_main - ERROR - [gui_main.py:115] - setup - Error in setup: name 'QSizePolicy' is not defined
+2025-04-04 07:45:59,140 - widgets.header.top_bar - ERROR - [top_bar.py:400] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-04 07:47:46,173 - widgets.header.top_bar - ERROR - [top_bar.py:400] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-04 08:00:02,640 - widgets.header.top_bar - ERROR - [top_bar.py:156] - _setup_ui - Could not initialize internet status widget: 'OptimizedInternetStatusWidget' object has no attribute 'check_connection'
+2025-04-04 08:00:02,646 - widgets.header.top_bar - ERROR - [top_bar.py:158] - _setup_ui - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\header\top_bar.py", line 153, in _setup_ui
+    QTimer.singleShot(100, self.internet_status_widget.check_connection)
+AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_connection'
+
+2025-04-04 10:53:55,733 - database.car_parts_db - ERROR - [parts_repository.py:160] - add_part - Error in add_part: Transaction already in progress
+2025-04-04 10:55:59,760 - database.car_parts_db - ERROR - [parts_repository.py:160] - add_part - Error in add_part: Transaction already in progress
+2025-04-05 06:19:25,273 - gui.view_manager - ERROR - [view_manager.py:72] - preload_views - Failed to initialize parts navigation: 'NoneType' object has no attribute 'set_current_step'
+2025-04-05 06:52:32,489 - gui.view_manager - ERROR - [view_manager.py:72] - preload_views - Failed to initialize parts navigation: argument of type 'NoneType' is not iterable
+2025-04-05 08:36:11,724 - gui.gui_main - ERROR - [gui_main.py:134] - setup - Error in setup: addWidget(self, w: Optional[QWidget]): argument 1 has unexpected type 'PartsNavigationContainer'
+2025-04-05 08:37:01,264 - gui.event_handlers - ERROR - [event_handlers.py:69] - handle_close_event - Shutdown error: 'NoneType' object has no attribute 'deleteLater'
+2025-04-05 09:58:51,553 - gui.view_manager - ERROR - [view_manager.py:72] - preload_views - Failed to initialize parts navigation: 'NoneType' object has no attribute 'target_widget'
+2025-04-05 10:47:44,557 - gui.view_manager - ERROR - [view_manager.py:72] - preload_views - Failed to initialize parts navigation: __init__() missing 2 required positional arguments: 'translator' and 'db'
+2025-04-05 10:52:52,714 - gui.view_manager - ERROR - [view_manager.py:72] - preload_views - Failed to initialize parts navigation: __init__() missing 2 required positional arguments: 'translator' and 'db'
+2025-04-06 02:47:42,572 - __main__ - ERROR - [main.py:101] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'
+2025-04-06 02:47:52,185 - __main__ - ERROR - [main.py:101] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'
+2025-04-06 02:57:02,698 - __main__ - ERROR - [main.py:101] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'
+2025-04-06 03:08:29,891 - __main__ - ERROR - [main.py:105] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'
+2025-04-06 03:13:57,260 - __main__ - ERROR - [main.py:105] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'

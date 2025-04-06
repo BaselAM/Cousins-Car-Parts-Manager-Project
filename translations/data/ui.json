@@ -142,5 +142,21 @@
   "login_failed_message": {
     "en": "Invalid username or password.",
     "he": "שם משתמש או סיסמה שגויים."
-  }
+  },
+  "print": {
+  "en": "Print",
+  "he": "הדפסה"
+},
+  "internet_connected": {
+  "en": "Internet: Connected",
+  "he": "אינטרנט: מחובר"
+},
+"internet_disconnected": {
+  "en": "Internet: Disconnected",
+  "he": "אינטרנט: מנותק"
+},
+"click_for_details": {
+  "en": "Click for details",
+  "he": "לחץ לפרטים"
+}
 }

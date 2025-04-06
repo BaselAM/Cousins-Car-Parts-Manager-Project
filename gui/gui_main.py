@@ -8,9 +8,10 @@ from logger import get_logger
 logger = get_logger(__name__)
 
 # Third-party imports
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QTime
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout, QShortcut
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QStackedWidget
+from PyQt5.QtGui import QKeySequence
 
 # Local application imports
 from database.car_parts_db import CarPartsDB
@@ -39,6 +40,10 @@ class GUI(QMainWindow, SizePolicyMixin):
 
     def __init__(self, car_parts_db=None):
         super().__init__()
+
+        # Initialize resize handling flags
+        self._in_resize = False
+        self._resize_processing = False
 
         # Set application as visible but disable user interaction initially
         self.setEnabled(False)
@@ -71,6 +76,10 @@ class GUI(QMainWindow, SizePolicyMixin):
 
         # Setup the basic window properties first
         self.window_manager.setup_window_properties(self.translator)
+
+        # Setup fullscreen keyboard shortcut
+        fullscreen_shortcut = QShortcut(QKeySequence("F11"), self)
+        fullscreen_shortcut.activated.connect(self.toggle_fullscreen)
 
         # Use a timer to defer UI setup until after the window is shown
         # This allows the splash screen to display without UI freezing
@@ -159,10 +168,28 @@ class GUI(QMainWindow, SizePolicyMixin):
         """Switch to help documentation view"""
         self.view_manager.show_help(self.content_stack)
 
+    # Method to add to gui_main.py (replace the existing show_parts method)
     def show_parts(self):
-        """Open the parts navigation system"""
-        self.view_manager.show_parts(self.content_stack, self.translator)
-
+        """Open the parts navigation system with safer error handling"""
+        try:
+            if hasattr(self, 'view_manager') and self.view_manager:
+                # Use a safer approach with exception handling
+                self.view_manager.show_parts(self.content_stack, self.translator)
+            else:
+                # Fallback if view_manager is not available
+                QMessageBox.information(
+                    self,
+                    self.translator.t("parts_button") if hasattr(self, 'translator') else "Parts",
+                    "Parts navigation is not available at this time."
+                )
+        except Exception as e:
+            logger.error(f"Error in show_parts: {str(e)}")
+            # Show a user-friendly message
+            QMessageBox.warning(
+                self,
+                self.translator.t("error") if hasattr(self, 'translator') else "Error",
+                f"Could not show parts navigation: {str(e)}"
+            )
     def show_web_search(self):
         """Open web search for car parts"""
         self.view_manager.show_web_search(self.translator)
@@ -217,11 +244,76 @@ class GUI(QMainWindow, SizePolicyMixin):
         self.window_manager.simulate_resize()
 
     def resizeEvent(self, event):
-        """Handle window resize events with improved performance"""
-        super().resizeEvent(event)
+        """Handle window resize events with improved stability"""
+        # Skip if we're already handling a resize event
+        if self._in_resize:
+            # Call parent class method and return
+            super().resizeEvent(event)
+            return
 
-        # Use a timer to defer re-centering for smoother resizing
-        QTimer.singleShot(50, self.window_manager.center_window)
+        try:
+            self._in_resize = True
+            super().resizeEvent(event)
+        finally:
+            self._in_resize = False
+
+        # Don't trigger additional actions if we're maximized or in fullscreen
+        if self.isMaximized() or self.isFullScreen():
+            return
+
+        # Skip additional processing if this is happening too frequently
+        # This helps prevent the "vibrating" effect during manual resizing
+        if self._resize_processing:
+            return
+
+        # Use a single timer to defer re-centering instead of immediate processing
+        # This prevents the "bouncing" effect when dragging window edges
+        if not hasattr(self, '_resize_timer'):
+            self._resize_timer = QTimer(self)
+            self._resize_timer.setSingleShot(True)
+            self._resize_timer.timeout.connect(self._finish_resize)
+
+        # Restart the timer each time we get a resize event
+        self._resize_timer.start(200)  # 200ms delay to wait for the user to finish resizing
+
+        # Let the window manager know this was a manual resize
+        if hasattr(self.window_manager, '_was_manually_resized'):
+            self.window_manager._was_manually_resized = True
+
+    def _finish_resize(self):
+        """Handle resize completion after the user has stopped resizing"""
+        try:
+            self._resize_processing = True
+
+            # Only run window manager centering if not in a drag operation
+            if hasattr(self, 'window_manager'):
+                # Skip recentering during resize operations
+                # This is key to preventing the vibration issue
+                pass
+        finally:
+            self._resize_processing = False
+
+    # Add this method to properly handle full screen toggle
+    def toggle_fullscreen(self):
+        """Toggle between fullscreen and normal window states"""
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
+
+        # Force update the UI after fullscreen toggle
+        QTimer.singleShot(100, self._update_after_fullscreen)
+
+    def _update_after_fullscreen(self):
+        """Update UI components after fullscreen toggle"""
+        # Notify all components that care about window size
+        if hasattr(self, 'theme_manager'):
+            self.theme_manager.apply_theme()
+
+        # Update the top bar if it exists
+        if hasattr(self, 'ui_builder') and hasattr(self.ui_builder, 'top_bar'):
+            self.ui_builder.top_bar.update_layout_margins()
+            self.ui_builder.top_bar._update_layout_mode()
 
     def update_theme(self, new_theme):
         """Change the application theme with synchronous updates for visual consistency."""
@@ -316,5 +408,3 @@ class GUI(QMainWindow, SizePolicyMixin):
             logger.error(f"Error completing theme update: {str(e)}")
             QApplication.restoreOverrideCursor()
             self.setEnabled(True)
-
-

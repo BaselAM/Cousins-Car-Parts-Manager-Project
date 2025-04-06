@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QSize, QTimer, QEvent
+from PyQt5.QtCore import Qt, pyqtSignal, QSize, QTimer, QEvent, QTime
 from PyQt5.QtWidgets import (
     QWidget, QHBoxLayout, QSpacerItem, QSizePolicy,
     QFrame, QVBoxLayout, QToolButton, QLabel
@@ -11,6 +11,14 @@ from widgets.header.notifications_widget import NotificationsWidget
 from widgets.header.navigation_widget import NavigationWidget
 from widgets.header.chatbot.direct_chat import DirectChatWidget as ChatWidget
 from widgets.header.date_time_widget import LuxuryDateTimeWidget
+
+# Modified import path for InternetStatusWidget (adjust based on your actual file structure)
+# If internet_status_widget.py is in the same directory as top_bar.py:
+from widgets.header.internet_status_widget import InternetStatusWidget
+
+# If internet_status_widget.py is in the widgets/header directory:
+# from widgets.header.internet_status_widget import InternetStatusWidget
+
 from themes import get_color, get_size
 from size_policy import SizePolicyMixin, ResponsiveFontMixin
 
@@ -50,6 +58,7 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
         self.translator = translator
         self.database = database
         self.current_mode = "normal"  # Tracks current display mode
+        self.internet_status_widget = None  # Ensure this is defined before any possible exceptions
 
         logger.debug("Initializing ResponsiveTopBarWidget")
 
@@ -104,7 +113,7 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
         self.search_widget.search_submitted.connect(self.search_submitted)
         self.search_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-        # === RIGHT SECTION: Chat and Notifications ===
+        # === RIGHT SECTION: Chat, Notifications, and Internet Status ===
         self.right_section = QFrame()
         self.right_section.setObjectName("rightSection")
         self.right_layout = QHBoxLayout(self.right_section)
@@ -129,9 +138,39 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
         self.notifications_widget.notification_clicked.connect(self.notification_clicked)
         self.notifications_widget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
 
-        # Add to right section
+        # Internet status widget - with enhanced error handling and logging
+        try:
+            logger.debug("Attempting to initialize internet status widget")
+            self.internet_status_widget = InternetStatusWidget(self.translator)
+            self.internet_status_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+
+            # Make it slightly larger for better visibility during testing
+            self.internet_status_widget.setFixedWidth(40)
+
+            logger.debug("Internet status widget initialized successfully")
+
+            # Force an immediate update of the connection status
+            QTimer.singleShot(100, self.internet_status_widget.check_connection)
+            QTimer.singleShot(200, self.internet_status_widget.update_display)
+        except Exception as e:
+            logger.error(f"Could not initialize internet status widget: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())  # Print full stack trace
+            self.internet_status_widget = None
+
+        # Add widgets to right section
         self.right_layout.addWidget(self.chat_widget)
         self.right_layout.addWidget(self.notifications_widget)
+
+        # Add internet status widget with explicit visibility check
+        if self.internet_status_widget is not None:
+            logger.debug("Adding internet status widget to right layout")
+            self.right_layout.addWidget(self.internet_status_widget)
+            self.internet_status_widget.setVisible(True)
+            self.internet_status_widget.raise_()  # Ensure it's on top
+            logger.debug(f"Internet status widget visibility: {self.internet_status_widget.isVisible()}")
+        else:
+            logger.warning("Internet status widget not available - skipping")
 
         # === Create overflow menu for ultra-compact mode ===
         self.overflow_menu = self._create_overflow_menu()
@@ -160,6 +199,24 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
 
         # Initial layout mode based on current size
         self._update_layout_mode()
+
+        # Force a second layout update after a short delay
+        QTimer.singleShot(500, self._force_layout_update)
+
+    def _force_layout_update(self):
+        """Force a layout update to ensure all widgets are properly shown"""
+        logger.debug("Forcing layout update")
+        self.updateGeometry()
+        self.layout().activate()
+
+        # Force visibility of key components
+        if self.internet_status_widget is not None:
+            self.internet_status_widget.setVisible(True)
+            self.internet_status_widget.repaint()
+            logger.debug(f"Internet status widget visibility after force: {self.internet_status_widget.isVisible()}")
+
+        self.right_section.setVisible(True)
+        self.right_section.repaint()
 
     def _create_overflow_menu(self):
         """Create overflow menu button for compact layouts"""
@@ -208,27 +265,44 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
             self.main_layout.setContentsMargins(15, 4, 15, 4)
 
     def _update_layout_mode(self):
-        """Update layout based on available width"""
+        """
+        Enhanced layout mode update that prevents oscillation during resize.
+        """
+        # Skip layout updates when the window is resizing
+        parent_window = self.window()
+        if hasattr(parent_window, '_in_resize') and parent_window._in_resize:
+            return
+
         width = self.width()
 
-        # Determine appropriate layout mode
-        if width < self.MINIMUM_WIDTH_THRESHOLD:
+        # Add hysteresis to prevent mode oscillation
+        # Only change modes if we're significantly over/under the threshold
+        if self.current_mode == "ultra-compact" and width > (self.MINIMUM_WIDTH_THRESHOLD + 20):
+            new_mode = "compact"
+        elif self.current_mode == "compact" and width < (self.MINIMUM_WIDTH_THRESHOLD - 20):
             new_mode = "ultra-compact"
-        elif width < self.COMPACT_WIDTH_THRESHOLD:
+        elif self.current_mode == "compact" and width > (self.COMPACT_WIDTH_THRESHOLD + 20):
+            new_mode = "normal"
+        elif self.current_mode == "normal" and width < (self.COMPACT_WIDTH_THRESHOLD - 20):
             new_mode = "compact"
         else:
-            new_mode = "normal"
+            # Keep the current mode to avoid oscillation
+            new_mode = self.current_mode
 
         # Only update if mode changed
         if new_mode != self.current_mode:
+            logger.debug(f"Layout mode changed from {self.current_mode} to {new_mode}")
             self.current_mode = new_mode
             self._apply_layout_mode()
 
-        # Always update the search width for fine-grained responsiveness
-        self._update_search_width(width)
+        # Skip search width adjustments during active resize
+        if not hasattr(parent_window, '_resize_processing') or not parent_window._resize_processing:
+            self._update_search_width(width)
 
     def _apply_layout_mode(self):
         """Apply the current layout mode to components"""
+        logger.debug(f"Applying layout mode: {self.current_mode}")
+
         if self.current_mode == "ultra-compact":
             # Ultra-compact mode: hide date/time and right section, show overflow
             self.date_time_widget.setVisible(False)
@@ -241,11 +315,25 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
             self.right_section.setVisible(True)
             self.overflow_menu.setVisible(False)
 
+            # Ensure internet status is visible within right section
+            if self.internet_status_widget is not None:
+                self.internet_status_widget.setVisible(True)
+                logger.debug("Internet status widget set to visible in compact mode")
+
         else:
             # Normal mode: show all components
             self.date_time_widget.setVisible(True)
             self.right_section.setVisible(True)
             self.overflow_menu.setVisible(False)
+
+            # Ensure internet status is visible within right section
+            if self.internet_status_widget is not None:
+                self.internet_status_widget.setVisible(True)
+                logger.debug("Internet status widget set to visible in normal mode")
+
+        # Update all layouts to accommodate changes
+        self.updateGeometry()
+        self.layout().activate()
 
     def _update_search_width(self, width):
         """Adjust search width based on available space"""
@@ -261,14 +349,33 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
         self.search_widget.setMinimumWidth(min_width)
 
     def resizeEvent(self, event):
-        """Handle resize events with debouncing for performance"""
+        """
+        Improved resize event handler for the top bar with better debouncing.
+        This will prevent excessive layout changes during window resize.
+        """
         super().resizeEvent(event)
+
+        # Check if parent window is being resized
+        parent_window = self.window()
+        if hasattr(parent_window, '_in_resize') and parent_window._in_resize:
+            # During parent window resize, only update margins if really necessary
+            current_width = self.width()
+            significant_change = abs(current_width - self._previous_width) > 50
+
+            if significant_change:
+                # Only update margins, don't do full layout adjustment
+                self.update_layout_margins()
+                self._previous_width = current_width
+
+            # Skip the timer-based update during active resize
+            return
 
         # Update margins immediately as they're simple changes
         self.update_layout_margins()
 
-        # Debounce more complex layout changes
-        self._resize_timer.start(100)  # 100ms debounce
+        # Use a longer debounce time during active resize
+        # to prevent layout flicker and oscillation
+        self._resize_timer.start(250)  # 250ms debounce (increased)
 
     def _handle_delayed_resize(self):
         """Handle resize after debounce delay"""
@@ -282,7 +389,6 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
 
             # Update layout based on new size
             self._update_layout_mode()
-
 
     def event(self, event):
         """Handle parent resize and other events that might affect layout"""
@@ -314,6 +420,10 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
                 self.chat_widget,
                 self.date_time_widget
             ]
+
+            # Add internet status widget conditionally
+            if self.internet_status_widget is not None:
+                components.append(self.internet_status_widget)
 
             for component in components:
                 if hasattr(component, 'update_translations'):
@@ -379,6 +489,11 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
                 self.date_time_widget
             ]
 
+            # Add internet status widget conditionally
+            if self.internet_status_widget is not None:
+                components.append(self.internet_status_widget)
+                logger.debug("Applying theme to internet status widget")
+
             for component in components:
                 if hasattr(component, 'apply_theme'):
                     component.apply_theme()
@@ -398,6 +513,27 @@ class ResponsiveTopBarWidget(QWidget, SizePolicyMixin):
                     border: none;
                 }
             """)
+
+    def force_show_internet_status(self):
+        """Force the internet status widget to be visible (for debugging)"""
+        if self.internet_status_widget is not None:
+            logger.debug("Forcing internet status widget to be visible")
+            self.internet_status_widget.setVisible(True)
+            self.internet_status_widget.raise_()
+            self.internet_status_widget.repaint()
+
+            # Make sure parent containers are visible
+            self.right_section.setVisible(True)
+            self.right_section.repaint()
+
+            # Force layout update
+            self.updateGeometry()
+            self.layout().activate()
+
+            return True
+        else:
+            logger.warning("Cannot force show - internet status widget is None")
+            return False
 
 
 # For backward compatibility

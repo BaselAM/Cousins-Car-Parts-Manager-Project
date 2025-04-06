@@ -8,7 +8,7 @@ from widgets.products import ProductsWidget
 from widgets.statistics import StatisticsWidget
 from widgets.settings.settings_widget import SettingsWidget
 from widgets.help import HelpWidget
-from widgets.parts_navigation import PartsNavigationContainer
+from parts_navigation import PartsNavigationContainer
 
 logger = get_logger(__name__)
 
@@ -89,7 +89,39 @@ class GUIViewManager:
     def show_parts(self, content_stack, translator):
         """Open the parts navigation system"""
         try:
+            # First check if we need to recreate the parts navigation widget
+            # This ensures any existing lingering animations/operations are properly cleaned up
+            if self.parts_navigation_widget:
+                # Explicitly clean up any running operations in the component
+                if hasattr(self.parts_navigation_widget, 'cleanup_animations'):
+                    self.parts_navigation_widget.cleanup_animations()
+
+                # For any brand loading threads
+                if hasattr(self.parts_navigation_widget, 'ui_builder') and \
+                        hasattr(self.parts_navigation_widget.ui_builder, 'brand_step') and \
+                        hasattr(self.parts_navigation_widget.ui_builder.brand_step, 'logo_manager'):
+                    logo_manager = self.parts_navigation_widget.ui_builder.brand_step.logo_manager
+                    if hasattr(logo_manager, 'thread_pool'):
+                        # Wait for thread pool to finish current tasks
+                        logo_manager.thread_pool.waitForDone(300)  # 300ms timeout
+
+                # Remove from content stack and mark for deletion
+                content_stack.removeWidget(self.parts_navigation_widget)
+                self.parts_navigation_widget.deleteLater()
+
+                # Create a new instance
+                self.parts_navigation_widget = PartsNavigationContainer(
+                    self.translator,
+                    self.parts_db,
+                    parent=self.parent
+                )
+
+                # Add to content stack
+                content_stack.addWidget(self.parts_navigation_widget)
+
+            # Now show the widget
             content_stack.setCurrentWidget(self.parts_navigation_widget)
+
         except Exception as e:
             logger.error(f"Error showing parts navigation: {str(e)}")
             QMessageBox.warning(self.parent, translator.t("parts_button"),

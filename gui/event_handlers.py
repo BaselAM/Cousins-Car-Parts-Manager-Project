@@ -1,4 +1,5 @@
 # gui/event_handlers.py
+
 import sys
 import gc
 from PyQt5.QtWidgets import QApplication
@@ -34,6 +35,18 @@ class GUIEventHandler:
             event: The close event to handle
         """
         try:
+            # First clean up any parts navigation threads/animations
+            if hasattr(self.parent, 'view_manager') and \
+                    hasattr(self.parent.view_manager, 'parts_navigation_widget') and \
+                    self.parent.view_manager.parts_navigation_widget:
+
+                parts_nav = self.parent.view_manager.parts_navigation_widget
+                if hasattr(parts_nav, 'cleanup_animations'):
+                    parts_nav.cleanup_animations()
+
+            # Process events to complete any pending operations
+            QApplication.processEvents()
+
             # Close database connections
             self.parts_db.close_connection()
             self.settings_db.close()

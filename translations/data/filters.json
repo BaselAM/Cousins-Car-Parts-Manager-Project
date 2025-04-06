@@ -30,5 +30,9 @@
   "no_cell_selected": {
     "en": "No cell selected",
     "he": "לא נבחר תא"
-  }
+  },
+  "clear_filters_tooltip": {
+  "en": "Clear Filters",
+  "he": "נקה מסננים"
+}
 }

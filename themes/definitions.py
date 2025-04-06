@@ -28,6 +28,8 @@ SIZE = {
     "spacing_small": BASE_UNIT,            # 8px
     "spacing_medium": BASE_UNIT * 2,       # 16px
     "spacing_large": BASE_UNIT * 3,        # 24px
+    "spacing_xlarge": BASE_UNIT * 4,       # 32px
+    "spacing_xxlarge": BASE_UNIT * 5,      # 40px
 
     # Borders and radiuses
     "border_radius_small": BASE_UNIT / 2,  # 4px
