@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QStackedWidget,
 from PyQt5.QtCore import (Qt, pyqtSignal, QSize, QPropertyAnimation,
                           QEasingCurve, QParallelAnimationGroup, QTimer)
 from PyQt5.QtGui import QFont, QColor
+from PyQt5 import sip  # Add this for checking if widgets have been deleted
 
 # Import components
 from .navigation_state import NavigationState
@@ -132,9 +133,14 @@ class PartsNavigationContainer(QWidget):
 
     def cleanup_resources(self):
         """Complete cleanup of all resources when container is closed"""
+        logger.debug("Performing comprehensive cleanup of parts navigation resources")
+
         # First clean up animations
         if hasattr(self, 'cleanup_animations'):
-            self.cleanup_animations()
+            try:
+                self.cleanup_animations()
+            except Exception as e:
+                logger.error(f"Error cleaning up animations: {e}")
 
         # Clean up shared database operator
         if hasattr(self, 'shared_db_operator'):
@@ -143,33 +149,48 @@ class PartsNavigationContainer(QWidget):
             except Exception as e:
                 logger.error(f"Error cleaning up shared_db_operator: {e}")
 
+        # Get references to all steps before cleaning up to avoid accessing them if they're deleted
+        steps = []
+        if hasattr(self, 'steps_stack'):
+            for i in range(self.steps_stack.count()):
+                try:
+                    step = self.steps_stack.widget(i)
+                    if step:
+                        steps.append(step)
+                except Exception:
+                    pass  # Skip if widget can't be accessed
+
         # Clean up any threads or workers in steps
-        for i in range(self.steps_stack.count()):
-            step = self.get_step_widget(i)
-            if step:
+        for step in steps:
+            try:
                 # Clean up logo manager if exists
                 if hasattr(step, 'logo_manager') and hasattr(step.logo_manager, 'thread_pool'):
                     try:
                         # Wait for thread pool to finish current tasks
                         step.logo_manager.thread_pool.waitForDone(100)  # 100ms timeout
                     except Exception as e:
-                        logger.error(f"Error cleaning up logo_manager in step {i}: {e}")
+                        logger.error(f"Error cleaning up logo_manager: {e}")
 
                 # Clean up database operators
                 if hasattr(step, 'db_operator') and step.db_operator:
                     try:
                         step.db_operator.cleanup()
                     except Exception as e:
-                        logger.error(f"Error cleaning up db_operator in step {i}: {e}")
+                        logger.error(f"Error cleaning up db_operator: {e}")
 
                 # Clean up any animations
                 if hasattr(step, '_cancel_animations'):
                     try:
                         step._cancel_animations()
                     except Exception as e:
-                        logger.error(f"Error cancelling animations in step {i}: {e}")
+                        logger.error(f"Error cancelling animations: {e}")
+            except Exception as e:
+                logger.error(f"Error cleaning up step: {e}")
 
-        # Clean up database connections
+        # Process any pending events before attempting to close database
+        QApplication.processEvents()
+
+        # Clean up database connections last
         if hasattr(self, 'db') and self.db:
             try:
                 # Force thread-safe closing
@@ -177,6 +198,8 @@ class PartsNavigationContainer(QWidget):
                 self.db.close_connection()
             except Exception as e:
                 logger.error(f"Error closing database connection: {e}")
+
+        logger.debug("Parts navigation resources cleanup completed")
 
 
     def sizeHint(self):
@@ -612,8 +635,19 @@ class PartsNavigationContainer(QWidget):
             brand_data: Selected brand data
         """
         logger.info(f"Brand selected: {brand_data}")
+
+        # Update navigation state
         self.navigation_state.brand = brand_data
+
+        # Update button states
         self.update_navigation_buttons()
+
+        # Automatically proceed to the next step if this is a new selection
+        # to avoid having to click Next
+        current_step = self.steps_stack.currentIndex()
+        if current_step == 0 and self.can_go_to_next_step(current_step):
+            logger.debug("Automatically proceeding to model selection after brand selection")
+            self.go_to_step(current_step + 1)
 
     def on_model_selected(self, model_data):
         """

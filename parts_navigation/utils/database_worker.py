@@ -4,6 +4,7 @@ DatabaseWorker utility for asynchronous database operations.
 Provides thread-safe database operations for the parts navigation system.
 """
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+import threading
 from logger import get_logger
 
 logger = get_logger('parts_navigation.database_worker')
@@ -23,6 +24,9 @@ class DatabaseWorker(QObject):
 
     # Signal emitted when an error occurs
     error = pyqtSignal(str)  # Error message
+
+    # Static cache for brands data
+    _brands_cache = None
 
     def __init__(self, db):
         """
@@ -98,11 +102,16 @@ class DatabaseWorker(QObject):
 
     def _get_brands(self):
         """
-        Get unique car brands.
+        Get unique car brands with caching.
 
         Returns:
             list: List of brand dictionaries
         """
+        # If we have a cached result, use it
+        if DatabaseWorker._brands_cache is not None:
+            logger.debug("Using cached brands data instead of querying database")
+            return DatabaseWorker._brands_cache
+
         # Get all cars
         cars = self.db.get_all_cars()
 
@@ -115,7 +124,12 @@ class DatabaseWorker(QObject):
                     unique_brands.add(brand)
 
         # Create brand objects
-        return [{'brand': brand} for brand in sorted(unique_brands)]
+        result = [{'brand': brand} for brand in sorted(unique_brands)]
+
+        # Cache the result for future use
+        DatabaseWorker._brands_cache = result
+
+        return result
 
     def _get_models(self, brand):
         """
@@ -428,6 +442,8 @@ class DatabaseOperator(QObject):
         operator = DatabaseOperator(db)
         operator.execute("get_brands", self.on_brands_loaded, self.on_error)
     """
+    # Static cache for shared database connections
+    _shared_db_connections = {}
 
     def __init__(self, db):
         """
@@ -441,9 +457,38 @@ class DatabaseOperator(QObject):
         self.thread = None
         self.worker = None
 
+    def _get_thread_db(self):
+        """Get a database connection for the current thread with reuse."""
+        thread_id = threading.get_ident()
+
+        # If we already have a connection for this thread, reuse it
+        if thread_id in DatabaseOperator._shared_db_connections:
+            db = DatabaseOperator._shared_db_connections[thread_id]
+            # Make sure the connection is still valid
+            if hasattr(db, 'ensure_connection'):
+                try:
+                    db.ensure_connection()
+                    logger.debug(f"Reusing existing database connection for thread {thread_id}")
+                    return db
+                except Exception:
+                    # If there's an error with the connection, remove it and create a new one
+                    DatabaseOperator._shared_db_connections.pop(thread_id, None)
+
+        # Create a new connection for this thread
+        if hasattr(self.db, 'ensure_connection'):
+            # If this is a connection that supports thread-local connections,
+            # call ensure_connection to get a valid connection for this thread
+            self.db.ensure_connection()
+            DatabaseOperator._shared_db_connections[thread_id] = self.db
+            logger.debug(f"Created new thread-local database connection for thread {thread_id}")
+            return self.db
+        else:
+            # For other types of connections, just return the original
+            return self.db
+
     def execute(self, operation, on_complete, on_error, **kwargs):
         """
-        Execute a database operation in a background thread.
+        Execute a database operation in a background thread with improved shutdown safety.
 
         Args:
             operation (str): The operation to perform
@@ -454,39 +499,99 @@ class DatabaseOperator(QObject):
         # Clean up any existing operation
         self.cleanup()
 
-        # Create a new thread and worker for each operation
-        self.thread = QThread()
-        self.worker = DatabaseWorker(self.db)
-        self.worker.moveToThread(self.thread)
+        try:
+            # Create a new thread and worker for each operation
+            self.thread = QThread()
 
-        # Connect signals
-        self.worker.finished.connect(on_complete)
-        self.worker.error.connect(on_error)
-        self.thread.started.connect(lambda: self.worker.execute(operation, **kwargs))
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.error.connect(self.thread.quit)
-        self.thread.finished.connect(self.cleanup)
+            # Get a database connection with reuse
+            thread_db = self._get_thread_db()
 
-        # Start the thread
-        self.thread.start()
+            # Create worker with the reused connection
+            self.worker = DatabaseWorker(thread_db)
+            self.worker.moveToThread(self.thread)
+
+            # Store operation and kwargs for the worker
+            self._operation = operation
+            self._kwargs = kwargs
+
+            # Define a safer execution function that checks if worker still exists
+            def execute_operation():
+                if hasattr(self, 'worker') and self.worker:
+                    try:
+                        self.worker.execute(self._operation, **self._kwargs)
+                    except Exception as e:
+                        logger.error(f"Error executing operation: {e}")
+                        if on_error:
+                            on_error(str(e))
+
+            # Connect signals with better error handling
+            self.worker.finished.connect(on_complete)
+            self.worker.error.connect(on_error)
+            self.thread.started.connect(execute_operation)
+            self.worker.finished.connect(self.thread.quit)
+            self.worker.error.connect(self.thread.quit)
+            self.thread.finished.connect(self.cleanup)
+
+            # Start the thread
+            self.thread.start()
+        except Exception as e:
+            logger.error(f"Failed to start database operation: {e}")
+            if on_error:
+                on_error(str(e))
 
     def cleanup(self):
-        """Clean up thread and worker resources."""
-        if self.worker:
+        """Clean up thread and worker resources with proper signal handling."""
+        # Clean up the worker first
+        if hasattr(self, 'worker') and self.worker:
             try:
                 if hasattr(self.worker, 'cleanup'):
                     self.worker.cleanup()
+
+                # Safely disconnect worker signals without checking receivers
+                if hasattr(self.worker, 'finished'):
+                    try:
+                        # Just try to disconnect all connections
+                        self.worker.finished.disconnect()
+                    except (TypeError, RuntimeError):
+                        # It's normal to get an exception if there are no connections
+                        pass
+
+                if hasattr(self.worker, 'error'):
+                    try:
+                        self.worker.error.disconnect()
+                    except (TypeError, RuntimeError):
+                        pass
+
                 self.worker.deleteLater()
             except Exception as e:
                 logger.error(f"Error cleaning up worker: {e}")
-            self.worker = None
+            finally:
+                self.worker = None
 
-        if self.thread:
+        # Then clean up the thread
+        if hasattr(self, 'thread') and self.thread:
             try:
+                # Safely disconnect thread signals
+                if hasattr(self.thread, 'started'):
+                    try:
+                        self.thread.started.disconnect()
+                    except (TypeError, RuntimeError):
+                        pass
+
+                if hasattr(self.thread, 'finished'):
+                    try:
+                        self.thread.finished.disconnect()
+                    except (TypeError, RuntimeError):
+                        pass
+
                 if self.thread.isRunning():
                     self.thread.quit()
-                    self.thread.wait(2000)  # Wait up to 2 seconds
+                    success = self.thread.wait(1000)  # 1 second timeout
+                    if not success:
+                        logger.warning("Thread didn't finish within timeout, continuing cleanup")
+
                 self.thread.deleteLater()
             except Exception as e:
                 logger.error(f"Error cleaning up thread: {e}")
-            self.thread = None
+            finally:
+                self.thread = None

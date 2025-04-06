@@ -300,16 +300,17 @@ class BrandStep(BaseStepWidget):
         # Call parent first for consistent behavior
         super().on_show()
 
-        # If brands are already loaded, just update the UI
+        # If brands are already loaded, just update the UI without reloading from database
         if self.brands:
-            # Skip loading from database again
+            logger.debug("Using previously loaded brands instead of reloading")
+            # Populate the grid with cached data
             self.populate_brands_grid()
             # If selection exists, restore it
             if self.step_data:
                 self.brands_grid.set_selected(self.step_data)
             return
 
-        # Otherwise, show immediate loading indicator
+        # Only show loading indicator and initiate brand loading if we don't have data
         self.show_loading(True)
 
         # IMPORTANT: Use a timer to allow the UI to update
@@ -342,10 +343,16 @@ class BrandStep(BaseStepWidget):
 
     def setup_preloading(self, db_operator=None):
         """Set up preloading of brands and logos.
+        Only preloads if brands aren't already loaded.
 
         Args:
             db_operator: Shared database operator (optional)
         """
+        # Skip preloading if we already have the brands data
+        if self.brands:
+            logger.debug("Skipping brand preloading - data already loaded")
+            return
+
         # Use the provided db_operator or create our own
         op = db_operator if db_operator else self.db_operator
 

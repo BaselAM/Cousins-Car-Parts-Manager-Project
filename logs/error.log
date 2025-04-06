@@ -394,3 +394,8 @@ AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_c
 2025-04-06 03:13:57,260 - __main__ - ERROR - [main.py:105] - create_db_instance - Database connection error: 'CarPartsDB' object has no attribute '_connection_count'
 2025-04-06 13:31:43,434 - __main__ - ERROR - [main.py:120] - cleanup_resources - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
 2025-04-06 13:56:51,223 - __main__ - ERROR - [main.py:120] - cleanup_resources - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
+2025-04-06 14:30:18,008 - parts_navigation.database_worker - ERROR - [database_worker.py:504] - cleanup - Error disconnecting thread signals: 'PyQt5.QtCore.pyqtBoundSignal' object has no attribute 'receivers'
+2025-04-06 14:30:18,317 - parts_navigation.database_worker - ERROR - [database_worker.py:504] - cleanup - Error disconnecting thread signals: 'PyQt5.QtCore.pyqtBoundSignal' object has no attribute 'receivers'
+2025-04-06 14:38:03,346 - __main__ - ERROR - [main.py:120] - cleanup_resources - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
+2025-04-06 14:58:06,138 - __main__ - ERROR - [main.py:120] - cleanup_resources - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
+2025-04-06 14:58:32,952 - __main__ - ERROR - [main.py:120] - cleanup_resources - Error during cleanup: wrapped C/C++ object of type QStackedWidget has been deleted
