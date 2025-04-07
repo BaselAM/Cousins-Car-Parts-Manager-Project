@@ -3,7 +3,7 @@ DatabaseWorker utility for asynchronous database operations.
 
 Provides thread-safe database operations for the parts navigation system.
 """
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot, Qt
 import threading
 from logger import get_logger
 
@@ -25,8 +25,9 @@ class DatabaseWorker(QObject):
     # Signal emitted when an error occurs
     error = pyqtSignal(str)  # Error message
 
-    # Static cache for brands data
+    # Static cache for brands data with thread safety
     _brands_cache = None
+    _brands_cache_lock = threading.RLock()
 
     def __init__(self, db):
         """
@@ -52,7 +53,12 @@ class DatabaseWorker(QObject):
 
             # Ensure connection for this thread
             if hasattr(self.db, 'ensure_connection'):
-                self.db.ensure_connection()
+                try:
+                    self.db.ensure_connection()
+                except Exception as e:
+                    logger.error(f"Database connection error in execute: {e}")
+                    self.error.emit(f"Database connection error: {e}")
+                    return
 
             # Brand operations
             if operation == "get_brands":
@@ -102,34 +108,50 @@ class DatabaseWorker(QObject):
 
     def _get_brands(self):
         """
-        Get unique car brands with caching.
+        Get unique car brands with caching and improved error handling.
 
         Returns:
             list: List of brand dictionaries
         """
-        # If we have a cached result, use it
-        if DatabaseWorker._brands_cache is not None:
-            logger.debug("Using cached brands data instead of querying database")
-            return DatabaseWorker._brands_cache
+        try:
+            # If we have a cached result, use it - with thread safety
+            with DatabaseWorker._brands_cache_lock:
+                if DatabaseWorker._brands_cache is not None:
+                    logger.debug("Using cached brands data instead of querying database")
+                    return DatabaseWorker._brands_cache.copy()  # Return a copy for thread safety
 
-        # Get all cars
-        cars = self.db.get_all_cars()
+            # Get all cars with error handling
+            try:
+                cars = self.db.get_all_cars()
+            except Exception as e:
+                logger.error(f"Error getting cars from database: {e}")
+                # Return empty list rather than failing completely
+                return []
 
-        # Extract unique brands
-        unique_brands = set()
-        for car in cars:
-            if isinstance(car, dict) and 'brand' in car:
-                brand = car['brand'].strip()
-                if brand and brand.lower() != 'unknown':
-                    unique_brands.add(brand)
+            # Extract unique brands with defensive coding
+            unique_brands = set()
+            for car in cars:
+                try:
+                    if isinstance(car, dict) and 'brand' in car:
+                        brand = car['brand'].strip()
+                        if brand and brand.lower() != 'unknown':
+                            unique_brands.add(brand)
+                except Exception as e:
+                    logger.error(f"Error processing car brand: {e}")
+                    # Continue with the next car rather than failing
 
-        # Create brand objects
-        result = [{'brand': brand} for brand in sorted(unique_brands)]
+            # Create brand objects
+            result = [{'brand': brand} for brand in sorted(unique_brands)]
 
-        # Cache the result for future use
-        DatabaseWorker._brands_cache = result
+            # Cache the result for future use with thread safety
+            with DatabaseWorker._brands_cache_lock:
+                DatabaseWorker._brands_cache = result.copy()  # Store a copy for thread safety
 
-        return result
+            return result  # Return the original list
+        except Exception as e:
+            logger.error(f"Unexpected error in _get_brands: {e}")
+            # Return empty list rather than failing
+            return []
 
     def _get_models(self, brand):
         """
@@ -147,20 +169,24 @@ class DatabaseWorker(QObject):
 
         brand_name = brand['brand']
 
-        # Get all cars
-        cars = self.db.get_all_cars()
+        try:
+            # Get all cars
+            cars = self.db.get_all_cars()
 
-        # Filter for the current brand and extract unique models
-        unique_models = set()
-        for car in cars:
-            if isinstance(car, dict) and 'brand' in car and 'model' in car:
-                if car['brand'].strip() == brand_name:
-                    model = car['model'].strip()
-                    if model and model.lower() != 'unknown':
-                        unique_models.add(model)
+            # Filter for the current brand and extract unique models
+            unique_models = set()
+            for car in cars:
+                if isinstance(car, dict) and 'brand' in car and 'model' in car:
+                    if car['brand'].strip() == brand_name:
+                        model = car['model'].strip()
+                        if model and model.lower() != 'unknown':
+                            unique_models.add(model)
 
-        # Create model objects
-        return [{'model': model} for model in sorted(unique_models)]
+            # Create model objects
+            return [{'model': model} for model in sorted(unique_models)]
+        except Exception as e:
+            logger.error(f"Error in _get_models: {e}")
+            return []
 
     def _get_years(self, brand, model):
         """
@@ -180,29 +206,33 @@ class DatabaseWorker(QObject):
         brand_name = brand['brand']
         model_name = model['model']
 
-        # Get car data
-        cars = self.db.get_all_cars()
-
-        # Filter for the current brand and model, then extract unique years
-        unique_years = set()
-        for car in cars:
-            if isinstance(car, dict) and 'brand' in car and 'model' in car and 'year' in car:
-                if (car['brand'].strip() == brand_name and
-                        car['model'].strip() == model_name):
-                    year = car['year'].strip()
-                    if year and year.lower() != 'unknown':
-                        unique_years.add(year)
-
-        # Try to convert years to integers for sorting (if they are all numbers)
         try:
-            sorted_years = sorted([int(y) for y in unique_years], reverse=True)
-            sorted_years = [str(y) for y in sorted_years]
-        except ValueError:
-            # If conversion fails, sort as strings
-            sorted_years = sorted(unique_years, reverse=True)
+            # Get car data
+            cars = self.db.get_all_cars()
 
-        # Create year objects
-        return [{'year': year} for year in sorted_years]
+            # Filter for the current brand and model, then extract unique years
+            unique_years = set()
+            for car in cars:
+                if isinstance(car, dict) and 'brand' in car and 'model' in car and 'year' in car:
+                    if (car['brand'].strip() == brand_name and
+                            car['model'].strip() == model_name):
+                        year = car['year'].strip()
+                        if year and year.lower() != 'unknown':
+                            unique_years.add(year)
+
+            # Try to convert years to integers for sorting (if they are all numbers)
+            try:
+                sorted_years = sorted([int(y) for y in unique_years], reverse=True)
+                sorted_years = [str(y) for y in sorted_years]
+            except ValueError:
+                # If conversion fails, sort as strings
+                sorted_years = sorted(unique_years, reverse=True)
+
+            # Create year objects
+            return [{'year': year} for year in sorted_years]
+        except Exception as e:
+            logger.error(f"Error in _get_years: {e}")
+            return []
 
     def _get_categories(self, car):
         """
@@ -218,34 +248,38 @@ class DatabaseWorker(QObject):
             self.error.emit("Car data must be specified")
             return []
 
-        # Get parts from database
-        parts = self.db.get_all_parts()
+        try:
+            # Get parts from database
+            parts = self.db.get_all_parts()
 
-        # Extract unique categories
-        unique_categories = set()
-        for part in parts:
-            if isinstance(part, dict) and 'category' in part:
-                # Check if this part is compatible with our car
-                compatible = self._is_part_compatible_with_car(part, car)
-                if compatible:
-                    category = part.get('category', '').strip()
-                    if category and category.lower() != 'unknown':
-                        unique_categories.add(category)
+            # Extract unique categories
+            unique_categories = set()
+            for part in parts:
+                if isinstance(part, dict) and 'category' in part:
+                    # Check if this part is compatible with our car
+                    compatible = self._is_part_compatible_with_car(part, car)
+                    if compatible:
+                        category = part.get('category', '').strip()
+                        if category and category.lower() != 'unknown':
+                            unique_categories.add(category)
 
-        # Create category objects
-        result = [{'category': category} for category in sorted(unique_categories)]
+            # Create category objects
+            result = [{'category': category} for category in sorted(unique_categories)]
 
-        # If no categories found, add some defaults for testing
-        if not result:
-            logger.warning("No categories found in database, adding defaults for testing")
-            default_categories = [
-                'Engine Parts', 'Brake System', 'Suspension', 'Transmission',
-                'Electrical', 'Body Parts', 'Interior', 'Exhaust System',
-                'Cooling System', 'Steering', 'Fuel System', 'Air Conditioning'
-            ]
-            result = [{'category': category} for category in default_categories]
+            # If no categories found, add some defaults for testing
+            if not result:
+                logger.warning("No categories found in database, adding defaults for testing")
+                default_categories = [
+                    'Engine Parts', 'Brake System', 'Suspension', 'Transmission',
+                    'Electrical', 'Body Parts', 'Interior', 'Exhaust System',
+                    'Cooling System', 'Steering', 'Fuel System', 'Air Conditioning'
+                ]
+                result = [{'category': category} for category in default_categories]
 
-        return result
+            return result
+        except Exception as e:
+            logger.error(f"Error in _get_categories: {e}")
+            return []
 
     def _get_products(self, car, category):
         """
@@ -264,40 +298,44 @@ class DatabaseWorker(QObject):
 
         category_name = category['category']
 
-        # Get parts from database
-        parts = self.db.get_all_parts()
+        try:
+            # Get parts from database
+            parts = self.db.get_all_parts()
 
-        # Filter parts by category and car compatibility
-        filtered_parts = []
-        for part in parts:
-            if isinstance(part, dict) and 'category' in part:
-                # Check if part matches category
-                if part.get('category', '').strip() == category_name:
-                    # Check if compatible with car
-                    if self._is_part_compatible_with_car(part, car):
-                        filtered_parts.append(part)
+            # Filter parts by category and car compatibility
+            filtered_parts = []
+            for part in parts:
+                if isinstance(part, dict) and 'category' in part:
+                    # Check if part matches category
+                    if part.get('category', '').strip() == category_name:
+                        # Check if compatible with car
+                        if self._is_part_compatible_with_car(part, car):
+                            filtered_parts.append(part)
 
-        # Convert parts to product objects for our UI
-        result = []
-        for part in filtered_parts:
-            product = {
-                'id': part.get('parcode', 0),
-                'name': part.get('product_name', ''),
-                'category': part.get('category', ''),
-                'price': part.get('price', 0),
-                'quantity': part.get('quantity', 0),
-                'compatible_brands': part.get('compatible_brands', ''),
-                'compatible_models': part.get('compatible_models', ''),
-                'model_years': part.get('model_years', '')
-            }
-            result.append(product)
+            # Convert parts to product objects for our UI
+            result = []
+            for part in filtered_parts:
+                product = {
+                    'id': part.get('parcode', 0),
+                    'name': part.get('product_name', ''),
+                    'category': part.get('category', ''),
+                    'price': part.get('price', 0),
+                    'quantity': part.get('quantity', 0),
+                    'compatible_brands': part.get('compatible_brands', ''),
+                    'compatible_models': part.get('compatible_models', ''),
+                    'model_years': part.get('model_years', '')
+                }
+                result.append(product)
 
-        # If no products found, add some test data
-        if not result:
-            logger.warning("No products found in database, adding test data")
-            self._add_test_products(result, car, category_name)
+            # If no products found, add some test data
+            if not result:
+                logger.warning("No products found in database, adding test data")
+                self._add_test_products(result, car, category_name)
 
-        return result
+            return result
+        except Exception as e:
+            logger.error(f"Error in _get_products: {e}")
+            return []
 
     def _search_parts(self, search_text):
         """
@@ -313,8 +351,12 @@ class DatabaseWorker(QObject):
             self.error.emit("Search text must be specified")
             return []
 
-        # Search parts by text
-        return self.db.search_parts(search_text)
+        try:
+            # Search parts by text
+            return self.db.search_parts(search_text)
+        except Exception as e:
+            logger.error(f"Error in _search_parts: {e}")
+            return []
 
     def _get_part_details(self, part_id):
         """
@@ -330,8 +372,12 @@ class DatabaseWorker(QObject):
             self.error.emit("Part ID must be specified")
             return None
 
-        # Get part details
-        return self.db.get_part(part_id)
+        try:
+            # Get part details
+            return self.db.get_part(part_id)
+        except Exception as e:
+            logger.error(f"Error in _get_part_details: {e}")
+            return None
 
     def _is_part_compatible_with_car(self, part, car):
         """
@@ -348,30 +394,34 @@ class DatabaseWorker(QObject):
         if not part:
             return False
 
-        # Get compatibility fields
-        compatible_brands = part.get('compatible_brands', '')
-        compatible_models = part.get('compatible_models', '')
-        model_years = part.get('model_years', '')
+        try:
+            # Get compatibility fields
+            compatible_brands = part.get('compatible_brands', '')
+            compatible_models = part.get('compatible_models', '')
+            model_years = part.get('model_years', '')
 
-        # If any of these fields are empty, assume compatible for testing
-        if not compatible_brands or not compatible_models or not model_years:
-            return True
+            # If any of these fields are empty, assume compatible for testing
+            if not compatible_brands or not compatible_models or not model_years:
+                return True
 
-        # Split fields into lists and check compatibility
-        brands = [b.strip().lower() for b in compatible_brands.split(',')]
-        models = [m.strip().lower() for m in compatible_models.split(',')]
-        years = [y.strip().lower() for y in model_years.split(',')]
+            # Split fields into lists and check compatibility
+            brands = [b.strip().lower() for b in compatible_brands.split(',')]
+            models = [m.strip().lower() for m in compatible_models.split(',')]
+            years = [y.strip().lower() for y in model_years.split(',')]
 
-        car_brand = car['brand'].lower() if 'brand' in car else ''
-        car_model = car['model'].lower() if 'model' in car else ''
-        car_year = car['year'].lower() if 'year' in car else ''
+            car_brand = car['brand'].lower() if 'brand' in car else ''
+            car_model = car['model'].lower() if 'model' in car else ''
+            car_year = car['year'].lower() if 'year' in car else ''
 
-        # Check if our car matches any of the compatible combinations
-        brand_match = car_brand in brands or 'all' in brands
-        model_match = car_model in models or 'all' in models
-        year_match = not car_year or car_year in years or 'all' in years
+            # Check if our car matches any of the compatible combinations
+            brand_match = car_brand in brands or 'all' in brands
+            model_match = car_model in models or 'all' in models
+            year_match = not car_year or car_year in years or 'all' in years
 
-        return brand_match and model_match and year_match
+            return brand_match and model_match and year_match
+        except Exception as e:
+            logger.error(f"Error in _is_part_compatible_with_car: {e}")
+            return False
 
     def _add_test_products(self, products_list, car, category):
         """
@@ -426,7 +476,10 @@ class DatabaseWorker(QObject):
     def cleanup(self):
         """Clean up resources."""
         if hasattr(self.db, 'close_connection'):
-            self.db.close_connection()
+            try:
+                self.db.close_connection()
+            except Exception as e:
+                logger.error(f"Error in cleanup: {e}")
 
 
 class DatabaseOperator(QObject):
@@ -442,6 +495,9 @@ class DatabaseOperator(QObject):
         operator = DatabaseOperator(db)
         operator.execute("get_brands", self.on_brands_loaded, self.on_error)
     """
+    # Lock for shared database connections
+    _connections_lock = threading.RLock()
+
     # Static cache for shared database connections
     _shared_db_connections = {}
 
@@ -456,39 +512,48 @@ class DatabaseOperator(QObject):
         self.db = db
         self.thread = None
         self.worker = None
+        self._thread_lock = threading.RLock()  # Add thread safety
 
     def _get_thread_db(self):
         """Get a database connection for the current thread with reuse."""
         thread_id = threading.get_ident()
 
-        # If we already have a connection for this thread, reuse it
-        if thread_id in DatabaseOperator._shared_db_connections:
-            db = DatabaseOperator._shared_db_connections[thread_id]
-            # Make sure the connection is still valid
-            if hasattr(db, 'ensure_connection'):
-                try:
-                    db.ensure_connection()
-                    logger.debug(f"Reusing existing database connection for thread {thread_id}")
-                    return db
-                except Exception:
-                    # If there's an error with the connection, remove it and create a new one
-                    DatabaseOperator._shared_db_connections.pop(thread_id, None)
+        # Thread-safe access to shared connections
+        with DatabaseOperator._connections_lock:
+            # If we already have a connection for this thread, reuse it
+            if thread_id in DatabaseOperator._shared_db_connections:
+                db = DatabaseOperator._shared_db_connections[thread_id]
+                # Make sure the connection is still valid
+                if hasattr(db, 'ensure_connection'):
+                    try:
+                        db.ensure_connection()
+                        logger.debug(f"Reusing existing database connection for thread {thread_id}")
+                        return db
+                    except Exception as e:
+                        # If there's an error with the connection, remove it
+                        logger.error(f"Error with cached connection: {e}")
+                        DatabaseOperator._shared_db_connections.pop(thread_id, None)
 
-        # Create a new connection for this thread
-        if hasattr(self.db, 'ensure_connection'):
-            # If this is a connection that supports thread-local connections,
-            # call ensure_connection to get a valid connection for this thread
-            self.db.ensure_connection()
-            DatabaseOperator._shared_db_connections[thread_id] = self.db
-            logger.debug(f"Created new thread-local database connection for thread {thread_id}")
-            return self.db
-        else:
-            # For other types of connections, just return the original
-            return self.db
+            # Create a new connection for this thread
+            if hasattr(self.db, 'ensure_connection'):
+                # If this is a connection that supports thread-local connections,
+                # call ensure_connection to get a valid connection for this thread
+                try:
+                    self.db.ensure_connection()
+                    DatabaseOperator._shared_db_connections[thread_id] = self.db
+                    logger.debug(f"Created new thread-local database connection for thread {thread_id}")
+                    return self.db
+                except Exception as e:
+                    logger.error(f"Error creating thread-local connection: {e}")
+                    # Return the original as fallback
+                    return self.db
+            else:
+                # For other types of connections, just return the original
+                return self.db
 
     def execute(self, operation, on_complete, on_error, **kwargs):
         """
-        Execute a database operation in a background thread with improved shutdown safety.
+        Execute a database operation in a background thread with improved error handling.
 
         Args:
             operation (str): The operation to perform
@@ -496,102 +561,153 @@ class DatabaseOperator(QObject):
             on_error (callable): Callback when operation fails
             **kwargs: Additional parameters for the operation
         """
-        # Clean up any existing operation
-        self.cleanup()
+        with self._thread_lock:  # Thread-safe execution
+            # Clean up any existing operation
+            self.cleanup()
 
-        try:
-            # Create a new thread and worker for each operation
-            self.thread = QThread()
+            try:
+                # Create a new thread and worker for each operation
+                self.thread = QThread()
 
-            # Get a database connection with reuse
-            thread_db = self._get_thread_db()
+                # Get a database connection with reuse and error handling
+                try:
+                    thread_db = self._get_thread_db()
+                except Exception as e:
+                    logger.error(f"Error getting thread database connection: {e}")
+                    if on_error:
+                        on_error(f"Database connection error: {e}")
+                    return
 
-            # Create worker with the reused connection
-            self.worker = DatabaseWorker(thread_db)
-            self.worker.moveToThread(self.thread)
+                # Create worker with the reused connection
+                self.worker = DatabaseWorker(thread_db)
+                self.worker.moveToThread(self.thread)
 
-            # Store operation and kwargs for the worker
-            self._operation = operation
-            self._kwargs = kwargs
+                # Store operation and kwargs for the worker
+                self._operation = operation
+                self._kwargs = kwargs
 
-            # Define a safer execution function that checks if worker still exists
-            def execute_operation():
-                if hasattr(self, 'worker') and self.worker:
+                # Define a safer execution function
+                def execute_operation():
                     try:
-                        self.worker.execute(self._operation, **self._kwargs)
+                        if hasattr(self, 'worker') and self.worker:
+                            self.worker.execute(self._operation, **self._kwargs)
                     except Exception as e:
                         logger.error(f"Error executing operation: {e}")
                         if on_error:
-                            on_error(str(e))
+                            try:
+                                on_error(str(e))
+                            except Exception as callback_error:
+                                logger.error(f"Error in error callback: {callback_error}")
 
-            # Connect signals with better error handling
-            self.worker.finished.connect(on_complete)
-            self.worker.error.connect(on_error)
-            self.thread.started.connect(execute_operation)
-            self.worker.finished.connect(self.thread.quit)
-            self.worker.error.connect(self.thread.quit)
-            self.thread.finished.connect(self.cleanup)
+                # Create safer callback wrappers that handle exceptions
+                def safe_complete_callback(result):
+                    try:
+                        if on_complete:
+                            on_complete(result)
+                    except Exception as e:
+                        logger.error(f"Error in completion callback: {e}")
 
-            # Start the thread
-            self.thread.start()
+                def safe_error_callback(error_msg):
+                    try:
+                        if on_error:
+                            on_error(error_msg)
+                    except Exception as e:
+                        logger.error(f"Error in error callback: {e}")
+
+                # Connect signals with safer callbacks and thread safety
+                self.worker.finished.connect(safe_complete_callback, type=Qt.QueuedConnection)
+                self.worker.error.connect(safe_error_callback, type=Qt.QueuedConnection)
+                self.thread.started.connect(execute_operation)
+
+                # Connect cleanup operations
+                def safe_handle_thread_finished(*args):
+                    try:
+                        self._handle_thread_finished(*args)
+                    except Exception as e:
+                        logger.error(f"Error in thread finished handler: {e}")
+
+                if hasattr(self.worker, 'finished'):
+                    self.worker.finished.connect(safe_handle_thread_finished, type=Qt.QueuedConnection)
+                if hasattr(self.worker, 'error'):
+                    self.worker.error.connect(safe_handle_thread_finished, type=Qt.QueuedConnection)
+
+                # Start the thread
+                self.thread.start()
+            except Exception as e:
+                logger.error(f"Failed to start database operation: {e}")
+                if on_error:
+                    try:
+                        on_error(str(e))
+                    except Exception as callback_error:
+                        logger.error(f"Error in error callback: {callback_error}")
+
+    def _handle_thread_finished(self, *args):
+        """Safely handle thread completion."""
+        try:
+            if self.thread and self.thread.isRunning():
+                self.thread.quit()
         except Exception as e:
-            logger.error(f"Failed to start database operation: {e}")
-            if on_error:
-                on_error(str(e))
+            logger.error(f"Error in thread finished handler: {e}")
 
     def cleanup(self):
         """Clean up thread and worker resources with proper signal handling."""
-        # Clean up the worker first
-        if hasattr(self, 'worker') and self.worker:
-            try:
-                if hasattr(self.worker, 'cleanup'):
-                    self.worker.cleanup()
+        with self._thread_lock:  # Thread-safe cleanup
+            # Clean up the worker first
+            if hasattr(self, 'worker') and self.worker:
+                try:
+                    if hasattr(self.worker, 'cleanup'):
+                        self.worker.cleanup()
 
-                # Safely disconnect worker signals without checking receivers
-                if hasattr(self.worker, 'finished'):
+                    # Safely disconnect worker signals
                     try:
-                        # Just try to disconnect all connections
-                        self.worker.finished.disconnect()
+                        if hasattr(self.worker, 'finished'):
+                            self.worker.finished.disconnect()
                     except (TypeError, RuntimeError):
-                        # It's normal to get an exception if there are no connections
-                        pass
+                        pass  # It's normal to get an exception if there are no connections
 
-                if hasattr(self.worker, 'error'):
                     try:
-                        self.worker.error.disconnect()
+                        if hasattr(self.worker, 'error'):
+                            self.worker.error.disconnect()
                     except (TypeError, RuntimeError):
-                        pass
+                        pass  # It's normal to get an exception if there are no connections
 
-                self.worker.deleteLater()
-            except Exception as e:
-                logger.error(f"Error cleaning up worker: {e}")
-            finally:
-                self.worker = None
+                    # Set to None before deleteLater to avoid accessing it again
+                    worker_to_delete = self.worker
+                    self.worker = None
+                    worker_to_delete.deleteLater()
+                except Exception as e:
+                    logger.error(f"Error cleaning up worker: {e}")
+                    self.worker = None
 
-        # Then clean up the thread
-        if hasattr(self, 'thread') and self.thread:
-            try:
-                # Safely disconnect thread signals
-                if hasattr(self.thread, 'started'):
+            # Then clean up the thread
+            if hasattr(self, 'thread') and self.thread:
+                try:
+                    # Safely disconnect thread signals
                     try:
-                        self.thread.started.disconnect()
+                        if hasattr(self.thread, 'started'):
+                            self.thread.started.disconnect()
                     except (TypeError, RuntimeError):
-                        pass
+                        pass  # It's normal to get an exception if there are no connections
 
-                if hasattr(self.thread, 'finished'):
                     try:
-                        self.thread.finished.disconnect()
+                        if hasattr(self.thread, 'finished'):
+                            self.thread.finished.disconnect()
                     except (TypeError, RuntimeError):
-                        pass
+                        pass  # It's normal to get an exception if there are no connections
 
-                if self.thread.isRunning():
-                    self.thread.quit()
-                    success = self.thread.wait(1000)  # 1 second timeout
-                    if not success:
-                        logger.warning("Thread didn't finish within timeout, continuing cleanup")
+                    # Try to quit the thread if it's running
+                    thread_to_delete = self.thread
+                    thread_is_running = thread_to_delete.isRunning()
+                    self.thread = None  # Set to None before potentially waiting
 
-                self.thread.deleteLater()
-            except Exception as e:
-                logger.error(f"Error cleaning up thread: {e}")
-            finally:
-                self.thread = None
+                    if thread_is_running:
+                        thread_to_delete.quit()
+                        success = thread_to_delete.wait(1000)  # 1 second timeout
+                        if not success:
+                            logger.warning("Thread didn't finish within timeout, continuing cleanup")
+
+                    # Schedule thread for deletion
+                    thread_to_delete.deleteLater()
+                except Exception as e:
+                    logger.error(f"Error cleaning up thread: {e}")
+                    self.thread = None

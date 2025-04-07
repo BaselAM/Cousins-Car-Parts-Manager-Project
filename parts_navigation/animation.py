@@ -7,6 +7,9 @@ smooth, premium transitions throughout the application.
 from PyQt5.QtCore import (QPropertyAnimation, QEasingCurve, QParallelAnimationGroup,
                           QSequentialAnimationGroup, QTimer)
 from PyQt5.QtWidgets import QGraphicsOpacityEffect
+from logger import get_logger
+
+logger = get_logger('parts_navigation.animation')
 
 
 class AnimationManager:
@@ -34,71 +37,88 @@ class AnimationManager:
         Returns:
             QParallelAnimationGroup: The animation group
         """
-        # Create animation group
-        animation_group = QParallelAnimationGroup()
+        try:
+            # Create animation group
+            animation_group = QParallelAnimationGroup()
 
-        # Store widget references directly on the animation group to prevent GC
-        animation_group._from_widget = from_widget
-        animation_group._to_widget = to_widget
-        animation_group._stack_widget = stack_widget
+            # Store widget references directly on the animation group to prevent GC
+            animation_group._from_widget = from_widget
+            animation_group._to_widget = to_widget
+            animation_group._stack_widget = stack_widget
 
-        # Apply opacity effect to source widget
-        from_effect = QGraphicsOpacityEffect(from_widget)
-        from_effect.setOpacity(1.0)
-        from_widget.setGraphicsEffect(from_effect)
+            # Apply opacity effect to source widget
+            from_effect = QGraphicsOpacityEffect(from_widget)
+            from_effect.setOpacity(1.0)
+            from_widget.setGraphicsEffect(from_effect)
 
-        # Store effect reference to prevent premature GC
-        animation_group._from_effect = from_effect
+            # Store effect reference to prevent premature GC
+            animation_group._from_effect = from_effect
 
-        # Apply opacity effect to destination widget
-        to_effect = QGraphicsOpacityEffect(to_widget)
-        to_effect.setOpacity(0.0)
-        to_widget.setGraphicsEffect(to_effect)
+            # Apply opacity effect to destination widget
+            to_effect = QGraphicsOpacityEffect(to_widget)
+            to_effect.setOpacity(0.0)
+            to_widget.setGraphicsEffect(to_effect)
 
-        # Store effect reference to prevent premature GC
-        animation_group._to_effect = to_effect
+            # Store effect reference to prevent premature GC
+            animation_group._to_effect = to_effect
 
-        # Create fade out animation with easing
-        fade_out = QPropertyAnimation(from_effect, b"opacity")
-        fade_out.setDuration(duration)
-        fade_out.setStartValue(1.0)
-        fade_out.setEndValue(0.0)
-        fade_out.setEasingCurve(QEasingCurve.InOutQuad)
+            # Create fade out animation with easing
+            fade_out = QPropertyAnimation(from_effect, b"opacity")
+            fade_out.setDuration(duration)
+            fade_out.setStartValue(1.0)
+            fade_out.setEndValue(0.0)
+            fade_out.setEasingCurve(QEasingCurve.InOutQuad)
 
-        # Store for GC protection
-        animation_group._fade_out = fade_out
+            # Store for GC protection
+            animation_group._fade_out = fade_out
 
-        # Create safer index change function - no lambda
-        def change_index():
-            stack_widget.setCurrentIndex(to_index)
+            # Create safer index change function - no lambda
+            def change_index():
+                try:
+                    if stack_widget:
+                        stack_widget.setCurrentIndex(to_index)
+                except Exception as e:
+                    logger.error(f"Error changing stack index: {e}")
 
-        # Connect index change function
-        fade_out.finished.connect(change_index)
+            # Connect index change function
+            fade_out.finished.connect(change_index)
 
-        # Create fade in animation with easing
-        fade_in = QPropertyAnimation(to_effect, b"opacity")
-        fade_in.setDuration(duration)
-        fade_in.setStartValue(0.0)
-        fade_in.setEndValue(1.0)
-        fade_in.setEasingCurve(QEasingCurve.InOutQuad)
+            # Create fade in animation with easing
+            fade_in = QPropertyAnimation(to_effect, b"opacity")
+            fade_in.setDuration(duration)
+            fade_in.setStartValue(0.0)
+            fade_in.setEndValue(1.0)
+            fade_in.setEasingCurve(QEasingCurve.InOutQuad)
 
-        # Store for GC protection
-        animation_group._fade_in = fade_in
+            # Store for GC protection
+            animation_group._fade_in = fade_in
 
-        # Add fade out to group
-        animation_group.addAnimation(fade_out)
+            # Add fade out to group
+            animation_group.addAnimation(fade_out)
 
-        # Create safer fade-in adder - no lambda
-        def add_fade_in():
-            animation_group.addAnimation(fade_in)
+            # Create safer fade-in adder - no lambda
+            def add_fade_in():
+                try:
+                    animation_group.addAnimation(fade_in)
+                except Exception as e:
+                    logger.error(f"Error adding fade-in animation: {e}")
 
-        # Add fade in after delay
-        QTimer.singleShot(delay, add_fade_in)
+            # Add fade in after delay
+            QTimer.singleShot(delay, add_fade_in)
 
-        # Start animation
-        animation_group.start()
+            # Start animation
+            animation_group.start()
 
-        return animation_group
+            return animation_group
+        except Exception as e:
+            logger.error(f"Error in fade_transition: {e}")
+            # In case of error, just change the index directly without animation
+            try:
+                if stack_widget:
+                    stack_widget.setCurrentIndex(to_index)
+            except Exception as stack_error:
+                logger.error(f"Error setting stack index directly: {stack_error}")
+            return None
 
     @staticmethod
     def slide_transition(from_widget, to_widget, stack_widget, to_index,
@@ -117,8 +137,8 @@ class AnimationManager:
         Returns:
             QParallelAnimationGroup: The animation group
         """
-        # Will be implemented for the full animation class
-        pass
+        # For now, just use fade transition as a fallback
+        return AnimationManager.fade_transition(from_widget, to_widget, stack_widget, to_index, duration, 0)
 
     @staticmethod
     def fade_widget(widget, start_value, end_value, duration=250,
@@ -136,38 +156,53 @@ class AnimationManager:
         Returns:
             QPropertyAnimation: The animation object
         """
-        effect = QGraphicsOpacityEffect(widget)
-        widget.setGraphicsEffect(effect)
-        effect.setOpacity(start_value)
+        try:
+            effect = QGraphicsOpacityEffect(widget)
+            widget.setGraphicsEffect(effect)
+            effect.setOpacity(start_value)
 
-        animation = QPropertyAnimation(effect, b"opacity")
-        animation.setStartValue(start_value)
-        animation.setEndValue(end_value)
-        animation.setDuration(duration)
-        animation.setEasingCurve(easing)
+            animation = QPropertyAnimation(effect, b"opacity")
+            animation.setStartValue(start_value)
+            animation.setEndValue(end_value)
+            animation.setDuration(duration)
+            animation.setEasingCurve(easing)
 
-        # Store references to prevent GC
-        animation._widget = widget
-        animation._effect = effect
+            # Store references to prevent GC
+            animation._widget = widget
+            animation._effect = effect
 
-        # Define functions instead of lambdas
-        def on_fade_out_finished():
-            if hasattr(widget, 'hide'):
+            # Define functions instead of lambdas
+            def on_fade_out_finished():
+                try:
+                    if hasattr(widget, 'hide'):
+                        widget.hide()
+                except Exception as e:
+                    logger.error(f"Error hiding widget after fade out: {e}")
+
+            def on_fade_in_started():
+                try:
+                    if hasattr(widget, 'show'):
+                        widget.show()
+                except Exception as e:
+                    logger.error(f"Error showing widget before fade in: {e}")
+
+            # Hide widget when fade out completes
+            if end_value == 0.0:
+                animation.finished.connect(on_fade_out_finished)
+            elif start_value == 0.0:
+                on_fade_in_started()
+
+            animation.start()
+
+            return animation
+        except Exception as e:
+            logger.error(f"Error in fade_widget: {e}")
+            # Update visibility directly as fallback
+            if end_value == 0.0:
                 widget.hide()
-
-        def on_fade_in_started():
-            if hasattr(widget, 'show'):
+            else:
                 widget.show()
-
-        # Hide widget when fade out completes
-        if end_value == 0.0:
-            animation.finished.connect(on_fade_out_finished)
-        elif start_value == 0.0:
-            on_fade_in_started()
-
-        animation.start()
-
-        return animation
+            return None
 
     @staticmethod
     def pulse_widget(widget, scale_factor=1.1, duration=300):
@@ -182,38 +217,42 @@ class AnimationManager:
         Returns:
             QSequentialAnimationGroup: The animation group
         """
-        # Get original size
-        original_size = widget.size()
+        try:
+            # Get original size
+            original_size = widget.size()
 
-        # Create animation group
-        animation_group = QSequentialAnimationGroup()
+            # Create animation group
+            animation_group = QSequentialAnimationGroup()
 
-        # Store widget reference to prevent GC
-        animation_group._widget = widget
+            # Store widget reference to prevent GC
+            animation_group._widget = widget
 
-        # Scale up animation
-        scale_up = QPropertyAnimation(widget, b"size")
-        scale_up.setDuration(duration // 2)
-        scale_up.setStartValue(original_size)
-        scale_up.setEndValue(original_size * scale_factor)
-        scale_up.setEasingCurve(QEasingCurve.OutQuad)
+            # Scale up animation
+            scale_up = QPropertyAnimation(widget, b"size")
+            scale_up.setDuration(duration // 2)
+            scale_up.setStartValue(original_size)
+            scale_up.setEndValue(original_size * scale_factor)
+            scale_up.setEasingCurve(QEasingCurve.OutQuad)
 
-        # Scale down animation
-        scale_down = QPropertyAnimation(widget, b"size")
-        scale_down.setDuration(duration // 2)
-        scale_down.setStartValue(original_size * scale_factor)
-        scale_down.setEndValue(original_size)
-        scale_down.setEasingCurve(QEasingCurve.InOutQuad)
+            # Scale down animation
+            scale_down = QPropertyAnimation(widget, b"size")
+            scale_down.setDuration(duration // 2)
+            scale_down.setStartValue(original_size * scale_factor)
+            scale_down.setEndValue(original_size)
+            scale_down.setEasingCurve(QEasingCurve.InOutQuad)
 
-        # Store animations to prevent GC
-        animation_group._scale_up = scale_up
-        animation_group._scale_down = scale_down
+            # Store animations to prevent GC
+            animation_group._scale_up = scale_up
+            animation_group._scale_down = scale_down
 
-        # Add animations to group
-        animation_group.addAnimation(scale_up)
-        animation_group.addAnimation(scale_down)
+            # Add animations to group
+            animation_group.addAnimation(scale_up)
+            animation_group.addAnimation(scale_down)
 
-        # Start animation
-        animation_group.start()
+            # Start animation
+            animation_group.start()
 
-        return animation_group
+            return animation_group
+        except Exception as e:
+            logger.error(f"Error in pulse_widget: {e}")
+            return None

@@ -292,7 +292,7 @@ class LogoManager(QObject):
         Args:
             brand_names: List of brand names to preload
         """
-        logger.debug(f"Preloading logos for {len(brand_names)} brands")
+        logger.info(f"Preloading logos for {len(brand_names)} brands")
 
         # Set maximum thread count based on available cores
         import multiprocessing
@@ -301,8 +301,10 @@ class LogoManager(QObject):
 
         # Throttling for batch operations
         batch_size = 5
+        preloaded_count = 0
+
         for i in range(0, len(brand_names), batch_size):
-            batch = brand_names[i:i+batch_size]
+            batch = brand_names[i:i + batch_size]
             for brand_name in batch:
                 if brand_name and brand_name.lower() not in self.pixmap_cache:
                     # Check if already in disk cache
@@ -311,6 +313,7 @@ class LogoManager(QObject):
                         pixmap = QPixmap(cached_path)
                         if not pixmap.isNull():
                             self.pixmap_cache[brand_name.lower()] = pixmap
+                            preloaded_count += 1
                             continue
 
                     # Start download for non-cached logos
@@ -322,6 +325,7 @@ class LogoManager(QObject):
             # Allow UI updates between batches
             QApplication.processEvents()
 
+        logger.info(f"Found {preloaded_count} already cached logos out of {len(brand_names)}")
     def get_logo_sync(self, brand_name):
         """
         Get a logo synchronously from cache only.

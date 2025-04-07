@@ -25,6 +25,9 @@ class GridTile(QFrame):
     # Signal emitted when tile is clicked
     clicked = pyqtSignal(dict)  # Contains the tile's data
 
+    # Find the __init__ method in your GridTile class in parts_navigation/components/grid_tile.py
+    # Look for this section of code:
+
     def __init__(self, data, icon_path=None, is_selected=False, parent=None):
         """
         Initialize the grid tile.
@@ -45,15 +48,14 @@ class GridTile(QFrame):
         self.setObjectName("gridTile")
         self.setCursor(Qt.PointingHandCursor)
 
+        # MODIFY THIS SECTION - Replace the size policy code with:
         # Use a more flexible size policy that allows horizontal expansion
-        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setMinimumSize(90, 100)  # Minimum size instead of fixed
+        self.setMaximumWidth(150)  # Add a maximum width to prevent tiles from getting too large
 
         self.setup_ui()
         self.apply_theme()
-
-        # Enable mouse tracking for hover effects
-        self.setMouseTracking(True)
 
     def setup_ui(self):
         """Initialize and arrange UI elements with elegant spacing."""

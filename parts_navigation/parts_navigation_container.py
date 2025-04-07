@@ -66,7 +66,7 @@ class PartsNavigationContainer(QWidget):
         # Set up navigation state
         self.navigation_state = NavigationState()
 
-        # Configure size policy for responsive behavior - PRESERVE EXPANDING POLICY
+        # Configure size policy for responsive behavior
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Minimum size is important, but don't make it too large
@@ -89,47 +89,19 @@ class PartsNavigationContainer(QWidget):
         # Initialize with first step
         self.go_to_step(0)
 
-    def create_step_widgets(self, preload=False):
-        """Create all the navigation step widgets with preloading support."""
-        # Step 1: Brand selection with preloading
-        self.brand_step = BrandStep(self.translator, self.db,
-                                    db_operator=getattr(self, 'shared_db_operator', None))
-        self.brand_step.step_completed.connect(self.on_brand_selected)
-        self.steps_stack.addWidget(self.brand_step)
-
-        # Start preloading if requested
-        if preload:
-            QTimer.singleShot(100, self.brand_step.setup_preloading)
-
-        # Step 2: Model selection
-        self.model_step = ModelStep(self.translator, self.db)
-        self.model_step.step_completed.connect(self.on_model_selected)
-        self.steps_stack.addWidget(self.model_step)
-
-        # Step 3: Year selection
-        self.year_step = YearStep(self.translator, self.db)
-        self.year_step.step_completed.connect(self.on_year_selected)
-        self.steps_stack.addWidget(self.year_step)
-
-        # Step 4: Category selection
-        self.category_step = CategoryStep(self.translator, self.db)
-        self.category_step.step_completed.connect(self.on_category_selected)
-        self.steps_stack.addWidget(self.category_step)
-
-        # Step 5: Product selection
-        self.product_step = ProductStep(self.translator, self.db)
-        self.product_step.step_completed.connect(self.on_product_selected)
-        self.steps_stack.addWidget(self.product_step)
-
-        # Step 6: Details selection
-        self.details_step = DetailsStep(self.translator, self.db)
-        self.details_step.step_completed.connect(self.on_details_selected)
-        self.steps_stack.addWidget(self.details_step)
-
-        # Step 7: Final confirmation
-        self.summary_step = SummaryStep(self.translator, self.db)
-        self.summary_step.back_requested.connect(self.on_final_back)
-        self.steps_stack.addWidget(self.summary_step)
+    def _start_delayed_preloading(self):
+        """Start preloading brand data with proper error handling"""
+        if hasattr(self, 'brand_step') and self.brand_step:
+            try:
+                logger.info("Starting delayed brand preloading")
+                # Ensure we have a valid shared_db_operator
+                if hasattr(self, 'shared_db_operator') and self.shared_db_operator:
+                    self.brand_step.setup_preloading(self.shared_db_operator)
+                else:
+                    logger.warning("Cannot preload brands: shared_db_operator not available")
+            except Exception as e:
+                logger.error(f"Error during delayed brand preloading: {e}")
+                # Don't propagate the exception - just log it
 
     def cleanup_resources(self):
         """Complete cleanup of all resources when container is closed"""
@@ -200,7 +172,6 @@ class PartsNavigationContainer(QWidget):
                 logger.error(f"Error closing database connection: {e}")
 
         logger.debug("Parts navigation resources cleanup completed")
-
 
     def sizeHint(self):
         """Return a size that works well within the content stack."""
@@ -513,8 +484,6 @@ class PartsNavigationContainer(QWidget):
         self.search_box.search_changed.connect(self.on_search_typed)
         self.search_box.search_submitted.connect(self.on_search)
         search_layout.addWidget(self.search_box, 1)
-
-
 
     def get_step_widget(self, step_index):
         """
@@ -856,10 +825,6 @@ class PartsNavigationContainer(QWidget):
             if widget and hasattr(widget, 'update_translations'):
                 widget.update_translations()
 
-    """
-    Fix for the back button navigation in the parts container.
-    """
-
     def go_to_step(self, step_index):
         """
         Navigate to a specific step with premium transitions.
@@ -986,10 +951,6 @@ class PartsNavigationContainer(QWidget):
         """Clean up resources on destruction."""
         self.cleanup_animations()
 
-    # Add this method to the PartsNavigationContainer class
-    # This should be placed right before or after the cleanup_animations method
-
-
     def handle_close_event(self, event):
         """
         Handle application closing.
@@ -1037,3 +998,63 @@ class PartsNavigationContainer(QWidget):
             event.accept()
             # Don't call sys.exit() here - it can cause crashes
             # sys.exit(1)
+
+    def create_step_widgets(self, preload=False):
+        """Create all the navigation step widgets with preloading support."""
+        # Step 1: Brand selection with preloading
+        self.brand_step = BrandStep(self.translator, self.db,
+                                    db_operator=getattr(self, 'shared_db_operator', None))
+        self.brand_step.step_completed.connect(self.on_brand_selected)
+        self.steps_stack.addWidget(self.brand_step)
+
+        # Start preloading if requested - MODIFIED TO BE MORE ROBUST
+        if preload:
+            # Use a timer to delay preloading slightly to ensure UI is stable first
+            QTimer.singleShot(50, self._start_delayed_preloading)
+
+            # CRITICAL: Pre-create other steps but DEFER their database loading
+            # This makes all step widgets exist but doesn't load their data yet
+            QTimer.singleShot(150, self._create_remaining_steps)
+        else:
+            # Create all steps immediately if not preloading
+            self._create_remaining_steps()
+
+    def _create_remaining_steps(self):
+        """Create the remaining step widgets in the background."""
+        # Step 2: Model selection
+        self.model_step = ModelStep(self.translator, self.db)
+        self.model_step.step_completed.connect(self.on_model_selected)
+        self.steps_stack.addWidget(self.model_step)
+
+        # Step 3: Year selection
+        self.year_step = YearStep(self.translator, self.db)
+        self.year_step.step_completed.connect(self.on_year_selected)
+        self.steps_stack.addWidget(self.year_step)
+
+        # Step 4: Category selection
+        self.category_step = CategoryStep(self.translator, self.db)
+        self.category_step.step_completed.connect(self.on_category_selected)
+        self.steps_stack.addWidget(self.category_step)
+
+        # Use a timer to create the remaining steps with a delay
+        # This prevents UI freezing on slower systems
+        QTimer.singleShot(50, self._create_final_steps)
+
+    def _create_final_steps(self):
+        """Create the final step widgets with a slight delay."""
+        # Step 5: Product selection
+        self.product_step = ProductStep(self.translator, self.db)
+        self.product_step.step_completed.connect(self.on_product_selected)
+        self.steps_stack.addWidget(self.product_step)
+
+        # Step 6: Details selection
+        self.details_step = DetailsStep(self.translator, self.db)
+        self.details_step.step_completed.connect(self.on_details_selected)
+        self.steps_stack.addWidget(self.details_step)
+
+        # Step 7: Final confirmation
+        self.summary_step = SummaryStep(self.translator, self.db)
+        self.summary_step.back_requested.connect(self.on_final_back)
+        self.steps_stack.addWidget(self.summary_step)
+
+        logger.info("All navigation steps created successfully")

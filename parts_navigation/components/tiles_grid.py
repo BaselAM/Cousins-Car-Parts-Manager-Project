@@ -4,12 +4,24 @@ TilesGrid component for organizing selection tiles.
 A premium grid layout for organizing selection tiles with responsive design,
 elegant styling and proper toggle functionality.
 """
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (QFrame, QGridLayout, QLabel, QScrollArea,
-                             QWidget, QVBoxLayout, QSizePolicy)
+                             QWidget, QVBoxLayout, QSizePolicy, QApplication)
 from PyQt5.QtCore import Qt, pyqtSignal, QSize
 
-from .grid_tile import GridTile
+
 from themes import get_color
+from .grid_tile import GridTile
+from logger import get_logger
+
+# Add this logger definition right after the imports
+logger = get_logger('parts_navigation.components.tiles_grid')
+
+"""
+This is a self-contained fix for TilesGrid to ensure proper grid layout.
+Replace your entire TilesGrid class with this implementation or modify your 
+existing class to match these key elements.
+"""
 
 
 class TilesGrid(QFrame):
@@ -66,22 +78,360 @@ class TilesGrid(QFrame):
         # Container for the grid
         self.grid_container = QWidget()
         self.grid_container.setObjectName("gridContainer")
+        self.grid_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # Grid layout with tighter spacing
+        # Grid layout - CRITICAL: Set proper column configuration
         self.grid_layout = QGridLayout(self.grid_container)
         self.grid_layout.setContentsMargins(6, 6, 6, 6)
-        self.grid_layout.setSpacing(6)
+        self.grid_layout.setSpacing(8)  # Add some spacing between items
+        self.grid_layout.setHorizontalSpacing(8)  # Explicit horizontal spacing
+        self.grid_layout.setVerticalSpacing(8)  # Explicit vertical spacing
         self.grid_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        # Set equal column stretch
+        # Configure columns EXPLICITLY - IMPORTANT!
         for i in range(self.columns):
             self.grid_layout.setColumnStretch(i, 1)
+            self.grid_layout.setColumnMinimumWidth(i, 90)  # Set a minimum width for each column
 
         # Add container to scroll area
         self.scroll_area.setWidget(self.grid_container)
 
         # Add scroll area to main layout
         layout.addWidget(self.scroll_area)
+
+    def _create_tile(self, item, index, icon_getter=None):
+        """
+        Create a grid tile for an item.
+
+        Args:
+            item: Data dictionary for the tile
+            index: Index of the item
+            icon_getter: Optional function to get icon for the item
+
+        Returns:
+            GridTile: The created tile
+        """
+        # Get icon path if icon getter is provided
+        icon_path = None
+        if icon_getter:
+            try:
+                icon_path = icon_getter(item)
+            except Exception as e:
+                logger.error(f"Error getting icon at index {index}: {e}")
+
+        # Create tile with the item data and icon
+        from .grid_tile import GridTile
+        tile = GridTile(item, icon_path)
+
+        # IMPORTANT: Configure tile for grid layout
+        tile.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        tile.setMinimumSize(90, 110)  # Minimum size
+
+        # Connect click signal
+        tile.clicked.connect(self._on_tile_clicked)
+
+        return tile
+
+    def populate(self, items, icon_getter=None):
+        """
+        Populate the grid with data items.
+
+        Args:
+            items: List of data dictionaries
+            icon_getter: Optional function to get icon for an item
+        """
+        try:
+            # Clear existing tiles
+            self.clear()
+
+            # CRITICAL - reset grid layout configuration
+            for i in range(self.columns):
+                self.grid_layout.setColumnStretch(i, 1)
+                self.grid_layout.setColumnMinimumWidth(i, 90)
+
+            # If no items, show empty message
+            if not items:
+                empty_label = QLabel(self.translator.t('no_items'))
+                empty_label.setAlignment(Qt.AlignCenter)
+                empty_label.setWordWrap(True)
+                self.grid_layout.addWidget(empty_label, 0, 0, 1, self.columns)
+                return
+
+            # Set number of columns explicitly based on current width
+            container_width = self.grid_container.width()
+            if container_width > 0:
+                # Calculate optimal columns based on width
+                tile_width = 100  # Target width for tiles
+                spacing = self.grid_layout.horizontalSpacing()
+                margins = self.grid_layout.contentsMargins()
+                available_width = container_width - margins.left() - margins.right()
+                optimal_columns = max(1, int(available_width / (tile_width + spacing)))
+
+                # Update columns if significantly different
+                if abs(optimal_columns - self.columns) > 1:
+                    self.columns = optimal_columns
+                    # Reset column configuration
+                    for i in range(self.columns):
+                        self.grid_layout.setColumnStretch(i, 1)
+                        self.grid_layout.setColumnMinimumWidth(i, 90)
+
+            logger.info(f"Populating grid with {len(items)} items using {self.columns} columns")
+
+            # Add items in batches
+            chunk_size = 8
+            for start_idx in range(0, len(items), chunk_size):
+                end_idx = min(start_idx + chunk_size, len(items))
+                chunk = items[start_idx:end_idx]
+
+                # Process this chunk
+                for i, item in enumerate(chunk):
+                    # Calculate row and column
+                    absolute_idx = i + start_idx
+                    row = absolute_idx // self.columns
+                    col = absolute_idx % self.columns
+
+                    logger.debug(f"Adding item {absolute_idx} at position row={row}, col={col}")
+
+                    try:
+                        # Create tile
+                        tile = self._create_tile(item, absolute_idx, icon_getter)
+
+                        # Add to grid at specific position
+                        self.grid_layout.addWidget(tile, row, col, 1, 1)
+
+                        # Add to tiles list
+                        self.tiles.append(tile)
+                    except Exception as e:
+                        logger.error(f"Error creating tile at index {absolute_idx}: {e}")
+
+                # Process events after each chunk
+                QApplication.processEvents()
+
+            # Force layout update
+            self.grid_layout.update()
+            self.grid_container.updateGeometry()
+            QApplication.processEvents()
+
+            # Verify the grid configuration
+            self._verify_grid_layout()
+
+        except Exception as e:
+            logger.error(f"Error in populate: {e}")
+
+    def _verify_grid_layout(self):
+        """Verify and debug grid layout configuration."""
+        try:
+            col_count = 0
+            for i in range(self.grid_layout.columnCount()):
+                if self.grid_layout.columnStretch(i) > 0:
+                    col_count += 1
+
+            logger.info(f"Grid has {col_count} active columns configured")
+            logger.info(f"Total tiles: {len(self.tiles)}")
+
+            # Check for visible tiles
+            visible_count = 0
+            for tile in self.tiles:
+                if tile.isVisible():
+                    visible_count += 1
+
+            logger.info(f"Visible tiles: {visible_count}")
+
+        except Exception as e:
+            logger.error(f"Error verifying grid layout: {e}")
+
+    def clear(self):
+        """Clear all tiles from the grid."""
+        # Remove all widgets from grid
+        for i in reversed(range(self.grid_layout.count())):
+            item = self.grid_layout.itemAt(i)
+            if item:
+                widget = item.widget()
+                if widget:  # Check if the item has an associated widget
+                    self.grid_layout.removeWidget(widget)
+                    widget.deleteLater()
+                else:
+                    # Handle spacers or other layout items without widgets
+                    self.grid_layout.removeItem(item)
+
+        # Clear tiles list and selection
+        self.tiles = []
+        self.selected_item = None
+
+    def _on_tile_clicked(self, item_data):
+        """
+        Handle tile click event with toggle support.
+
+        Args:
+            item_data: Data from the clicked tile
+        """
+        # Check if this is the already selected tile
+        is_currently_selected = (self.selected_item is not None and
+                                 self._compare_items(item_data, self.selected_item))
+
+        # Update selection state regardless of toggle feature
+        # This ensures we always emit a signal with the clicked item
+        self.selected_item = None if (
+                is_currently_selected and hasattr(self, 'allow_toggle') and self.allow_toggle) else item_data
+
+        # Update selection state of all tiles
+        for tile in self.tiles:
+            if self.selected_item is None:
+                # If toggling off, deselect all
+                tile.set_selected(False)
+            else:
+                # Otherwise, select only the matching one
+                tile.set_selected(self._compare_items(tile.data, self.selected_item))
+
+        # Always emit the clicked item, even on deselection
+        # This ensures consistent behavior in step handling
+        self.item_selected.emit(item_data)
+
+    def _compare_items(self, item1, item2):
+        """
+        Compare two items to determine if they represent the same entity.
+
+        Args:
+            item1: First item data
+            item2: Second item data
+
+        Returns:
+            bool: True if items represent the same entity
+        """
+        if not item1 or not item2:
+            return False
+
+        # Compare first values in each dictionary
+        try:
+            value1 = next(iter(item1.values()))
+            value2 = next(iter(item2.values()))
+            return value1 == value2
+        except:
+            return False
+
+    def set_selected(self, item_data):
+        """
+        Set the selected item.
+
+        Args:
+            item_data: Data dictionary of the item to select
+        """
+        if not item_data:
+            # Clear selection if None provided
+            self.selected_item = None
+            for tile in self.tiles:
+                tile.set_selected(False)
+            return
+
+        # Update selected item
+        self.selected_item = item_data
+
+        # Update tile selection states
+        for tile in self.tiles:
+            tile.set_selected(self._compare_items(tile.data, item_data))
+
+    def resizeEvent(self, event):
+        """Handle resize events to adjust column count."""
+        super().resizeEvent(event)
+
+        # Only adjust columns if we have a significant size change
+        if abs(event.size().width() - event.oldSize().width()) > 50:
+            self.adjust_columns_to_width(event.size().width())
+
+    def adjust_columns_to_width(self, width):
+        """
+        Automatically adjust columns based on available width.
+
+        Args:
+            width: Available width in pixels
+        """
+        # Calculate optimal column count based on available width
+        tile_width = 100  # Target width for each tile
+        min_tile_width = 90  # Minimum acceptable tile width
+
+        spacing = self.grid_layout.horizontalSpacing()
+        margins = self.grid_layout.contentsMargins()
+
+        # Calculate available width for the grid
+        available_width = width - margins.left() - margins.right()
+
+        # Calculate maximum number of columns that would fit
+        max_columns = max(1, (available_width + spacing) // (min_tile_width + spacing))
+
+        # Calculate ideal number of columns
+        ideal_columns = max(1, (available_width + spacing) // (tile_width + spacing))
+
+        # Choose a reasonable number of columns
+        new_columns = min(max_columns, max(ideal_columns, 1))
+
+        # Update columns if different enough to matter
+        if abs(new_columns - self.columns) > 0:
+            logger.info(f"Adjusting columns from {self.columns} to {new_columns}")
+            self.set_columns(new_columns)
+            return True
+        return False
+
+    def set_columns(self, columns):
+        """
+        Set the number of columns in the grid.
+
+        Args:
+            columns: Number of columns
+        """
+        if columns == self.columns or columns < 1:
+            return
+
+        logger.info(f"Setting grid to {columns} columns")
+
+        # Update columns
+        self.columns = columns
+
+        # Clear and rebuild grid configuration
+        for i in range(self.grid_layout.columnCount()):
+            self.grid_layout.setColumnStretch(i, 0)
+
+        # Set new column stretch factors
+        for i in range(columns):
+            self.grid_layout.setColumnStretch(i, 1)
+            self.grid_layout.setColumnMinimumWidth(i, 90)
+
+        # Only re-layout if we have tiles
+        if self.tiles:
+            # Remember current selection and data
+            existing_data = [tile.data for tile in self.tiles]
+            existing_icons = []
+            selected_item = self.selected_item
+
+            # Store icon paths
+            for tile in self.tiles:
+                if hasattr(tile, 'icon_path'):
+                    existing_icons.append(tile.icon_path)
+                else:
+                    existing_icons.append(None)
+
+            # Clear grid
+            self.clear()
+
+            # Re-add tiles with new layout
+            for i, (data, icon) in enumerate(zip(existing_data, existing_icons)):
+                # Calculate new position
+                row = i // self.columns
+                col = i % self.columns
+
+                # Create new tile
+                tile = self._create_tile(data, i, lambda item: icon)
+                tile.set_selected(self.selected_item is not None and self._compare_items(data, selected_item))
+
+                # Add to new position
+                self.grid_layout.addWidget(tile, row, col, 1, 1)
+                self.tiles.append(tile)
+
+            # Force update
+            self.grid_layout.update()
+            self.updateGeometry()
+
+            # Restore selection
+            self.selected_item = selected_item
 
     def apply_theme(self):
         """Apply premium styling based on system theme."""
@@ -90,6 +440,11 @@ class TilesGrid(QFrame):
         card_bg = get_color('card_bg', '#1E3A5F')
         text_color = get_color('text', '#E2E8F0')
         border_color = get_color('border', '#2C5282')
+        highlight = get_color('highlight', '#4299E1')
+
+        # Compute derived colors
+        card_bg_lighter = QColor(card_bg).lighter(108).name()
+        hover_bg = get_color('button_hover', QColor(card_bg).lighter(115).name())
 
         # Apply styling
         self.setStyleSheet(f"""
@@ -142,312 +497,3 @@ class TilesGrid(QFrame):
                 width: 0px;
             }}
         """)
-
-        # Apply theme to all tiles
-        for tile in self.tiles:
-            tile.apply_theme()
-
-    def populate(self, items, icon_getter=None):
-        """
-        Populate the grid with items.
-
-        Args:
-            items: List of data dictionaries for each tile
-            icon_getter: Function that takes an item and returns an icon path
-        """
-        # Clear existing tiles
-        self.clear()
-
-        # If no items, show empty message
-        if not items:
-            empty_label = QLabel(self.translator.t('no_items_found'))
-            empty_label.setObjectName("emptyMessage")
-            empty_label.setAlignment(Qt.AlignCenter)
-            empty_label.setWordWrap(True)
-            self.grid_layout.addWidget(empty_label, 0, 0, 1, self.columns)
-            return
-
-        # Calculate best column count before adding items
-        viewport_width = self.scroll_area.viewport().width()
-        self.adjust_columns_to_width(viewport_width)
-
-        # Add items to grid
-        for i, item in enumerate(items):
-            # Get icon path if needed
-            icon_path = None
-            if icon_getter:
-                icon_path = icon_getter(item)
-
-            # Check if this item should be selected
-            is_selected = (self.selected_item is not None and
-                           self._compare_items(item, self.selected_item))
-
-            # Create tile
-            tile = GridTile(item, icon_path, is_selected)
-            tile.clicked.connect(self._on_tile_clicked)
-
-            # Calculate position
-            row = i // self.columns
-            col = i % self.columns
-
-            # Add to grid with column span of 1 and alignment
-            self.grid_layout.addWidget(tile, row, col, 1, 1, Qt.AlignCenter)
-
-            # Store reference to tile
-            self.tiles.append(tile)
-
-        # Update container size
-        self._update_container_size()
-
-    def _update_container_size(self):
-        """Update the size of the grid container based on content."""
-        if not self.tiles:
-            return
-
-        # Calculate rows
-        rows = (len(self.tiles) + self.columns - 1) // self.columns
-
-        # Calculate height for tiles
-        tile_height = 120  # Default tile height
-        spacing = self.grid_layout.spacing()
-        margins = self.grid_layout.contentsMargins()
-
-        # Calculate container height
-        height = (rows * tile_height) + ((rows - 1) * spacing) + margins.top() + margins.bottom()
-
-        # Set minimum height
-        self.grid_container.setMinimumHeight(height)
-
-    def _on_tile_clicked(self, item_data):
-        """
-        Handle tile click event with toggle support.
-
-        Args:
-            item_data: Data from the clicked tile
-        """
-        # Check if this is the already selected tile
-        is_currently_selected = (self.selected_item is not None and
-                                 self._compare_items(item_data, self.selected_item))
-
-        # Update selection state regardless of toggle feature
-        # This ensures we always emit a signal with the clicked item
-        self.selected_item = None if (
-                    is_currently_selected and hasattr(self, 'allow_toggle') and self.allow_toggle) else item_data
-
-        # Update selection state of all tiles
-        for tile in self.tiles:
-            if self.selected_item is None:
-                # If toggling off, deselect all
-                tile.set_selected(False)
-            else:
-                # Otherwise, select only the matching one
-                tile.set_selected(self._compare_items(tile.data, self.selected_item))
-
-        # Always emit the clicked item, even on deselection
-        # This ensures consistent behavior in step handling
-        self.item_selected.emit(item_data)
-
-    def _compare_items(self, item1, item2):
-        """
-        Compare two items to determine if they represent the same entity.
-
-        Args:
-            item1: First item data
-            item2: Second item data
-
-        Returns:
-            bool: True if items represent the same entity
-        """
-        if not item1 or not item2:
-            return False
-
-        # Compare first values in each dictionary
-        try:
-            value1 = next(iter(item1.values()))
-            value2 = next(iter(item2.values()))
-            return value1 == value2
-        except:
-            return False
-
-    def clear(self):
-        """Clear all tiles from the grid."""
-        # Remove all widgets from grid
-        for i in reversed(range(self.grid_layout.count())):
-            item = self.grid_layout.itemAt(i)
-            if item:
-                widget = item.widget()
-                if widget:  # Check if the item has an associated widget
-                    self.grid_layout.removeWidget(widget)
-                    widget.deleteLater()
-                else:
-                    # Handle spacers or other layout items without widgets
-                    self.grid_layout.removeItem(item)
-
-        # Clear tiles list and selection
-        self.tiles = []
-        self.selected_item = None
-
-    def set_selected(self, item_data):
-        """
-        Set the selected item.
-
-        Args:
-            item_data: Data dictionary of the item to select
-        """
-        if not item_data:
-            # Clear selection if None provided
-            self.selected_item = None
-            for tile in self.tiles:
-                tile.set_selected(False)
-            return
-
-        # Update selected item
-        self.selected_item = item_data
-
-        # Update tile selection states
-        for tile in self.tiles:
-            tile.set_selected(self._compare_items(tile.data, item_data))
-
-    def set_columns(self, columns):
-        """
-        Set the number of columns in the grid.
-
-        Args:
-            columns: Number of columns
-        """
-        if columns == self.columns or columns < 1:
-            return
-
-        # Update columns
-        self.columns = columns
-
-        # Update column stretch factors
-        for i in range(self.columns):
-            self.grid_layout.setColumnStretch(i, 1)
-
-        # Re-layout existing tiles
-        if self.tiles:
-            # Get existing data and selection state
-            existing_data = [tile.data for tile in self.tiles]
-            existing_icons = []
-
-            # Capture icon paths if available
-            for tile in self.tiles:
-                if hasattr(tile, 'icon_path'):
-                    existing_icons.append(tile.icon_path)
-                else:
-                    existing_icons.append(None)
-
-            # Remember selected item
-            selected_item = self.selected_item
-
-            # Clear grid and tiles list without deleting widgets yet
-            for tile in self.tiles:
-                self.grid_layout.removeWidget(tile)
-
-            # Now it's safe to clear the list
-            self.tiles.clear()
-
-            # Create new tiles with the same data
-            for i, (data, icon) in enumerate(zip(existing_data, existing_icons)):
-                # Create new tile
-                tile = GridTile(data, icon, is_selected=(self._compare_items(data, selected_item) if selected_item else False))
-                tile.clicked.connect(self._on_tile_clicked)
-
-                # Add to layout with new positioning
-                row = i // self.columns
-                col = i % self.columns
-                self.grid_layout.addWidget(tile, row, col)
-                self.tiles.append(tile)
-
-        # Update container size
-        self._update_container_size()
-
-    def adjust_columns_to_width(self, width):
-        """
-        Automatically adjust columns based on available width.
-
-        Args:
-            width: Available width in pixels
-        """
-        # Calculate optimal column count based on available width
-        min_tile_width = 90   # Minimum acceptable tile width
-        ideal_tile_width = 110  # Ideal tile width for aesthetics
-
-        spacing = self.grid_layout.spacing()
-        margins = self.grid_layout.contentsMargins()
-
-        # Calculate available width
-        available_width = width - margins.left() - margins.right()
-
-        # Calculate maximum number of columns that would fit
-        max_columns = max(1, (available_width + spacing) // (min_tile_width + spacing))
-
-        # Ideal number of columns (prefer slightly larger tiles if space permits)
-        ideal_columns = max(1, (available_width + spacing) // (ideal_tile_width + spacing))
-
-        # Choose the best number of columns
-        new_columns = max(ideal_columns, min(max_columns, self.columns + 1))
-
-        # Update columns if different
-        if new_columns != self.columns:
-            self.set_columns(new_columns)
-            return True
-        return False
-
-    def resizeEvent(self, event):
-        """Handle resize events to adjust column count."""
-        super().resizeEvent(event)
-
-        # Get the current width of the viewport
-        viewport_width = self.scroll_area.viewport().width()
-
-        # Adjust columns to new width
-        if self.adjust_columns_to_width(viewport_width):
-            # Reload the grid if columns changed
-            if self.tiles:
-                existing_data = [tile.data for tile in self.tiles]
-                existing_selected = self.selected_item
-
-                # Store icon paths
-                icon_paths = []
-                for tile in self.tiles:
-                    if hasattr(tile, 'icon_path'):
-                        icon_paths.append(tile.icon_path)
-                    else:
-                        icon_paths.append(None)
-
-                # Create icon getter
-                def get_stored_icon(item, index):
-                    if index < len(icon_paths):
-                        return icon_paths[index]
-                    return None
-
-                # Clear and repopulate
-                self.clear()
-
-                # Re-add items with new column layout
-                for i, item in enumerate(existing_data):
-                    # Get icon path if needed
-                    icon_path = get_stored_icon(item, i)
-
-                    # Check if this item should be selected
-                    is_selected = (existing_selected is not None and
-                                  self._compare_items(item, existing_selected))
-
-                    # Create tile
-                    tile = GridTile(item, icon_path, is_selected)
-                    tile.clicked.connect(self._on_tile_clicked)
-
-                    # Calculate position with new column count
-                    row = i // self.columns
-                    col = i % self.columns
-
-                    # Add to grid
-                    self.grid_layout.addWidget(tile, row, col, 1, 1, Qt.AlignCenter)
-
-                    # Store reference to tile
-                    self.tiles.append(tile)
-
-                # Restore selection
-                self.selected_item = existing_selected

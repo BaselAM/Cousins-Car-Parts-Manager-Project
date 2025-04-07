@@ -327,11 +327,11 @@ class BaseStepWidget(QWidget):
         if not self.graphicsEffect() or not isinstance(self.graphicsEffect(), QGraphicsOpacityEffect):
             self.setGraphicsEffect(QGraphicsOpacityEffect(self))
 
-        self.graphicsEffect().setOpacity(0)
+        # CRITICAL: Start with higher opacity (0.7) instead of 0
+        self.graphicsEffect().setOpacity(0.7)
 
-        # Then animate with a slight slide-up effect using a QTimer
-        # for the premium appearance many iOS/Android apps use
-        QTimer.singleShot(50, lambda: self._animate_opacity(0, 1, 350))
+        # Use a shorter animation duration (150ms instead of 350ms)
+        QTimer.singleShot(10, lambda: self._animate_opacity(0.7, 1, 150))
 
     def on_hide(self):
         """

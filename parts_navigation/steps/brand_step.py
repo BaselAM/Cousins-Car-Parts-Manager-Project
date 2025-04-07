@@ -61,6 +61,48 @@ class BrandStep(BaseStepWidget):
         # Call parent init after our initialization
         super().__init__(translator, db, parent)
 
+    def setup_preloading(self, db_operator=None):
+        """Set up preloading of brands and logos.
+
+        Args:
+            db_operator: Shared database operator (optional)
+        """
+        # Use the provided db_operator or create our own
+        op = db_operator if db_operator else self.db_operator
+
+        logger.info("Starting to preload brands data")
+
+        # Load brands in background
+        try:
+            op.execute(
+                "get_brands",
+                self._handle_preloaded_brands,
+                self._handle_preload_error
+            )
+        except Exception as e:
+            logger.error(f"Error setting up brand preloading: {e}")
+
+    def _handle_preloaded_brands(self, brands):
+        """Handle preloaded brands data for faster display.
+
+        Args:
+            brands: List of brand dictionaries
+        """
+        try:
+            # Store brands without triggering UI updates
+            self.brands = brands if brands else []
+            self.filtered_brands = self.brands.copy()
+
+            logger.info(f"Preloaded {len(self.brands)} brands")
+
+            # Start preloading logos for all brands
+            brand_names = [brand['brand'] for brand in self.brands if 'brand' in brand]
+            if brand_names and self.logo_manager:
+                self.logo_manager.preload_logos(brand_names)
+                logger.info(f"Started preloading {len(brand_names)} brand logos")
+        except Exception as e:
+            logger.error(f"Error handling preloaded brands: {e}")
+
     def setup_ui(self):
         """Initialize and arrange UI elements with compact styling."""
         # Call parent setup first
@@ -158,21 +200,25 @@ class BrandStep(BaseStepWidget):
         Args:
             brands: List of brand dictionaries
         """
-        # Hide loading indicator
-        self.show_loading(False)
+        try:
+            # Hide loading indicator
+            self.show_loading(False)
 
-        # Store brands
-        self.brands = brands if brands else []
-        self.filtered_brands = self.brands.copy()
+            # Store brands
+            self.brands = brands if brands else []
+            self.filtered_brands = self.brands.copy()
 
-        logger.info(f"Loaded {len(self.brands)} unique brands")
+            logger.info(f"Loaded {len(self.brands)} unique brands")
 
-        # Populate the grid
-        self.populate_brands_grid()
+            # Populate the grid
+            self.populate_brands_grid()
 
-        # Restore selection if already had one
-        if self.step_data:
-            self.brands_grid.set_selected(self.step_data)
+            # Restore selection if already had one
+            if self.step_data:
+                self.brands_grid.set_selected(self.step_data)
+        except Exception as e:
+            logger.error(f"Error in on_brands_loaded: {e}")
+            self.show_loading(False)
 
     def on_database_error(self, error_msg):
         """
@@ -181,17 +227,21 @@ class BrandStep(BaseStepWidget):
         Args:
             error_msg: Error message
         """
-        self.handle_error(f"Error loading brands: {error_msg}")
+        try:
+            self.handle_error(f"Error loading brands: {error_msg}")
 
-        # Clean up UI state
-        self.show_loading(False)
-        self.brands_grid.clear()
+            # Clean up UI state
+            self.show_loading(False)
+            self.brands_grid.clear()
 
-        # Create empty message
-        empty_label = QLabel(self.translator.t('brands_load_error'))
-        empty_label.setAlignment(Qt.AlignCenter)
-        empty_label.setWordWrap(True)
-        self.brands_grid.grid_layout.addWidget(empty_label, 0, 0, 1, 4)  # span 4 columns
+            # Create empty message
+            empty_label = QLabel(self.translator.t('brands_load_error'))
+            empty_label.setAlignment(Qt.AlignCenter)
+            empty_label.setWordWrap(True)
+            self.brands_grid.grid_layout.addWidget(empty_label, 0, 0, 1, 4)  # span 4 columns
+        except Exception as e:
+            logger.error(f"Error in on_database_error: {e}")
+            self.show_loading(False)
 
     def filter_brands(self, search_text):
         """
@@ -200,55 +250,62 @@ class BrandStep(BaseStepWidget):
         Args:
             search_text: Search text to filter by
         """
-        search_text = search_text.lower().strip()
+        try:
+            search_text = search_text.lower().strip()
 
-        if not search_text:
-            # If search is empty, show all brands
-            self.filtered_brands = self.brands.copy()
-        else:
-            # Filter brands that contain the search text
-            self.filtered_brands = [
-                brand for brand in self.brands
-                if search_text in brand['brand'].lower()
-            ]
+            if not search_text:
+                # If search is empty, show all brands
+                self.filtered_brands = self.brands.copy()
+            else:
+                # Filter brands that contain the search text
+                self.filtered_brands = [
+                    brand for brand in self.brands
+                    if search_text in brand['brand'].lower()
+                ]
 
-        # Repopulate the grid with filtered brands
-        self.populate_brands_grid()
+            # Repopulate the grid with filtered brands
+            self.populate_brands_grid()
+        except Exception as e:
+            logger.error(f"Error in filter_brands: {e}")
 
     def populate_brands_grid(self):
         """Populate the grid with brand tiles using cached logos when available."""
+        try:
+            def get_brand_icon(brand):
+                """Get brand icon with optimized caching."""
+                # Extract brand name from data
+                brand_name = brand['brand']
 
-        def get_brand_icon(brand):
-            """Get brand icon with optimized caching."""
-            # Extract brand name from data
-            brand_name = brand['brand']
+                # Try to get from logo manager cache first for instant display
+                if self.logo_manager:
+                    cached_logo = self.logo_manager.get_logo_sync(brand_name)
+                    if cached_logo is not None:  # Use is not None check to accept empty pixmaps
+                        return cached_logo
 
-            # Try to get from logo manager cache first for instant display
-            if self.logo_manager:
-                cached_logo = self.logo_manager.get_logo_sync(brand_name)
-                if cached_logo is not None:  # Use is not None check to accept empty pixmaps
-                    return cached_logo
+                # Original fallback logic for file paths
+                if 'byd' in brand_name.lower():
+                    return "resources/brands/byd.png"
+                elif 'chery' in brand_name.lower() or 'cherry' in brand_name.lower():
+                    return "resources/brands/chery.png"
+                elif 'gaz' in brand_name.lower():
+                    return "resources/brands/gaz.png"
+                elif brand_name.lower() == 'mg' or 'morris garages' in brand_name.lower():
+                    return "resources/brands/mg.png"
+                elif 'iveco' in brand_name.lower():
+                    return "resources/brands/iveco.png"
+                elif 'mini' in brand_name.lower():
+                    return "resources/brands/mini.png"
 
-            # Original fallback logic for file paths
-            if 'byd' in brand_name.lower():
-                return "resources/brands/byd.png"
-            elif 'chery' in brand_name.lower() or 'cherry' in brand_name.lower():
-                return "resources/brands/chery.png"
-            elif 'gaz' in brand_name.lower():
-                return "resources/brands/gaz.png"
-            elif brand_name.lower() == 'mg' or 'morris garages' in brand_name.lower():
-                return "resources/brands/mg.png"
-            elif 'iveco' in brand_name.lower():
-                return "resources/brands/iveco.png"
-            elif 'mini' in brand_name.lower():
-                return "resources/brands/mini.png"
+                # Standard approach for other brands
+                normalized_name = brand_name.lower().replace(' ', '_')
+                return f"resources/brands/{normalized_name}.png"
 
-            # Standard approach for other brands
-            normalized_name = brand_name.lower().replace(' ', '_')
-            return f"resources/brands/{normalized_name}.png"
-
-        # Populate the grid with optimized brand loading
-        self.brands_grid.populate(self.filtered_brands, get_brand_icon)
+            # Check if brands_grid exists
+            if hasattr(self, 'brands_grid') and self.brands_grid:
+                # Populate the grid with optimized brand loading
+                self.brands_grid.populate(self.filtered_brands, get_brand_icon)
+        except Exception as e:
+            logger.error(f"Error in populate_brands_grid: {e}")
 
     def _update_brand_logo(self, brand_name, pixmap):
         """
@@ -258,9 +315,12 @@ class BrandStep(BaseStepWidget):
             brand_name: Brand name
             pixmap: Logo pixmap
         """
-        # Refresh the grid to show the updated logo
-        # In a full implementation, we would update just the affected tile
-        self.populate_brands_grid()
+        try:
+            # Refresh the grid to show the updated logo
+            # In a full implementation, we would update just the affected tile
+            self.populate_brands_grid()
+        except Exception as e:
+            logger.error(f"Error in _update_brand_logo: {e}")
 
     def on_brand_clicked(self, brand):
         """
@@ -269,116 +329,67 @@ class BrandStep(BaseStepWidget):
         Args:
             brand: Selected brand data
         """
-        logger.info(f"Brand selected: {brand}")
+        try:
+            logger.info(f"Brand selected: {brand}")
 
-        # Store selected brand
-        self.step_data = brand
+            # Store selected brand
+            self.step_data = brand
 
-        # Emit signals
-        self.brand_selected.emit(brand)
-        self.step_completed.emit(brand)
+            # Emit signals
+            self.brand_selected.emit(brand)
+            self.step_completed.emit(brand)
+        except Exception as e:
+            logger.error(f"Error in on_brand_clicked: {e}")
 
     def reset(self):
         """Reset this step's data and UI state."""
-        # Call parent reset
-        super().reset()
+        try:
+            # Call parent reset
+            super().reset()
 
-        # Clear search and grid
-        self.search_box.clear()
-        self.brands_grid.clear()
+            # Clear search and grid
+            if hasattr(self, 'search_box') and self.search_box:
+                self.search_box.clear()
 
-        # Clear data
-        self.brands = []
-        self.filtered_brands = []
+            if hasattr(self, 'brands_grid') and self.brands_grid:
+                self.brands_grid.clear()
+
+            # Clear data
+            self.brands = []
+            self.filtered_brands = []
+        except Exception as e:
+            logger.error(f"Error in reset: {e}")
 
     def can_proceed(self):
         """Check if we can proceed to the next step."""
         return self.step_data is not None
 
-    def on_show(self):
-        """Called when this step is shown."""
-        # Call parent first for consistent behavior
-        super().on_show()
-
-        # If brands are already loaded, just update the UI without reloading from database
-        if self.brands:
-            logger.debug("Using previously loaded brands instead of reloading")
-            # Populate the grid with cached data
-            self.populate_brands_grid()
-            # If selection exists, restore it
-            if self.step_data:
-                self.brands_grid.set_selected(self.step_data)
-            return
-
-        # Only show loading indicator and initiate brand loading if we don't have data
-        self.show_loading(True)
-
-        # IMPORTANT: Use a timer to allow the UI to update
-        # This makes the loading indicator appear immediately
-        QTimer.singleShot(50, self.load_brands)
-
     def load_brands(self):
         """Load car brands from the database."""
-        # Loading indicator is now shown by on_show method
+        try:
+            # Show loading indicator
+            self.show_loading(True)
 
-        # Clear existing data
-        self.brands = []
-        self.filtered_brands = []
-        self.brands_grid.clear()
+            # Clear existing data
+            self.brands = []
+            self.filtered_brands = []
 
-        # Pre-populate with placeholder data while we wait for real data
-        placeholder_brands = [
-            {'brand': 'Loading...'},
-            {'brand': 'Please wait...'},
-            {'brand': 'Retrieving brands...'}
-        ]
-        self.brands_grid.populate(placeholder_brands)
+            if hasattr(self, 'brands_grid') and self.brands_grid:
+                self.brands_grid.clear()
 
-        # Now execute database operation in background
-        self.db_operator.execute(
-            "get_brands",
-            self.on_brands_loaded,
-            self.on_database_error
-        )
-
-    def setup_preloading(self, db_operator=None):
-        """Set up preloading of brands and logos.
-        Only preloads if brands aren't already loaded.
-
-        Args:
-            db_operator: Shared database operator (optional)
-        """
-        # Skip preloading if we already have the brands data
-        if self.brands:
-            logger.debug("Skipping brand preloading - data already loaded")
-            return
-
-        # Use the provided db_operator or create our own
-        op = db_operator if db_operator else self.db_operator
-
-        # Load brands in background
-        op.execute(
-            "get_brands",
-            self._handle_preloaded_brands,
-            self._handle_preload_error
-        )
-
-    def _handle_preloaded_brands(self, brands):
-        """Handle preloaded brands data for faster display.
-
-        Args:
-            brands: List of brand dictionaries
-        """
-        # Store brands without triggering UI updates
-        self.brands = brands if brands else []
-        self.filtered_brands = self.brands.copy()
-
-        logger.info(f"Preloaded {len(self.brands)} brands")
-
-        # Start preloading logos for all brands
-        brand_names = [brand['brand'] for brand in self.brands if 'brand' in brand]
-        if brand_names and self.logo_manager:
-            self.logo_manager.preload_logos(brand_names)
+            # Now execute database operation in background
+            if hasattr(self, 'db_operator') and self.db_operator:
+                self.db_operator.execute(
+                    "get_brands",
+                    self.on_brands_loaded,
+                    self.on_database_error
+                )
+            else:
+                logger.error("db_operator not available for brand loading")
+                self.on_database_error("Database operator not available")
+        except Exception as e:
+            logger.error(f"Error in load_brands: {e}")
+            self.on_database_error(f"Error loading brands: {e}")
 
     def _handle_preload_error(self, error_msg):
         """Handle error during preloading.
@@ -391,29 +402,92 @@ class BrandStep(BaseStepWidget):
 
     def on_hide(self):
         """Called when this step is hidden."""
-        # Call parent method first
-        super().on_hide()
+        try:
+            # Call parent method first
+            super().on_hide()
 
-        # Cancel any running database operations
-        if hasattr(self, 'db_operator') and self.db_operator:
-            # Only terminate running operations, don't destroy the operator
-            if hasattr(self.db_operator, 'worker') and self.db_operator.worker:
-                if hasattr(self.db_operator.worker, 'finished'):
-                    try:
-                        self.db_operator.worker.finished.disconnect()
-                    except Exception:
-                        pass
-                if hasattr(self.db_operator.worker, 'error'):
-                    try:
-                        self.db_operator.worker.error.disconnect()
-                    except Exception:
-                        pass
+            # Cancel any running database operations
+            if hasattr(self, 'db_operator') and self.db_operator:
+                # Only terminate running operations, don't destroy the operator
+                if hasattr(self.db_operator, 'worker') and self.db_operator.worker:
+                    if hasattr(self.db_operator.worker, 'finished'):
+                        try:
+                            self.db_operator.worker.finished.disconnect()
+                        except Exception:
+                            pass
+                    if hasattr(self.db_operator.worker, 'error'):
+                        try:
+                            self.db_operator.worker.error.disconnect()
+                        except Exception:
+                            pass
+        except Exception as e:
+            logger.error(f"Error in on_hide: {e}")
 
     def __del__(self):
         """Clean up resources when the step is destroyed."""
-        # Only clean up the database operator if we own it
-        if hasattr(self, 'owns_db_operator') and self.owns_db_operator and hasattr(self, 'db_operator'):
-            try:
-                self.db_operator.cleanup()
-            except Exception as e:
-                logger.error(f"Error cleaning up db_operator in {self.__class__.__name__}: {e}")
+        try:
+            # Only clean up the database operator if we own it
+            if hasattr(self, 'owns_db_operator') and self.owns_db_operator and hasattr(self, 'db_operator'):
+                try:
+                    self.db_operator.cleanup()
+                except Exception as e:
+                    logger.error(f"Error cleaning up db_operator in {self.__class__.__name__}: {e}")
+        except Exception as e:
+            logger.error(f"Error in __del__: {e}")
+
+    def on_show(self):
+        """Called when this step is shown."""
+        try:
+            # Call parent first for consistent behavior (includes fade animation)
+            super().on_show()
+
+            # Always show placeholder brands immediately for better UX
+            self._show_placeholder_brands()
+
+            # Use a slightly longer timer to ensure UI is stable
+            if self.brands:
+                # If we already have brand data, update after a short delay
+                QTimer.singleShot(50, self._update_with_real_brands)
+            else:
+                # If no data yet, load it with a longer delay to prevent UI freezing
+                QTimer.singleShot(100, self.load_brands)
+        except Exception as e:
+            logger.error(f"Error in on_show: {e}")
+
+    def _show_placeholder_brands(self):
+        """Show placeholder brands immediately so the UI is visible."""
+        try:
+            # Clear existing data without waiting for database
+            if hasattr(self, 'brands_grid') and self.brands_grid:
+                self.brands_grid.clear()
+
+            # Create placeholder data - smaller number to reduce processing time
+            placeholder_brands = []
+            for i in range(8):  # Reduced from 12 to 8 for faster loading
+                placeholder_brands.append({'brand': f'Loading...{i + 1}'})
+
+            # Use a special flag to indicate these are placeholders
+            self._showing_placeholders = True
+
+            # Populate grid with placeholders - use minimal processing
+            if hasattr(self, 'brands_grid') and self.brands_grid:
+                self.brands_grid.populate(placeholder_brands)
+        except Exception as e:
+            logger.error(f"Error showing placeholder brands: {e}")
+            # Don't propagate the exception
+
+    def _update_with_real_brands(self):
+        """Update the UI with real brand data after it's initially visible."""
+        try:
+            if hasattr(self, '_showing_placeholders') and self._showing_placeholders:
+                # Now we can take time to populate with real data
+                self.populate_brands_grid()
+
+                # Restore selection if we had one
+                if self.step_data:
+                    self.brands_grid.set_selected(self.step_data)
+
+                # Clear placeholder flag
+                self._showing_placeholders = False
+        except Exception as e:
+            logger.error(f"Error updating with real brands: {e}")
