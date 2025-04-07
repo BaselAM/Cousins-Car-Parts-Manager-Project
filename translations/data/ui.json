@@ -158,5 +158,17 @@
 "click_for_details": {
   "en": "Click for details",
   "he": "לחץ לפרטים"
+},
+  "Internet: Connected": {
+    "en": "Internet: Connected",
+    "he": "אינטרנט: מחובר"
+},
+"Click for details": {
+    "en": "Click for details",
+    "he": "לחץ לפרטים"
+},
+"print_with_preview_tooltip": {
+    "en": "Print with Preview",
+    "he": "הדפס עם תצוגה מקדימה"
 }
 }

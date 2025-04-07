@@ -306,5 +306,33 @@
     "operation_error": {
         "en": "Operation failed",
         "he": "הפעולה נכשלה"
-    }
+    },
+    "loading": {
+    "en": "Loading",
+    "he": "טוען"
+},
+"select_brand_subtitle": {
+    "en": "Select the brand of the car you need parts for",
+    "he": "בחר את יצרן הרכב שעבורו אתה צריך חלקים"
+},
+"configure_details": {
+    "en": "Configure Details",
+    "he": "הגדרת פרטים"
+},
+"configure_details_help": {
+    "en": "Configure the specifications for this part",
+    "he": "הגדר את המפרט עבור חלק זה"
+},
+"summary_title": {
+    "en": "Order Summary",
+    "he": "סיכום הזמנה"
+},
+"summary_help": {
+    "en": "Review your selection before adding to cart",
+    "he": "סקור את הבחירה שלך לפני הוספה לסל"
+},
+"more_options": {
+    "en": "More Options",
+    "he": "אפשרויות נוספות"
+}
 }

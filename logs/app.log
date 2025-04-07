@@ -40758,3 +40758,1108 @@ AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_c
 2025-04-07 03:48:35,118 - __main__ - INFO - Cleaning up parts navigation resources...
 2025-04-07 03:48:35,134 - database.car_parts_db - INFO - Thread 17272: New database connection established
 2025-04-07 03:48:35,136 - __main__ - INFO - Application shutdown complete
+2025-04-07 04:56:57,026 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 04:56:57,026 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 04:56:57,172 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 04:56:59,477 - __main__ - INFO - Application starting at: 2025-04-07 04:56:59
+2025-04-07 04:56:59,477 - __main__ - INFO - Current user: BaselAM
+2025-04-07 04:56:59,541 - __main__ - INFO - Initializing database connection...
+2025-04-07 04:56:59,983 - database.car_parts_db - INFO - Thread 16080: Database connection established
+2025-04-07 04:56:59,983 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 04:57:00,034 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 04:57:00,034 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 04:57:00,034 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 04:57:00,047 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 04:57:00,047 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 04:57:00,047 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 04:57:00,047 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 04:57:00,047 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 04:57:00,047 - translations - INFO - Loaded 12 translation files
+2025-04-07 04:57:00,286 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 04:57:00,288 - UsersDB - INFO - Database tables created successfully
+2025-04-07 04:57:01,135 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 04:57:01,229 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 04:57:01,230 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 04:57:01,276 - translations - WARNING - Missing translation for 'print_with_preview_tooltip' in 'he'
+2025-04-07 04:57:01,408 - translations - WARNING - Missing translation for 'loading' in 'he'
+2025-04-07 04:57:01,408 - translations - WARNING - Missing translation for 'select_brand_subtitle' in 'he'
+2025-04-07 04:57:01,458 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 04:57:01,477 - database.car_parts_db - INFO - Thread 16048: New database connection established
+2025-04-07 04:57:01,478 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 04:57:01,478 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 04:57:01,478 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 04:57:01,478 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 04:57:01,497 - translations - WARNING - Missing translation for 'more_options' in 'he'
+2025-04-07 04:57:01,618 - translations - WARNING - Missing translation for 'configure_details' in 'he'
+2025-04-07 04:57:01,622 - translations - WARNING - Missing translation for 'configure_details_help' in 'he'
+2025-04-07 04:57:01,631 - translations - WARNING - Missing translation for 'summary_title' in 'he'
+2025-04-07 04:57:01,633 - translations - WARNING - Missing translation for 'summary_help' in 'he'
+2025-04-07 04:57:01,641 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 04:57:01,642 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 04:57:01,642 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 04:57:01,765 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 04:57:01,765 - translations - WARNING - Missing translation for 'Click for details' in 'he'
+2025-04-07 04:57:01,822 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 04:57:01,822 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 04:57:01,943 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 04:57:01,943 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 04:57:02,071 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 04:57:02,072 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 04:57:02,161 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 04:57:02,911 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 04:57:02,911 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 04:57:02,911 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 04:57:02,945 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 04:57:02,945 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 04:57:08,974 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 04:57:08,985 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 04:57:10,774 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 04:57:10,787 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 04:57:10,787 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 04:57:10,787 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 04:57:10,787 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 04:57:10,816 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 04:57:10,816 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 04:57:10,851 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 04:57:10,851 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 04:57:10,851 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 04:57:10,870 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 04:57:10,870 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 04:57:10,870 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 04:57:10,870 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 04:57:10,871 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 04:57:10,871 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 04:57:10,905 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 04:57:10,905 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 04:57:10,926 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 04:57:10,927 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 04:57:11,018 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 04:57:11,018 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 04:57:11,023 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 04:57:11,023 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 04:57:11,240 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 04:57:11,417 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 04:57:11,417 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 04:57:11,417 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 04:57:11,438 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 04:57:11,438 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 04:57:13,133 - database.car_parts_db - INFO - Thread 16080: New database connection established
+2025-04-07 04:57:13,199 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 04:57:13,199 - __main__ - INFO - Closing database connection...
+2025-04-07 04:57:13,199 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 04:57:13,214 - database.car_parts_db - INFO - Thread 16080: New database connection established
+2025-04-07 04:57:13,215 - __main__ - INFO - Application shutdown complete
+2025-04-07 05:13:03,950 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 05:13:03,951 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 05:13:03,953 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 05:13:10,208 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 05:13:10,209 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 05:13:10,261 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 05:13:12,994 - __main__ - INFO - Application starting at: 2025-04-07 05:13:12
+2025-04-07 05:13:12,994 - __main__ - INFO - Current user: BaselAM
+2025-04-07 05:13:13,016 - __main__ - INFO - Initializing database connection...
+2025-04-07 05:13:13,423 - database.car_parts_db - INFO - Thread 11164: Database connection established
+2025-04-07 05:13:13,423 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 05:13:13,452 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 05:13:13,452 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:13:13,454 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 05:13:13,455 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 05:13:13,456 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 05:13:13,456 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 05:13:13,458 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 05:13:13,459 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 05:13:13,460 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 05:13:13,461 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 05:13:13,462 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 05:13:13,463 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 05:13:13,463 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 05:13:13,464 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 05:13:13,464 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:13:13,464 - translations - INFO - Loaded 12 translation files
+2025-04-07 05:13:13,696 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 05:13:13,696 - UsersDB - INFO - Database tables created successfully
+2025-04-07 05:13:14,522 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 05:13:14,625 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 05:13:14,626 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 05:13:14,885 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:13:14,905 - database.car_parts_db - INFO - Thread 3440: New database connection established
+2025-04-07 05:13:14,910 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:14,910 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:14,910 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:14,910 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:15,090 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:15,092 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:13:15,092 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:13:15,231 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 05:13:15,289 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:13:15,289 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:13:15,441 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:13:15,441 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:13:15,544 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:13:15,544 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 05:13:15,643 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:16,546 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:16,546 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:16,546 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:16,580 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:13:16,580 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:13:19,725 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 05:13:19,734 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 05:13:20,976 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:13:20,988 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:20,988 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:20,988 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:20,988 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:21,018 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:13:21,018 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:13:21,051 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:21,051 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:13:21,051 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:13:21,072 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:21,072 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:21,073 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:13:21,073 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:21,073 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:21,073 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:21,112 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:13:21,112 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:13:21,131 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:13:21,132 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:13:21,221 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:13:21,222 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:21,225 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:21,225 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:21,428 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:21,599 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:21,600 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:21,600 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:13:21,621 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:13:21,621 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:13:23,563 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 9 columns
+2025-04-07 05:13:23,580 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:23,580 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:23,580 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 8
+2025-04-07 05:13:23,580 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:23,631 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:13:23,998 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:23,998 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:23,998 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:13:27,967 - database.car_parts_db - INFO - Thread 11164: New database connection established
+2025-04-07 05:13:28,022 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 05:13:28,022 - __main__ - INFO - Closing database connection...
+2025-04-07 05:13:28,023 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 05:13:28,034 - database.car_parts_db - INFO - Thread 11164: New database connection established
+2025-04-07 05:13:28,037 - __main__ - INFO - Application shutdown complete
+2025-04-07 05:13:35,901 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 05:13:35,901 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 05:13:35,932 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 05:13:36,983 - __main__ - INFO - Application starting at: 2025-04-07 05:13:36
+2025-04-07 05:13:36,983 - __main__ - INFO - Current user: BaselAM
+2025-04-07 05:13:36,996 - __main__ - INFO - Initializing database connection...
+2025-04-07 05:13:37,089 - database.car_parts_db - INFO - Thread 10788: Database connection established
+2025-04-07 05:13:37,089 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 05:13:37,109 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 05:13:37,109 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:13:37,109 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 05:13:37,110 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 05:13:37,110 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 05:13:37,110 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 05:13:37,110 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 05:13:37,111 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 05:13:37,111 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 05:13:37,111 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 05:13:37,111 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 05:13:37,112 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 05:13:37,112 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 05:13:37,112 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 05:13:37,112 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:13:37,112 - translations - INFO - Loaded 12 translation files
+2025-04-07 05:13:37,168 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 05:13:37,168 - UsersDB - INFO - Database tables created successfully
+2025-04-07 05:13:37,443 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 05:13:37,491 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 05:13:37,492 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 05:13:37,632 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:13:37,652 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:37,652 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:37,652 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:37,652 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:37,759 - database.car_parts_db - INFO - Thread 10452: New database connection established
+2025-04-07 05:13:37,794 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:37,799 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:13:37,807 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:13:37,816 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 05:13:37,979 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:13:37,979 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:13:38,004 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:38,005 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:13:38,005 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:13:38,046 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:13:38,046 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 05:13:38,899 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:38,900 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:38,900 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:38,931 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:13:38,931 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:13:40,739 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 05:13:40,749 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 05:13:41,861 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:13:41,873 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:13:41,873 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:41,873 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:41,873 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:41,903 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:13:41,903 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:13:41,948 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:41,948 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:13:41,948 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:13:41,970 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:41,970 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:41,971 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:13:41,971 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:41,971 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:41,971 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:42,008 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:13:42,008 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:13:42,042 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:13:42,042 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:13:42,177 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:13:42,177 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:42,182 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:13:42,182 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:13:42,208 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:13:42,566 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:42,566 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:42,566 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:13:42,588 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:13:42,588 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:13:45,885 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-07 05:13:45,885 - parts_navigation.container - INFO - Brand selected: {'brand': 'Audi'}
+2025-04-07 05:13:45,888 - database.car_parts_db - INFO - Thread 10788: New database connection established
+2025-04-07 05:13:45,930 - parts_navigation.container - INFO - Navigated to step 1
+2025-04-07 05:13:45,942 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:13:45,942 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:13:45,951 - parts_navigation.steps.model - INFO - Loaded 1 models for Audi
+2025-04-07 05:13:45,951 - parts_navigation.components.tiles_grid - INFO - Populating grid with 1 items using 5 columns
+2025-04-07 05:13:45,953 - parts_navigation.components.tiles_grid - INFO - Grid has 5 active columns configured
+2025-04-07 05:13:45,953 - parts_navigation.components.tiles_grid - INFO - Total tiles: 1
+2025-04-07 05:13:45,953 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:46,262 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 5 to 9
+2025-04-07 05:13:46,262 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:13:46,524 - parts_navigation.container - WARNING - Cannot go to step 2: missing required data
+2025-04-07 05:13:48,269 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 9 columns
+2025-04-07 05:13:48,278 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:48,278 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:13:48,278 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:13:48,287 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:13:48,329 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:13:48,670 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:13:48,670 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:13:48,670 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:15:26,777 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:15:26,788 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:15:26,788 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:15:26,788 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:15:26,789 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:15:26,816 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:15:26,816 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:15:26,857 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:15:26,857 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:15:26,857 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:15:26,868 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:26,869 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:26,869 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:15:26,869 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:26,869 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:26,869 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:26,885 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:15:26,885 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:15:26,921 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:15:26,921 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:15:27,003 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:15:27,003 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:27,007 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:27,007 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:27,188 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:15:27,354 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:15:27,354 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:15:27,354 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:15:27,372 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:15:27,372 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:15:53,271 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:15:53,283 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:15:53,284 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:15:53,284 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:15:53,284 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:15:53,312 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:15:53,312 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:15:53,356 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:15:53,356 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:15:53,356 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:15:53,366 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:53,366 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:53,366 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:15:53,366 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:53,367 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:53,367 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:53,385 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:15:53,385 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:15:53,416 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:15:53,416 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:15:53,496 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:15:53,496 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:53,500 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:15:53,500 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:15:53,688 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:15:53,848 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:15:53,848 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:15:53,848 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:15:53,867 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:15:53,867 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:15:59,908 - database.car_parts_db - INFO - Thread 10788: New database connection established
+2025-04-07 05:15:59,965 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 05:15:59,965 - __main__ - INFO - Closing database connection...
+2025-04-07 05:15:59,965 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 05:15:59,985 - database.car_parts_db - INFO - Thread 10788: New database connection established
+2025-04-07 05:15:59,987 - __main__ - INFO - Application shutdown complete
+2025-04-07 05:16:06,281 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 05:16:06,281 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 05:16:06,331 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 05:16:07,711 - __main__ - INFO - Application starting at: 2025-04-07 05:16:07
+2025-04-07 05:16:07,713 - __main__ - INFO - Current user: BaselAM
+2025-04-07 05:16:07,729 - __main__ - INFO - Initializing database connection...
+2025-04-07 05:16:07,833 - database.car_parts_db - INFO - Thread 17200: Database connection established
+2025-04-07 05:16:07,833 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 05:16:07,853 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 05:16:07,854 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:16:07,855 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 05:16:07,855 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 05:16:07,857 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 05:16:07,857 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 05:16:07,858 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 05:16:07,858 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 05:16:07,859 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 05:16:07,860 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 05:16:07,860 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 05:16:07,861 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 05:16:07,861 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 05:16:07,861 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 05:16:07,861 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:16:07,862 - translations - INFO - Loaded 12 translation files
+2025-04-07 05:16:07,988 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 05:16:07,988 - UsersDB - INFO - Database tables created successfully
+2025-04-07 05:16:08,498 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 05:16:08,555 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 05:16:08,556 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 05:16:08,714 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:16:08,734 - database.car_parts_db - INFO - Thread 11212: New database connection established
+2025-04-07 05:16:08,734 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:08,734 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:16:08,735 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:08,735 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:16:08,898 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:08,898 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:16:08,898 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:16:09,023 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 05:16:09,065 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:16:09,065 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:16:09,181 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:16:09,181 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:16:09,223 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:16:09,223 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 05:16:09,312 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:09,959 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:09,959 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:16:09,959 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:09,993 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:16:09,993 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:16:15,607 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 05:16:15,616 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 05:16:17,324 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:16:17,336 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:17,336 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:16:17,336 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:17,336 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:16:17,365 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:16:17,365 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:16:17,396 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:17,412 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:17,412 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:17,412 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:16:17,412 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:17,413 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:17,413 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:17,439 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:16:17,439 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:16:17,455 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:16:17,455 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:16:17,465 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:16:17,466 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:16:17,738 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:17,747 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:16:17,747 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:17,748 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:17,748 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:17,899 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:16:17,900 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:16:17,900 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:16:17,929 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:16:17,929 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:16:30,476 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:16:30,487 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:30,488 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:16:30,488 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:30,488 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:16:30,517 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 05:16:30,517 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:16:30,546 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:30,555 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:30,555 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:30,556 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:16:30,556 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:30,556 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:30,556 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:30,562 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:16:30,562 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:16:30,569 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:16:30,569 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:16:30,606 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:16:30,606 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 05:16:30,881 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:30,890 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 05:16:30,890 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:30,892 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 05:16:30,892 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 05:16:31,041 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 05:16:31,042 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:16:31,042 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 05:16:31,052 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:16:31,052 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:16:32,455 - parts_navigation.steps.brand - INFO - Brand selected: {'brand': 'Dodge'}
+2025-04-07 05:16:32,455 - parts_navigation.container - INFO - Brand selected: {'brand': 'Dodge'}
+2025-04-07 05:16:32,463 - database.car_parts_db - INFO - Thread 17200: New database connection established
+2025-04-07 05:16:32,507 - parts_navigation.container - INFO - Navigated to step 1
+2025-04-07 05:16:32,519 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:16:32,520 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:16:32,527 - parts_navigation.steps.model - INFO - Loaded 1 models for Dodge
+2025-04-07 05:16:32,527 - parts_navigation.components.tiles_grid - INFO - Populating grid with 1 items using 5 columns
+2025-04-07 05:16:32,529 - parts_navigation.components.tiles_grid - INFO - Grid has 5 active columns configured
+2025-04-07 05:16:32,529 - parts_navigation.components.tiles_grid - INFO - Total tiles: 1
+2025-04-07 05:16:32,529 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:32,839 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 5 to 9
+2025-04-07 05:16:32,840 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 05:16:35,369 - database.car_parts_db - INFO - Thread 17200: New database connection established
+2025-04-07 05:16:35,421 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 05:16:35,421 - __main__ - INFO - Closing database connection...
+2025-04-07 05:16:35,421 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 05:16:35,432 - database.car_parts_db - INFO - Thread 17200: New database connection established
+2025-04-07 05:16:35,434 - __main__ - INFO - Application shutdown complete
+2025-04-07 05:16:36,717 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 05:16:36,717 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 05:16:36,752 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 05:16:38,237 - __main__ - INFO - Application starting at: 2025-04-07 05:16:38
+2025-04-07 05:16:38,237 - __main__ - INFO - Current user: BaselAM
+2025-04-07 05:16:38,252 - __main__ - INFO - Initializing database connection...
+2025-04-07 05:16:38,387 - database.car_parts_db - INFO - Thread 3276: Database connection established
+2025-04-07 05:16:38,387 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 05:16:38,408 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 05:16:38,408 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:16:38,409 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 05:16:38,409 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 05:16:38,409 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 05:16:38,410 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 05:16:38,411 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 05:16:38,411 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 05:16:38,411 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 05:16:38,411 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 05:16:38,411 - translations - INFO - Loaded 12 translation files
+2025-04-07 05:16:38,470 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 05:16:38,472 - UsersDB - INFO - Database tables created successfully
+2025-04-07 05:16:38,742 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 05:16:38,789 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 05:16:38,789 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 05:16:38,925 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 05:16:38,942 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:38,942 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 05:16:38,942 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:38,942 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 05:16:39,048 - database.car_parts_db - INFO - Thread 8260: New database connection established
+2025-04-07 05:16:39,073 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:39,075 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 05:16:39,077 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 05:16:39,081 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 05:16:39,143 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 05:16:39,144 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 05:16:39,272 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 05:16:39,273 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 05:16:39,281 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 05:16:39,281 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 05:16:39,397 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 05:16:40,181 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 05:16:40,182 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 05:16:40,182 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 05:16:40,215 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 05:16:40,215 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 05:16:47,491 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 05:16:47,502 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 05:16:49,962 - database.car_parts_db - INFO - Thread 3276: New database connection established
+2025-04-07 05:16:50,014 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 05:16:50,014 - __main__ - INFO - Closing database connection...
+2025-04-07 05:16:50,014 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 05:16:50,026 - database.car_parts_db - INFO - Thread 3276: New database connection established
+2025-04-07 05:16:50,030 - __main__ - INFO - Application shutdown complete
+2025-04-07 06:31:25,204 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 06:31:25,204 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 06:31:26,176 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 06:31:29,992 - __main__ - INFO - Application starting at: 2025-04-07 06:31:29
+2025-04-07 06:31:29,992 - __main__ - INFO - Current user: BaselAM
+2025-04-07 06:31:30,070 - __main__ - INFO - Initializing database connection...
+2025-04-07 06:31:30,485 - database.car_parts_db - INFO - Thread 10956: Database connection established
+2025-04-07 06:31:30,485 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 06:31:30,514 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 06:31:30,515 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:31:30,518 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 06:31:30,529 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 06:31:30,539 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 06:31:30,554 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 06:31:30,570 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 06:31:30,579 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 06:31:30,581 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 06:31:30,592 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 06:31:30,602 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 06:31:30,622 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 06:31:30,636 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 06:31:30,645 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 06:31:30,646 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:31:30,646 - translations - INFO - Loaded 12 translation files
+2025-04-07 06:31:30,861 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 06:31:30,862 - UsersDB - INFO - Database tables created successfully
+2025-04-07 06:31:32,121 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 06:31:32,257 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 06:31:32,258 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 06:31:32,614 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:31:32,637 - database.car_parts_db - INFO - Thread 16192: New database connection established
+2025-04-07 06:31:32,644 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:31:32,644 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:31:32,644 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:31:32,645 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:31:32,940 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:31:32,941 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:31:32,942 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:31:33,137 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 06:31:33,348 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 06:31:33,348 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 06:31:33,631 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:31:33,640 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:31:33,641 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:31:34,097 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:31:34,098 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 06:31:35,250 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:31:35,250 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:31:35,251 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:31:35,283 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:31:35,283 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:31:36,123 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 06:31:36,135 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 06:31:48,000 - database.car_parts_db - INFO - Thread 10956: New database connection established
+2025-04-07 06:31:48,062 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 06:31:48,062 - __main__ - INFO - Closing database connection...
+2025-04-07 06:31:48,062 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 06:31:48,077 - database.car_parts_db - INFO - Thread 10956: New database connection established
+2025-04-07 06:31:48,081 - __main__ - INFO - Application shutdown complete
+2025-04-07 06:34:28,610 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 06:34:28,611 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 06:34:29,727 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 06:34:33,111 - __main__ - INFO - Application starting at: 2025-04-07 06:34:33
+2025-04-07 06:34:33,112 - __main__ - INFO - Current user: BaselAM
+2025-04-07 06:34:33,208 - __main__ - INFO - Initializing database connection...
+2025-04-07 06:34:33,810 - database.car_parts_db - INFO - Thread 7428: Database connection established
+2025-04-07 06:34:33,811 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 06:34:33,865 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 06:34:33,865 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:34:33,867 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 06:34:33,868 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 06:34:33,869 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 06:34:33,870 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 06:34:33,870 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 06:34:33,871 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 06:34:33,872 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 06:34:33,873 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 06:34:33,874 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 06:34:33,875 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 06:34:33,876 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 06:34:33,876 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 06:34:33,876 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:34:33,876 - translations - INFO - Loaded 12 translation files
+2025-04-07 06:34:34,126 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 06:34:34,126 - UsersDB - INFO - Database tables created successfully
+2025-04-07 06:34:34,959 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 06:34:35,068 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 06:34:35,069 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 06:34:35,299 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:35,318 - database.car_parts_db - INFO - Thread 2112: New database connection established
+2025-04-07 06:34:35,322 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:35,322 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:35,323 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:35,323 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:35,571 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:35,572 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:35,572 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:35,752 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 06:34:35,902 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 06:34:35,903 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 06:34:36,043 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:36,045 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:36,045 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:36,165 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:36,165 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 06:34:37,082 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:37,082 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:37,082 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:37,117 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:37,117 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:39,202 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 06:34:39,217 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 06:34:40,451 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:40,467 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:40,467 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:40,467 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:40,467 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:40,505 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 06:34:40,506 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 06:34:40,551 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:40,551 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:40,551 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:40,578 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:40,578 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:40,579 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:40,579 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:40,580 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:40,580 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:40,643 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:40,644 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:40,665 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:40,666 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:40,667 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:40,667 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:40,685 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:40,685 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:40,789 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:41,147 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:41,147 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:41,147 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:41,169 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:41,169 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:41,861 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 9 columns
+2025-04-07 06:34:41,879 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:41,879 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:41,879 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 8
+2025-04-07 06:34:41,881 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:41,930 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:42,275 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:42,275 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:42,275 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:46,939 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:46,953 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:46,953 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:46,953 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:46,953 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:46,981 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 06:34:46,981 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 06:34:47,012 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:47,012 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:47,012 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:47,022 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:47,022 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:47,023 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:47,023 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:47,023 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:47,023 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:47,035 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:47,035 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:47,077 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:47,077 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:47,350 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:47,360 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:47,360 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:47,362 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:47,362 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:47,501 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:47,501 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:47,501 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:47,509 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:47,509 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:49,764 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:49,776 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:49,776 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:49,776 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:49,776 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:49,804 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 06:34:49,804 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 06:34:49,834 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:49,844 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:49,845 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:49,845 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:49,845 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:49,846 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:49,846 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:49,850 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:49,850 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:49,857 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:49,858 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:49,898 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:49,898 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:49,976 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:49,977 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:49,981 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:49,981 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:50,173 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:50,327 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:50,327 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:50,327 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:50,338 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:50,339 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:52,181 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:52,193 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:52,193 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:52,193 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:52,193 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:52,220 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 06:34:52,220 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 06:34:52,253 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:52,262 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:52,262 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:52,262 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:52,262 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:52,263 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:52,263 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:52,267 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:52,267 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:52,275 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:52,275 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:52,318 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:52,318 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:52,589 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:52,598 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:52,598 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:52,599 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:52,599 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:52,735 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:52,735 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:52,735 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:52,744 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:52,744 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:55,677 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:34:55,690 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:34:55,690 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:34:55,690 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:34:55,690 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:34:55,717 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 06:34:55,717 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 06:34:55,749 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:55,757 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:55,757 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:55,757 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:55,757 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:55,758 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:55,758 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:55,764 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:34:55,764 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:34:55,772 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:34:55,772 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:34:55,818 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:34:55,819 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 06:34:55,899 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 06:34:55,899 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:55,903 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 06:34:55,903 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 06:34:56,093 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:34:56,249 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 06:34:56,249 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:34:56,249 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 06:34:56,258 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:34:56,258 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:34:58,370 - gui.event_handlers - INFO - Closing database connection...
+2025-04-07 06:34:58,382 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 06:34:58,382 - __main__ - INFO - Closing database connection...
+2025-04-07 06:34:58,382 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 06:34:58,395 - database.car_parts_db - INFO - Thread 7428: New database connection established
+2025-04-07 06:34:58,397 - __main__ - INFO - Application shutdown complete
+2025-04-07 06:35:02,202 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 06:35:02,202 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 06:35:02,252 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 06:35:03,624 - __main__ - INFO - Application starting at: 2025-04-07 06:35:03
+2025-04-07 06:35:03,624 - __main__ - INFO - Current user: BaselAM
+2025-04-07 06:35:03,637 - __main__ - INFO - Initializing database connection...
+2025-04-07 06:35:03,785 - database.car_parts_db - INFO - Thread 18796: Database connection established
+2025-04-07 06:35:03,785 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 06:35:03,810 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 06:35:03,810 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:35:03,811 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 06:35:03,811 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 06:35:03,811 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 06:35:03,811 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 06:35:03,811 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 06:35:03,812 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 06:35:03,812 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 06:35:03,812 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 06:35:03,812 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 06:35:03,813 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 06:35:03,813 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 06:35:03,813 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 06:35:03,813 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 06:35:03,813 - translations - INFO - Loaded 12 translation files
+2025-04-07 06:35:03,881 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 06:35:03,883 - UsersDB - INFO - Database tables created successfully
+2025-04-07 06:35:04,188 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 06:35:04,241 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 06:35:04,242 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 06:35:04,389 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 06:35:04,409 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:35:04,409 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 06:35:04,409 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:35:04,409 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 06:35:04,527 - database.car_parts_db - INFO - Thread 10020: New database connection established
+2025-04-07 06:35:04,550 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:35:04,555 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 06:35:04,555 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 06:35:04,558 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 06:35:04,617 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 06:35:04,617 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 06:35:04,751 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 06:35:04,751 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 06:35:04,797 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 06:35:04,797 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 06:35:04,883 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 06:35:05,655 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 06:35:05,656 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 06:35:05,656 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 06:35:05,688 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 06:35:05,690 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 06:37:44,673 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 06:37:44,690 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 06:37:47,773 - gui.event_handlers - INFO - Closing database connection...
+2025-04-07 06:37:47,788 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 06:37:47,788 - __main__ - INFO - Closing database connection...
+2025-04-07 06:37:47,788 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 06:37:47,800 - database.car_parts_db - INFO - Thread 18796: New database connection established
+2025-04-07 06:37:47,801 - __main__ - INFO - Application shutdown complete
+2025-04-07 09:21:20,175 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 09:21:20,175 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 09:21:21,683 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 09:21:28,543 - __main__ - INFO - Application starting at: 2025-04-07 09:21:28
+2025-04-07 09:21:28,544 - __main__ - INFO - Current user: BaselAM
+2025-04-07 09:21:28,697 - __main__ - INFO - Initializing database connection...
+2025-04-07 09:21:29,213 - database.car_parts_db - INFO - Thread 12868: Database connection established
+2025-04-07 09:21:29,214 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 09:21:29,273 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 09:21:29,273 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:21:29,278 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 09:21:29,279 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 09:21:29,296 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 09:21:29,310 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 09:21:29,326 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 09:21:29,341 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 09:21:29,343 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 09:21:29,357 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 09:21:29,370 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 09:21:29,388 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 09:21:29,403 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 09:21:29,417 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 09:21:29,417 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:21:29,417 - translations - INFO - Loaded 12 translation files
+2025-04-07 09:21:29,753 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 09:21:29,754 - UsersDB - INFO - Database tables created successfully
+2025-04-07 09:21:31,667 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 09:21:31,857 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 09:21:31,858 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 09:21:32,359 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 09:21:32,378 - database.car_parts_db - INFO - Thread 15804: New database connection established
+2025-04-07 09:21:32,538 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:21:32,539 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 09:21:32,539 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 09:21:32,701 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:21:32,702 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 09:21:32,702 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:21:32,702 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 09:21:32,927 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 09:21:32,928 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 09:21:33,067 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 09:21:33,075 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 09:21:33,075 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 09:21:33,337 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:21:33,356 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 09:21:33,356 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 09:21:34,458 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:21:34,458 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 09:21:34,458 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:21:34,478 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 09:21:34,478 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 09:21:35,788 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 09:21:35,802 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 09:21:42,588 - gui.event_handlers - INFO - Closing database connection...
+2025-04-07 09:21:42,600 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 09:21:42,600 - __main__ - INFO - Closing database connection...
+2025-04-07 09:21:42,600 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 09:21:42,614 - database.car_parts_db - INFO - Thread 12868: New database connection established
+2025-04-07 09:21:42,616 - __main__ - INFO - Application shutdown complete
+2025-04-07 09:24:53,756 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 09:24:53,756 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 09:24:53,923 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 09:24:56,234 - __main__ - INFO - Application starting at: 2025-04-07 09:24:56
+2025-04-07 09:24:56,235 - __main__ - INFO - Current user: BaselAM
+2025-04-07 09:24:56,317 - __main__ - INFO - Initializing database connection...
+2025-04-07 09:24:56,864 - database.car_parts_db - INFO - Thread 18868: Database connection established
+2025-04-07 09:24:56,864 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 09:24:56,898 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 09:24:56,899 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:24:56,900 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 09:24:56,902 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 09:24:56,902 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 09:24:56,903 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 09:24:56,904 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 09:24:56,905 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 09:24:56,905 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 09:24:56,907 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 09:24:56,908 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 09:24:56,908 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 09:24:56,909 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 09:24:56,909 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 09:24:56,909 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:24:56,909 - translations - INFO - Loaded 12 translation files
+2025-04-07 09:24:57,288 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 09:24:57,288 - UsersDB - INFO - Database tables created successfully
+2025-04-07 09:24:58,144 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 09:24:58,240 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 09:24:58,241 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 09:24:58,445 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 09:24:58,463 - database.car_parts_db - INFO - Thread 13276: New database connection established
+2025-04-07 09:24:58,465 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:24:58,465 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 09:24:58,465 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:24:58,465 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 09:24:58,629 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:24:58,629 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 09:24:58,629 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 09:24:58,756 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 09:24:58,823 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 09:24:58,823 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 09:24:58,944 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 09:24:58,944 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 09:24:59,059 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 09:24:59,060 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 09:24:59,145 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:24:59,948 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:24:59,948 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 09:24:59,948 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:24:59,983 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 09:24:59,983 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 09:25:04,227 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 09:25:04,238 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 09:25:13,047 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 09:25:13,059 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:25:13,059 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 09:25:13,060 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:25:13,060 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 09:25:13,088 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 9
+2025-04-07 09:25:13,089 - parts_navigation.components.tiles_grid - INFO - Setting grid to 9 columns
+2025-04-07 09:25:13,118 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:25:13,135 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 09:25:13,135 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 09:25:13,135 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 09:25:13,135 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 09:25:13,136 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 09:25:13,136 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 09:25:13,162 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 09:25:13,162 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 09:25:13,175 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 09:25:13,175 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 09:25:13,186 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 09:25:13,187 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 9 columns
+2025-04-07 09:25:13,270 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 3 to 5
+2025-04-07 09:25:13,270 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 09:25:13,273 - parts_navigation.components.tiles_grid - INFO - Adjusting columns from 4 to 5
+2025-04-07 09:25:13,274 - parts_navigation.components.tiles_grid - INFO - Setting grid to 5 columns
+2025-04-07 09:25:13,474 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:25:13,657 - parts_navigation.components.tiles_grid - INFO - Grid has 9 active columns configured
+2025-04-07 09:25:13,657 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 09:25:13,657 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 43
+2025-04-07 09:25:13,707 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 09:25:13,707 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 09:25:54,782 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 09:25:54,783 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 09:25:54,783 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 09:25:57,291 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 09:25:57,291 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 09:25:57,292 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 09:26:04,044 - root - INFO - Logging system initialized (level: INFO)
+2025-04-07 09:26:04,045 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\logs
+2025-04-07 09:26:04,076 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject
+2025-04-07 09:26:05,582 - __main__ - INFO - Application starting at: 2025-04-07 09:26:05
+2025-04-07 09:26:05,582 - __main__ - INFO - Current user: BaselAM
+2025-04-07 09:26:05,594 - __main__ - INFO - Initializing database connection...
+2025-04-07 09:26:05,749 - database.car_parts_db - INFO - Thread 11464: Database connection established
+2025-04-07 09:26:05,750 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-07 09:26:05,773 - __main__ - INFO - Connected to database. Found 2846 parts.
+2025-04-07 09:26:05,773 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:26:05,774 - translations - INFO - Loaded translations for namespace 'car_parts' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\car_parts.json
+2025-04-07 09:26:05,774 - translations - INFO - Loaded translations for namespace 'errors' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\errors.json
+2025-04-07 09:26:05,775 - translations - INFO - Loaded translations for namespace 'filters' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\filters.json
+2025-04-07 09:26:05,775 - translations - INFO - Loaded translations for namespace 'help' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\help.json
+2025-04-07 09:26:05,776 - translations - INFO - Loaded translations for namespace 'login' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\login.json
+2025-04-07 09:26:05,778 - translations - INFO - Loaded translations for namespace 'navigation' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\navigation.json
+2025-04-07 09:26:05,778 - translations - INFO - Loaded translations for namespace 'notifications' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\notifications.json
+2025-04-07 09:26:05,779 - translations - INFO - Loaded translations for namespace 'parts_nav_translations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\parts_nav_translations.json
+2025-04-07 09:26:05,780 - translations - INFO - Loaded translations for namespace 'products' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\products.json
+2025-04-07 09:26:05,780 - translations - INFO - Loaded translations for namespace 'settings' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\settings.json
+2025-04-07 09:26:05,781 - translations - INFO - Loaded translations for namespace 'ui' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\ui.json
+2025-04-07 09:26:05,782 - translations - INFO - Loaded translations for namespace 'validations' from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data\validations.json
+2025-04-07 09:26:05,782 - translations - INFO - Loaded 12 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\translations\data
+2025-04-07 09:26:05,782 - translations - INFO - Loaded 12 translation files
+2025-04-07 09:26:05,979 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\database\users.db
+2025-04-07 09:26:05,980 - UsersDB - INFO - Database tables created successfully
+2025-04-07 09:26:06,859 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-07 09:26:06,922 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-07 09:26:06,923 - widgets.header.chatbot.direct_chat_widget - WARNING - Chat icon not found, using text emoji
+2025-04-07 09:26:07,079 - parts_navigation.components.tiles_grid - INFO - Populating grid with 8 items using 4 columns
+2025-04-07 09:26:07,097 - database.car_parts_db - INFO - Thread 4296: New database connection established
+2025-04-07 09:26:07,098 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:26:07,098 - parts_navigation.components.tiles_grid - INFO - Total tiles: 8
+2025-04-07 09:26:07,098 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:26:07,098 - parts_navigation.container - INFO - Navigated to step 0
+2025-04-07 09:26:07,250 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:26:07,251 - parts_navigation.container - INFO - Starting delayed brand preloading
+2025-04-07 09:26:07,251 - parts_navigation.steps.brand - INFO - Starting to preload brands data
+2025-04-07 09:26:07,380 - translations - WARNING - Missing translation for 'Internet: Connected' in 'he'
+2025-04-07 09:26:07,432 - database.car_parts_db - INFO - Found 43 unique car brands in database
+2025-04-07 09:26:07,432 - database.car_parts_db - INFO - Processed 43 unique car brands
+2025-04-07 09:26:07,552 - parts_navigation.steps.brand - INFO - Preloaded 43 brands
+2025-04-07 09:26:07,552 - parts_navigation.logo_manager - INFO - Preloading logos for 43 brands
+2025-04-07 09:26:07,598 - parts_navigation.steps.brand - INFO - Loaded 43 unique brands
+2025-04-07 09:26:07,599 - parts_navigation.components.tiles_grid - INFO - Populating grid with 43 items using 4 columns
+2025-04-07 09:26:07,688 - parts_navigation.container - INFO - All navigation steps created successfully
+2025-04-07 09:26:08,529 - parts_navigation.components.tiles_grid - INFO - Grid has 4 active columns configured
+2025-04-07 09:26:08,529 - parts_navigation.components.tiles_grid - INFO - Total tiles: 43
+2025-04-07 09:26:08,529 - parts_navigation.components.tiles_grid - INFO - Visible tiles: 0
+2025-04-07 09:26:08,566 - parts_navigation.logo_manager - INFO - Found 31 already cached logos out of 43
+2025-04-07 09:26:08,566 - parts_navigation.steps.brand - INFO - Started preloading 43 brand logos
+2025-04-07 09:26:11,614 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-07 09:26:11,624 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-07 09:26:19,469 - gui.event_handlers - INFO - Closing database connection...
+2025-04-07 09:26:19,486 - __main__ - INFO - Cleaning up application resources...
+2025-04-07 09:26:19,486 - __main__ - INFO - Closing database connection...
+2025-04-07 09:26:19,486 - __main__ - INFO - Cleaning up parts navigation resources...
+2025-04-07 09:26:19,499 - database.car_parts_db - INFO - Thread 11464: New database connection established
+2025-04-07 09:26:19,501 - __main__ - INFO - Application shutdown complete

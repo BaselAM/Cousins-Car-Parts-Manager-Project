@@ -84,7 +84,13 @@ class DirectChatWidget(QWidget):
         self.chat_btn.clicked.connect(self.toggle_chat)
 
         # Try different locations for the chat icon
+        # Try different locations for the chat icon
         icon_locations = [
+            # Look for chat_icon.png first (your new icon)
+            Path(__file__).resolve().parent / "resources" / "chat_icon.png",
+            Path(__file__).resolve().parent.parent / "resources" / "chat_icon.png",
+            Path(__file__).resolve().parent.parent.parent / "resources" / "chat_icon.png",
+            # Then fall back to original paths if needed
             Path(__file__).resolve().parent / "resources" / "chatbot.png",
             Path(__file__).resolve().parent.parent / "resources" / "chatbot.png",
             Path(__file__).resolve().parent.parent.parent / "resources" / "chatbot.png",

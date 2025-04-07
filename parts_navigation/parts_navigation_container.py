@@ -103,7 +103,7 @@ class PartsNavigationContainer(QWidget):
                 logger.error(f"Error during delayed brand preloading: {e}")
                 # Don't propagate the exception - just log it
 
-    def cleanup_resources(self):
+    def cleanup_resources(self, existing_connection=None):
         """Complete cleanup of all resources when container is closed"""
         logger.debug("Performing comprehensive cleanup of parts navigation resources")
 
@@ -162,14 +162,16 @@ class PartsNavigationContainer(QWidget):
         # Process any pending events before attempting to close database
         QApplication.processEvents()
 
-        # Clean up database connections last
-        if hasattr(self, 'db') and self.db:
+        # Clean up database connections last - but only if not using provided connection
+        if existing_connection is None and hasattr(self, 'db') and self.db:
             try:
                 # Force thread-safe closing
                 self.db.ensure_connection()
                 self.db.close_connection()
             except Exception as e:
                 logger.error(f"Error closing database connection: {e}")
+        else:
+            logger.debug("Using provided database connection - skipping close operation")
 
         logger.debug("Parts navigation resources cleanup completed")
 

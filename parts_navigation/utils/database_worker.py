@@ -515,41 +515,30 @@ class DatabaseOperator(QObject):
         self._thread_lock = threading.RLock()  # Add thread safety
 
     def _get_thread_db(self):
-        """Get a database connection for the current thread with reuse."""
+        """Get a database connection for the current thread with improved reuse."""
         thread_id = threading.get_ident()
 
         # Thread-safe access to shared connections
         with DatabaseOperator._connections_lock:
-            # If we already have a connection for this thread, reuse it
+            # If we already have a connection for this thread, validate and reuse it
             if thread_id in DatabaseOperator._shared_db_connections:
                 db = DatabaseOperator._shared_db_connections[thread_id]
-                # Make sure the connection is still valid
+                # Make sure the connection is still valid by running a simple test query
                 if hasattr(db, 'ensure_connection'):
                     try:
                         db.ensure_connection()
                         logger.debug(f"Reusing existing database connection for thread {thread_id}")
                         return db
                     except Exception as e:
-                        # If there's an error with the connection, remove it
+                        # If there's an error with the connection, remove it from cache
                         logger.error(f"Error with cached connection: {e}")
                         DatabaseOperator._shared_db_connections.pop(thread_id, None)
 
-            # Create a new connection for this thread
-            if hasattr(self.db, 'ensure_connection'):
-                # If this is a connection that supports thread-local connections,
-                # call ensure_connection to get a valid connection for this thread
-                try:
-                    self.db.ensure_connection()
-                    DatabaseOperator._shared_db_connections[thread_id] = self.db
-                    logger.debug(f"Created new thread-local database connection for thread {thread_id}")
-                    return self.db
-                except Exception as e:
-                    logger.error(f"Error creating thread-local connection: {e}")
-                    # Return the original as fallback
-                    return self.db
-            else:
-                # For other types of connections, just return the original
-                return self.db
+            # Create a new connection only when needed
+            logger.debug(f"Creating new thread-local database connection for thread {thread_id}")
+            # Store the connection in the shared cache
+            DatabaseOperator._shared_db_connections[thread_id] = self.db
+            return self.db
 
     def execute(self, operation, on_complete, on_error, **kwargs):
         """

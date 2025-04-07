@@ -340,11 +340,18 @@ class TilesGrid(QFrame):
 
     def adjust_columns_to_width(self, width):
         """
-        Automatically adjust columns based on available width.
+        Automatically adjust columns based on available width with threshold check.
 
         Args:
             width: Available width in pixels
         """
+        # Skip small changes to reduce UI jumpiness
+        if hasattr(self, '_last_width') and abs(width - self._last_width) < 50:
+            return False
+
+        # Store current width for future comparisons
+        self._last_width = width
+
         # Calculate optimal column count based on available width
         tile_width = 100  # Target width for each tile
         min_tile_width = 90  # Minimum acceptable tile width
@@ -364,7 +371,7 @@ class TilesGrid(QFrame):
         # Choose a reasonable number of columns
         new_columns = min(max_columns, max(ideal_columns, 1))
 
-        # Update columns if different enough to matter
+        # Only change if different enough
         if abs(new_columns - self.columns) > 0:
             logger.info(f"Adjusting columns from {self.columns} to {new_columns}")
             self.set_columns(new_columns)

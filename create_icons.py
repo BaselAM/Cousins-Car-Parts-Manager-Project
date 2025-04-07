@@ -8,6 +8,7 @@ from config import RESOURCE_DIR, get_resource_path
 # Initialize QApplication at the beginning
 app = QApplication(sys.argv)
 
+
 def create_resources_directory():
     # Use the RESOURCE_DIR from config.py
     RESOURCE_DIR.mkdir(exist_ok=True)
@@ -17,7 +18,12 @@ def create_resources_directory():
 def create_icon(name, color_hex="#2196F3"):
     """Create a simple icon with the given name and color"""
     resources_dir = create_resources_directory()
-    icon_path = resources_dir / f"{name}.png"
+
+    # Add .png extension if not already there
+    if not name.endswith('.png'):
+        icon_path = resources_dir / f"{name}.png"
+    else:
+        icon_path = resources_dir / name
 
     # Skip if icon already exists
     if icon_path.exists():
@@ -99,6 +105,35 @@ def create_icon(name, color_hex="#2196F3"):
         # Simple X
         painter.drawLine(16, 16, 48, 48)  # \
         painter.drawLine(48, 16, 16, 48)  # /
+    elif name == "chat_icon" or name == "chatbot":
+        # Speech bubble
+        painter.drawEllipse(12, 12, 40, 30)
+        # Chat pointer
+        points = [QPoint(20, 42), QPoint(28, 38), QPoint(22, 34)]
+        painter.drawPolygon(QPolygon(points))
+    elif name == "clear_filter_icon":
+        # Funnel with X
+        # Funnel shape
+        points = [
+            QPoint(12, 16),
+            QPoint(52, 16),
+            QPoint(36, 36),
+            QPoint(36, 48),
+            QPoint(28, 48),
+            QPoint(28, 36),
+            QPoint(12, 16)
+        ]
+        painter.drawPolygon(QPolygon(points))
+        # X mark inside (smaller)
+        painter.drawLine(24, 24, 40, 32)  # \
+        painter.drawLine(40, 24, 24, 32)  # /
+    elif name == "print_icon":
+        # Printer
+        painter.drawRect(16, 28, 32, 18)  # Printer body
+        painter.drawRect(24, 16, 16, 12)  # Paper on top
+        painter.drawRect(24, 46, 16, 6)  # Paper output
+        # Printer details
+        painter.drawEllipse(42, 34, 3, 3)  # Button
 
     # End painting
     painter.end()
@@ -122,6 +157,10 @@ def create_all_icons():
         ("error_icon", "#F44336"),  # Red
         ("warning_icon", "#FF9800"),  # Orange
         ("close_icon", "#757575"),  # Gray
+        ("chat_icon", "#2196F3"),  # Blue
+        ("chatbot", "#2196F3"),  # Blue - create chatbot.png for the chat widget
+        ("clear_filter_icon", "#FF9800"),  # Orange
+        ("print_icon", "#757575"),  # Gray
     ]
 
     for name, color in icons_to_create:
