@@ -83,29 +83,60 @@ class DirectChatWidget(QWidget):
         self.chat_btn.setToolTip("Chat")
         self.chat_btn.clicked.connect(self.toggle_chat)
 
-        # Try different locations for the chat icon
-        # Try different locations for the chat icon
-        icon_locations = [
-            # Look for chat_icon.png first (your new icon)
-            Path(__file__).resolve().parent / "resources" / "chat_icon.png",
-            Path(__file__).resolve().parent.parent / "resources" / "chat_icon.png",
-            Path(__file__).resolve().parent.parent.parent / "resources" / "chat_icon.png",
-            # Then fall back to original paths if needed
-            Path(__file__).resolve().parent / "resources" / "chatbot.png",
-            Path(__file__).resolve().parent.parent / "resources" / "chatbot.png",
-            Path(__file__).resolve().parent.parent.parent / "resources" / "chatbot.png",
-        ]
-
-        icon_found = False
-        chat_icon_path = None  # Initialize the variable outside the loop
-        for icon_path in icon_locations:
-            if icon_path.exists():
-                logger.debug(f"Using chat icon from: {icon_path}")
-                self.chat_btn.setIcon(QIcon(str(icon_path)))
+        # Try to get the actual resource directory from config
+        try:
+            from config import RESOURCE_DIR
+            config_icon_path = RESOURCE_DIR / "chatbot.png"
+            if config_icon_path.exists():
+                logger.debug(f"Using chat icon from config: {config_icon_path}")
+                self.chat_btn.setIcon(QIcon(str(config_icon_path)))
                 self.chat_btn.setIconSize(QSize(26, 26))
                 icon_found = True
-                chat_icon_path = icon_path  # Store the path for later use
-                break
+                chat_icon_path = config_icon_path
+            else:
+                # Fall back to the original search approach
+                icon_locations = [
+                    # Try common paths
+                    Path(__file__).resolve().parent / "resources" / "chat_icon.png",
+                    Path(__file__).resolve().parent.parent / "resources" / "chat_icon.png",
+                    Path(__file__).resolve().parent.parent.parent / "resources" / "chat_icon.png",
+                    Path(__file__).resolve().parent / "resources" / "chatbot.png",
+                    Path(__file__).resolve().parent.parent / "resources" / "chatbot.png",
+                    Path(__file__).resolve().parent.parent.parent / "resources" / "chatbot.png",
+                ]
+
+                icon_found = False
+                chat_icon_path = None
+                for icon_path in icon_locations:
+                    if icon_path.exists():
+                        logger.debug(f"Using chat icon from: {icon_path}")
+                        self.chat_btn.setIcon(QIcon(str(icon_path)))
+                        self.chat_btn.setIconSize(QSize(26, 26))
+                        icon_found = True
+                        chat_icon_path = icon_path
+                        break
+        except ImportError:
+            logger.debug("Could not import RESOURCE_DIR from config, falling back to path search")
+            # Original search code
+            icon_locations = [
+                Path(__file__).resolve().parent / "resources" / "chat_icon.png",
+                Path(__file__).resolve().parent.parent / "resources" / "chat_icon.png",
+                Path(__file__).resolve().parent.parent.parent / "resources" / "chat_icon.png",
+                Path(__file__).resolve().parent / "resources" / "chatbot.png",
+                Path(__file__).resolve().parent.parent / "resources" / "chatbot.png",
+                Path(__file__).resolve().parent.parent.parent / "resources" / "chatbot.png",
+            ]
+
+            icon_found = False
+            chat_icon_path = None
+            for icon_path in icon_locations:
+                if icon_path.exists():
+                    logger.debug(f"Using chat icon from: {icon_path}")
+                    self.chat_btn.setIcon(QIcon(str(icon_path)))
+                    self.chat_btn.setIconSize(QSize(26, 26))
+                    icon_found = True
+                    chat_icon_path = icon_path
+                    break
 
         if not icon_found:
             logger.warning("Chat icon not found, using text emoji")
