@@ -1,13 +1,14 @@
 """
-DatabaseWorker utility for asynchronous database operations.
+Universal database worker utility for asynchronous database operations.
 
-Provides thread-safe database operations for the parts navigation system.
+Provides thread-safe database operations for all parts of the application.
 """
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot, Qt
 import threading
+import time
 from logger import get_logger
 
-logger = get_logger('parts_navigation.database_worker')
+logger = get_logger('utils.database_worker')
 
 
 class DatabaseWorker(QObject):
@@ -18,6 +19,7 @@ class DatabaseWorker(QObject):
     - Thread-safe database operations
     - Signal-based communication
     - Error handling
+    - Support for all application database operations
     """
     # Signal emitted when operation completes successfully
     finished = pyqtSignal(object)  # Result object
@@ -25,9 +27,10 @@ class DatabaseWorker(QObject):
     # Signal emitted when an error occurs
     error = pyqtSignal(str)  # Error message
 
-    # Static cache for brands data with thread safety
-    _brands_cache = None
-    _brands_cache_lock = threading.RLock()
+    # Static cache with thread safety
+    _cache = {}
+    _cache_locks = {}
+    _cache_timestamps = {}
 
     def __init__(self, db):
         """
@@ -60,39 +63,41 @@ class DatabaseWorker(QObject):
                     self.error.emit(f"Database connection error: {e}")
                     return
 
-            # Brand operations
+            # Parts Navigation Operations
             if operation == "get_brands":
                 result = self._get_brands()
-
-            # Model operations
             elif operation == "get_models":
                 result = self._get_models(kwargs.get('brand', None))
-
-            # Year operations
             elif operation == "get_years":
                 result = self._get_years(
                     kwargs.get('brand', None),
                     kwargs.get('model', None)
                 )
-
-            # Category operations
             elif operation == "get_categories":
                 result = self._get_categories(kwargs.get('car', None))
-
-            # Product operations
             elif operation == "get_products":
                 result = self._get_products(
                     kwargs.get('car', None),
                     kwargs.get('category', None)
                 )
-
-            # Search operations
             elif operation == "search_parts":
                 result = self._search_parts(kwargs.get('search_text', ''))
-
-            # Part details operations
             elif operation == "get_part_details":
                 result = self._get_part_details(kwargs.get('part_id', None))
+
+            # Products Widget Operations
+            elif operation == "get_all_parts" or operation == "load":  # Support both new and old naming
+                result = self._get_all_parts(kwargs.get('force_refresh', False))
+            elif operation == "add_product":
+                result = self._add_product(kwargs.get('product_data', None))
+            elif operation == "update_product":
+                result = self._update_product(
+                    kwargs.get('product_id', None),
+                    kwargs.get('field', None),
+                    kwargs.get('value', None)
+                )
+            elif operation == "delete_products":
+                result = self._delete_products(kwargs.get('product_ids', []))
 
             # Unknown operation
             else:
@@ -106,6 +111,39 @@ class DatabaseWorker(QObject):
             logger.error(f"Database worker error: {str(e)}")
             self.error.emit(str(e))
 
+    # Helper methods for caching
+    def _get_cache(self, cache_key, default=None):
+        """Get a value from the cache with thread safety."""
+        if cache_key not in self._cache_locks:
+            self._cache_locks[cache_key] = threading.RLock()
+
+        with self._cache_locks[cache_key]:
+            return self._cache.get(cache_key, default)
+
+    def _set_cache(self, cache_key, value):
+        """Set a value in the cache with thread safety."""
+        if cache_key not in self._cache_locks:
+            self._cache_locks[cache_key] = threading.RLock()
+
+        with self._cache_locks[cache_key]:
+            self._cache[cache_key] = value
+            self._cache_timestamps[cache_key] = time.time()
+
+    def _invalidate_cache(self, cache_key=None):
+        """Invalidate cache for a specific key or all keys."""
+        if cache_key:
+            if cache_key in self._cache_locks:
+                with self._cache_locks[cache_key]:
+                    if cache_key in self._cache:
+                        del self._cache[cache_key]
+                    if cache_key in self._cache_timestamps:
+                        del self._cache_timestamps[cache_key]
+        else:
+            # Invalidate all caches
+            for key in list(self._cache.keys()):
+                self._invalidate_cache(key)
+
+    # Operations implementations
     def _get_brands(self):
         """
         Get unique car brands with caching and improved error handling.
@@ -114,11 +152,11 @@ class DatabaseWorker(QObject):
             list: List of brand dictionaries
         """
         try:
-            # If we have a cached result, use it - with thread safety
-            with DatabaseWorker._brands_cache_lock:
-                if DatabaseWorker._brands_cache is not None:
-                    logger.debug("Using cached brands data instead of querying database")
-                    return DatabaseWorker._brands_cache.copy()  # Return a copy for thread safety
+            # Check cache first
+            cached_brands = self._get_cache('brands')
+            if cached_brands is not None:
+                logger.debug("Using cached brands data")
+                return cached_brands.copy()
 
             # Get all cars with error handling
             try:
@@ -143,11 +181,10 @@ class DatabaseWorker(QObject):
             # Create brand objects
             result = [{'brand': brand} for brand in sorted(unique_brands)]
 
-            # Cache the result for future use with thread safety
-            with DatabaseWorker._brands_cache_lock:
-                DatabaseWorker._brands_cache = result.copy()  # Store a copy for thread safety
+            # Cache the result for future use
+            self._set_cache('brands', result.copy())
 
-            return result  # Return the original list
+            return result
         except Exception as e:
             logger.error(f"Unexpected error in _get_brands: {e}")
             # Return empty list rather than failing
@@ -168,8 +205,15 @@ class DatabaseWorker(QObject):
             return []
 
         brand_name = brand['brand']
+        cache_key = f'models_{brand_name}'
 
         try:
+            # Check cache first
+            cached_models = self._get_cache(cache_key)
+            if cached_models is not None:
+                logger.debug(f"Using cached models data for {brand_name}")
+                return cached_models.copy()
+
             # Get all cars
             cars = self.db.get_all_cars()
 
@@ -183,7 +227,12 @@ class DatabaseWorker(QObject):
                             unique_models.add(model)
 
             # Create model objects
-            return [{'model': model} for model in sorted(unique_models)]
+            result = [{'model': model} for model in sorted(unique_models)]
+
+            # Cache the result
+            self._set_cache(cache_key, result.copy())
+
+            return result
         except Exception as e:
             logger.error(f"Error in _get_models: {e}")
             return []
@@ -205,8 +254,15 @@ class DatabaseWorker(QObject):
 
         brand_name = brand['brand']
         model_name = model['model']
+        cache_key = f'years_{brand_name}_{model_name}'
 
         try:
+            # Check cache first
+            cached_years = self._get_cache(cache_key)
+            if cached_years is not None:
+                logger.debug(f"Using cached years data for {brand_name} {model_name}")
+                return cached_years.copy()
+
             # Get car data
             cars = self.db.get_all_cars()
 
@@ -229,7 +285,12 @@ class DatabaseWorker(QObject):
                 sorted_years = sorted(unique_years, reverse=True)
 
             # Create year objects
-            return [{'year': year} for year in sorted_years]
+            result = [{'year': year} for year in sorted_years]
+
+            # Cache the result
+            self._set_cache(cache_key, result.copy())
+
+            return result
         except Exception as e:
             logger.error(f"Error in _get_years: {e}")
             return []
@@ -472,6 +533,149 @@ class DatabaseWorker(QObject):
             product['model_years'] = car.get('year', '') if 'year' in car else ''
 
             products_list.append(product)
+
+    # Products Widget Operations
+    def _get_all_parts(self, force_refresh=False):
+        """
+        Get all parts with caching for better performance.
+
+        Args:
+            force_refresh: Force refresh from database
+
+        Returns:
+            list: List of parts
+        """
+        try:
+            # Check if we can use the cache
+            if not force_refresh:
+                cached_parts = self._get_cache('all_parts')
+                if cached_parts is not None:
+                    logger.debug("Using cached products data")
+                    return cached_parts.copy()
+
+            # Get all parts from database
+            parts = self.db.get_all_parts()
+
+            # Update cache
+            self._set_cache('all_parts', parts.copy() if parts else [])
+
+            return parts
+        except Exception as e:
+            logger.error(f"Error in _get_all_parts: {e}")
+            # Return empty list on error rather than failing
+            return []
+
+    def _add_product(self, product_data):
+        """
+        Add a new product.
+
+        Args:
+            product_data: Product data dictionary
+
+        Returns:
+            int: New product ID or None if failed
+        """
+        if not product_data:
+            self.error.emit("Product data must be specified")
+            return None
+
+        try:
+            # Add product to database
+            new_id = self.db.add_part(product_data)
+
+            # Invalidate relevant caches
+            self._invalidate_cache('all_parts')
+
+            # Any other caches that might contain this product
+            for key in list(self._cache.keys()):
+                if key.startswith('products_'):
+                    self._invalidate_cache(key)
+
+            return new_id
+        except Exception as e:
+            logger.error(f"Error in _add_product: {e}")
+            self.error.emit(str(e))
+            return None
+
+    def _update_product(self, product_id, field, value):
+        """
+        Update a product field.
+
+        Args:
+            product_id: Product ID
+            field: Field name
+            value: New value
+
+        Returns:
+            bool: True if successful
+        """
+        if not product_id or not field:
+            self.error.emit("Product ID and field must be specified")
+            return False
+
+        try:
+            # Update product in database
+            success = self.db.update_part(product_id, field, value)
+
+            if success:
+                # Update in-memory cache if we have one
+                cached_parts = self._get_cache('all_parts')
+                if cached_parts is not None:
+                    # Find and update product in cache
+                    for product in cached_parts:
+                        if isinstance(product, dict) and product.get('parcode') == product_id:
+                            product[field] = value
+                            break
+
+                    # Update the cache with our modified copy
+                    self._set_cache('all_parts', cached_parts)
+
+                # Also invalidate any other caches that might contain this product
+                for key in list(self._cache.keys()):
+                    if key.startswith('products_') and key != 'all_parts':
+                        self._invalidate_cache(key)
+
+            return success
+        except Exception as e:
+            logger.error(f"Error in _update_product: {e}")
+            self.error.emit(str(e))
+            return False
+
+    def _delete_products(self, product_ids):
+        """
+        Delete products.
+
+        Args:
+            product_ids: List of product IDs
+
+        Returns:
+            list: List of successfully deleted product IDs
+        """
+        if not product_ids:
+            self.error.emit("No product IDs specified")
+            return []
+
+        try:
+            # Delete products from database
+            deleted_ids = []
+            for product_id in product_ids:
+                if self.db.delete_part(product_id):
+                    deleted_ids.append(product_id)
+
+            # Invalidate all product caches
+            if deleted_ids:
+                self._invalidate_cache('all_parts')
+
+                # Invalidate any other caches that might contain these products
+                for key in list(self._cache.keys()):
+                    if key.startswith('products_'):
+                        self._invalidate_cache(key)
+
+            return deleted_ids
+        except Exception as e:
+            logger.error(f"Error in _delete_products: {e}")
+            self.error.emit(str(e))
+            return []
 
     def cleanup(self):
         """Clean up resources."""

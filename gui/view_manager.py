@@ -5,11 +5,14 @@ from logger import get_logger
 # Import widgets
 from widgets.home_page import HomePageWidget
 from widgets.products import ProductsWidget
+# Import the premium statistics widget instead of the original
 from widgets.statistics import StatisticsWidget
 from widgets.settings.settings_widget import SettingsWidget
 from widgets.help import HelpWidget
 from parts_navigation import PartsNavigationContainer
+from widgets.register_widget import RegisterWidget
 
+# Configure module logger
 logger = get_logger(__name__)
 
 
@@ -38,12 +41,18 @@ class GUIViewManager:
         self.settings_widget = None
         self.help_widget = None
         self.parts_navigation_widget = None
+        self.register_widget = None
         self.home_page = None
 
     def preload_views(self):
         """Initialize all view widgets"""
         self.products_widget = ProductsWidget(self.translator, self.parts_db, parent=self.parent)
+
+        # Use the PremiumStatisticsWidget instead of the original StatisticsWidget
         self.statistics_widget = StatisticsWidget(self.translator, parent=self.parent)
+        # Set up the database connection for the statistics widget
+        self.statistics_widget.setup_database(self.parts_db)
+
         self.settings_widget = SettingsWidget(self.translator, self.parent.update_language, self.parent)
         self.help_widget = HelpWidget(self.translator, parent=self.parent)
         self.parts_navigation_widget = PartsNavigationContainer(
@@ -51,6 +60,17 @@ class GUIViewManager:
             self.parts_db,
             parent=self.parent
         )
+
+        # Pre-initialize the register widget to prevent loading delay when first accessed
+        self.register_widget = RegisterWidget(
+            translator=self.translator,
+            db=self.parts_db,
+            parent=self.parent
+        )
+
+        # Connect signals
+        if hasattr(self.register_widget, 'transaction_completed'):
+            self.register_widget.transaction_completed.connect(self.on_transaction_completed)
 
     def create_home_page(self, navigation_functions):
         """
@@ -65,6 +85,62 @@ class GUIViewManager:
         self.home_page = HomePageWidget(self.translator, navigation_functions, parent=self.parent)
         return self.home_page
 
+    def show_register(self, content_stack):
+        """Show the register widget for sales and inventory management"""
+        try:
+            # Check if register widget already exists or create it
+            if not self.register_widget:
+                logger.info("Creating new register widget")
+                # Create the register widget
+                self.register_widget = RegisterWidget(
+                    translator=self.translator,
+                    db=self.parts_db,
+                    parent=self.parent
+                )
+
+                # Connect transaction signals
+                if hasattr(self.register_widget, 'transaction_completed'):
+                    self.register_widget.transaction_completed.connect(self.on_transaction_completed)
+
+                # Add to content stack
+                content_stack.addWidget(self.register_widget)
+            elif self.register_widget.parent() is None:
+                # If widget exists but isn't in the stack (was removed)
+                logger.info("Re-adding existing register widget to stack")
+                content_stack.addWidget(self.register_widget)
+
+            # Check if widget is already in stack
+            index = content_stack.indexOf(self.register_widget)
+            if index == -1:
+                # Widget isn't in the stack yet
+                logger.info("Adding register widget to stack")
+                content_stack.addWidget(self.register_widget)
+
+            # Switch to register widget
+            logger.info("Switching to register widget")
+            content_stack.setCurrentWidget(self.register_widget)
+
+        except Exception as e:
+            logger.error(f"Error showing register widget: {str(e)}")
+            raise
+
+    def on_transaction_completed(self, transaction_data):
+        """Handle completed transactions from register widget"""
+        # Log the transaction
+        transaction_type = transaction_data.get('type', 'unknown')
+        product_name = transaction_data.get('product', 'unknown')
+        quantity = transaction_data.get('quantity', 0)
+        price = transaction_data.get('price', 0.0)
+
+        # Use the module logger instead of self.logger
+        if transaction_type == 'sell':
+            logger.info(f"Sale completed: {quantity} x {product_name} for ${price:.2f}")
+        elif transaction_type == 'receive':
+            logger.info(f"Stock received: {quantity} x {product_name} worth ${price:.2f}")
+
+        # You could add code here to save transactions to a database
+        # or update other UI components with the transaction data
+
     # Navigation methods
     def show_home(self, content_stack):
         """Switch to home page view"""
@@ -75,8 +151,25 @@ class GUIViewManager:
         content_stack.setCurrentWidget(self.products_widget)
 
     def show_statistics(self, content_stack):
-        """Switch to statistics view"""
+        """Switch to statistics view with improved database handling"""
         content_stack.setCurrentWidget(self.statistics_widget)
+
+        # Refresh data when statistics view is shown
+        if hasattr(self.statistics_widget, 'setup_database'):
+            # Check if we need to set up the database
+            if not hasattr(self.statistics_widget, 'db') or self.statistics_widget.db is None:
+                # Get the settings DB from the parent if available
+                settings_db = None
+                if hasattr(self.parent, 'settings_db'):
+                    settings_db = self.parent.settings_db
+
+                # Set up the database with the settings
+                self.statistics_widget.setup_database(self.parts_db, settings_db)
+            else:
+                # Just refresh data
+                self.statistics_widget.refresh_data()
+        elif hasattr(self.statistics_widget, 'refresh_data'):
+            self.statistics_widget.refresh_data()
 
     def show_settings(self, content_stack):
         """Switch to settings view"""
@@ -165,7 +258,8 @@ class GUIViewManager:
             self.statistics_widget,
             self.settings_widget,
             self.help_widget,
-            self.parts_navigation_widget
+            self.parts_navigation_widget,
+            self.register_widget
         ]:
             if widget and hasattr(widget, 'update_translations'):
                 widget.update_translations()

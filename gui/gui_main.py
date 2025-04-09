@@ -168,7 +168,6 @@ class GUI(QMainWindow, SizePolicyMixin):
         """Switch to help documentation view"""
         self.view_manager.show_help(self.content_stack)
 
-    # Method to add to gui_main.py (replace the existing show_parts method)
     def show_parts(self):
         """Open the parts navigation system with safer error handling"""
         try:
@@ -190,6 +189,31 @@ class GUI(QMainWindow, SizePolicyMixin):
                 self.translator.t("error") if hasattr(self, 'translator') else "Error",
                 f"Could not show parts navigation: {str(e)}"
             )
+
+    def show_register(self):
+        """Switch to register view for sales and inventory management"""
+        try:
+            if hasattr(self, 'view_manager') and self.view_manager:
+                logger.info("Showing register view")
+                # Pass the content stack to the view manager
+                self.view_manager.show_register(self.content_stack)
+            else:
+                # Fallback if view_manager is not available
+                logger.warning("View manager not available for showing register")
+                QMessageBox.information(
+                    self,
+                    self.translator.t("register_button") if hasattr(self, 'translator') else "Register",
+                    "Register functionality is not available at this time."
+                )
+        except Exception as e:
+            logger.error(f"Error in show_register: {str(e)}")
+            # Show a user-friendly message
+            QMessageBox.warning(
+                self,
+                self.translator.t("error") if hasattr(self, 'translator') else "Error",
+                f"Could not show register: {str(e)}"
+            )
+
     def show_web_search(self):
         """Open web search for car parts"""
         self.view_manager.show_web_search(self.translator)

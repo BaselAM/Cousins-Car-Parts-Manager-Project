@@ -91,6 +91,8 @@ class CarPartsDB:
             position VARCHAR(50),
             side VARCHAR(50),
             engine_type VARCHAR(100),
+            original BOOLEAN DEFAULT FALSE,
+            manufacturer VARCHAR(255),
             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
         '''
@@ -286,7 +288,7 @@ class CarPartsDB:
                     'parcode', 'category', 'product_name', 'quantity', 'price',
                     'compatible_brands', 'compatible_models', 'model_years',
                     'drive_type', 'engine_info', 'position', 'side', 'engine_type',
-                    'last_updated'
+                    'original', 'manufacturer', 'last_updated'
                 }
 
                 # Add any missing columns
@@ -300,6 +302,10 @@ class CarPartsDB:
                             data_type = 'INT DEFAULT 0'
                         elif column in ('price'):
                             data_type = 'DECIMAL(10, 2) DEFAULT 0.0'
+                        elif column == 'original':
+                            data_type = 'BOOLEAN DEFAULT FALSE'
+                        elif column == 'manufacturer':
+                            data_type = 'VARCHAR(255)'
                         elif column == 'last_updated':
                             data_type = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
                         else:
@@ -318,8 +324,19 @@ class CarPartsDB:
                     self.rollback_transaction()
                 return False
 
-    def add_part(self, category, product_name, quantity=0, price=0.0, **kwargs):
-        """Add a new part with enhanced fields"""
+    def add_part(self, category, product_name, quantity=0, price=0.0, original=False, manufacturer=None, **kwargs):
+        """
+        Add a new part with enhanced fields
+
+        Args:
+            category: Part category
+            product_name: Name of the part
+            quantity: Stock quantity
+            price: Unit price
+            original: Boolean indicating if this is an original manufacturer part
+            manufacturer: Name of the part manufacturer
+            **kwargs: Additional part attributes
+        """
         with self.lock:
             self.ensure_transaction_state('ready')  # Ensure no active transaction
 
@@ -335,6 +352,15 @@ class CarPartsDB:
                 # Prepare additional fields
                 field_names = ['category', 'product_name', 'quantity', 'price']
                 field_values = [category, product_name, quantity, price]
+
+                # Add the new fields if provided
+                if original is not None:
+                    field_names.append('original')
+                    field_values.append(original)
+
+                if manufacturer is not None:
+                    field_names.append('manufacturer')
+                    field_values.append(manufacturer)
 
                 # Add any additional fields from kwargs
                 for key, value in kwargs.items():
@@ -507,7 +533,13 @@ class CarPartsDB:
                 return []
 
     def update_part(self, parcode, **kwargs):
-        """Update a part with the given values"""
+        """
+        Update a part with the given values
+
+        Args:
+            parcode: ID of the part to update
+            **kwargs: Fields to update, including 'original' (boolean) and 'manufacturer' (string)
+        """
         with self.lock:
             self.ensure_transaction_state('ready')  # Ensure no active transaction
 
@@ -737,4 +769,26 @@ class CarPartsDB:
             except Exception as e:
                 self.logger.error(f"Error fetching car data: {e}")
                 # Return empty list rather than None to prevent cascading errors
+                return []
+
+    def get_parts_by_manufacturer(self, manufacturer):
+        """Get parts by manufacturer name"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute("SELECT * FROM parts WHERE manufacturer = %s", (manufacturer,))
+                return self.local.cursor.fetchall()
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching parts by manufacturer '{manufacturer}': {e}")
+                return []
+
+    def get_original_parts(self, is_original=True):
+        """Get parts filtered by original status"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute("SELECT * FROM parts WHERE original = %s", (is_original,))
+                return self.local.cursor.fetchall()
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching original parts (is_original={is_original}): {e}")
                 return []

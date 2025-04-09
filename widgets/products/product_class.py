@@ -15,6 +15,8 @@ from .product_widget.operations.add_operation import AddOperation
 from .product_widget.operations.delete_operation import DeleteOperation
 from .product_widget.operations.export_operation import ExportOperation
 from .product_widget.operations.print_operation import PDFPrintOperation  # New import
+# Add this after your other imports
+from widgets.products.components.barcode_scanner_button import BarcodeScannerButton
 
 from .utils import ProductValidator
 from .dialogs import FilterDialog
@@ -68,6 +70,28 @@ class ProductsWidget(QWidget):
         self.search_input = ui_components['search_input']
         self.product_table = ui_components['product_table']
         self.status_bar = ui_components['status_bar']
+
+        # Create and add the barcode scanner button
+        self.barcode_scanner = BarcodeScannerButton(self, self.translator)
+
+        # Find the parent layout containing the existing buttons
+        button_container = self.add_btn.parentWidget()
+        if button_container and button_container.layout():
+            button_layout = button_container.layout()
+
+            # Find add_btn position
+            add_btn_index = -1
+            for i in range(button_layout.count()):
+                if button_layout.itemAt(i).widget() == self.add_btn:
+                    add_btn_index = i
+                    break
+
+            # Insert after the add button
+            if add_btn_index >= 0:
+                button_layout.insertWidget(add_btn_index + 1, self.barcode_scanner)
+            else:
+                # Fallback: just add to the end
+                button_layout.addWidget(self.barcode_scanner)
 
         # Connect to status bar state changes
         self.status_bar.state_changed.connect(self._handle_status_bar_state_change)
@@ -375,6 +399,9 @@ class ProductsWidget(QWidget):
         self.print_btn.clicked.connect(self.print_products)  # Single print button with integrated preview
         self.refresh_btn.clicked.connect(self.load_products)
 
+        # Connect barcode scanner signal
+        self.barcode_scanner.barcode_scanned.connect(self.on_barcode_scanned)
+
         # self.search_timer connected in __init__
         self.search_input.textChanged.connect(self._on_search_input_changed)
 
@@ -522,3 +549,48 @@ class ProductsWidget(QWidget):
             self.product_manager.get_products(),
             self.select_toggle.isChecked()
         )
+
+    def on_barcode_scanned(self, barcode, format):
+        """Handle scanned barcode by updating search input and triggering search"""
+        if not barcode:
+            return
+
+        try:
+            # Set the barcode in the search input
+            self.search_input.setText(barcode)
+
+            # Cancel any active search timer
+            if self.search_timer.isActive():
+                self.search_timer.stop()
+
+            # Immediately perform the search instead of waiting for timer
+            self.on_search(barcode)
+
+            # Show feedback message with proper translation
+            # First try with namespace (preferred method)
+            if self.translator.has_translation('barcode:barcode_scanned'):
+                message = self.translator.t('barcode:barcode_scanned', barcode=barcode)
+            # Fallback to non-namespaced translation
+            elif self.translator.has_translation('barcode_scanned'):
+                message = self.translator.t('barcode_scanned', barcode=barcode)
+            # Final fallback to hardcoded string
+            else:
+                message = f"Barcode scanned: {barcode}"
+
+            self.status_bar.show_message(message, "success", 3000)
+
+            # Focus on the product table after search
+            if self.product_table and hasattr(self.product_table, 'table'):
+                self.product_table.table.setFocus()
+        except Exception as e:
+            print(f"Error handling barcode scan: {e}")
+
+            # Error message with translation
+            if self.translator.has_translation('barcode:barcode_scan_error'):
+                error_message = self.translator.t('barcode:barcode_scan_error')
+            elif self.translator.has_translation('barcode_scan_error'):
+                error_message = self.translator.t('barcode_scan_error')
+            else:
+                error_message = "Error processing barcode"
+
+            self.status_bar.show_message(error_message, "error")

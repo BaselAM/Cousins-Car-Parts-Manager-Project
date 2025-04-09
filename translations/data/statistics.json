@@ -1,0 +1,262 @@
+{
+  "analytics_dashboard": {
+    "en": "Analytics Dashboard",
+    "he": "לוח מחוונים אנליטיקה"
+  },
+  "refresh_statistics": {
+    "en": "Refresh",
+    "he": "רענן"
+  },
+  "export": {
+    "en": "Export",
+    "he": "ייצוא"
+  },
+  "inventory_insights": {
+    "en": "Inventory Insights",
+    "he": "תובנות מלאי"
+  },
+  "categories": {
+    "en": "Categories",
+    "he": "קטגוריות"
+  },
+  "brands": {
+    "en": "Brands",
+    "he": "מותגים"
+  },
+  "low_stock": {
+    "en": "Low Stock",
+    "he": "מלאי נמוך"
+  },
+  "total_parts": {
+    "en": "Total Parts",
+    "he": "סך הכל חלקים"
+  },
+  "total_value": {
+    "en": "Total Value",
+    "he": "ערך כולל"
+  },
+  "average_price": {
+    "en": "Average Price",
+    "he": "מחיר ממוצע"
+  },
+  "out_of_stock": {
+    "en": "Out of Stock",
+    "he": "אזל מהמלאי"
+  },
+  "low_stock_items": {
+    "en": "Low Stock Items",
+    "he": "פריטים במלאי נמוך"
+  },
+  "items_need_reordering": {
+    "en": "Items that need reordering soon",
+    "he": "פריטים שיש להזמין בקרוב"
+  },
+  "total_categories": {
+    "en": "Total categories in inventory",
+    "he": "סך הקטגוריות במלאי"
+  },
+  "car_brands_compatible": {
+    "en": "Car brands with compatible parts",
+    "he": "מותגי רכב עם חלקים תואמים"
+  },
+  "inventory_value_trend": {
+    "en": "Inventory Value Trend",
+    "he": "מגמת ערך המלאי"
+  },
+  "most_valuable_items": {
+    "en": "Most Valuable Inventory Items",
+    "he": "פריטי המלאי היקרים ביותר"
+  },
+  "select_category": {
+    "en": "Select Category:",
+    "he": "בחר קטגוריה:"
+  },
+  "select_brand": {
+    "en": "Select Brand:",
+    "he": "בחר מותג:"
+  },
+  "part_distribution": {
+    "en": "Part Distribution",
+    "he": "התפלגות חלקים"
+  },
+  "price_distribution": {
+    "en": "Price Distribution",
+    "he": "התפלגות מחירים"
+  },
+  "parts_in_category": {
+    "en": "Parts in Category",
+    "he": "חלקים בקטגוריה"
+  },
+  "categories_for_brand": {
+    "en": "Categories for Brand",
+    "he": "קטגוריות למותג"
+  },
+  "parts_for_brand": {
+    "en": "Parts for Brand",
+    "he": "חלקים למותג"
+  },
+  "stock_status": {
+    "en": "Stock Status",
+    "he": "מצב מלאי"
+  },
+  "low_stock_by_category": {
+    "en": "Low Stock by Category",
+    "he": "מלאי נמוך לפי קטגוריה"
+  },
+  "low_stock_items_quantity": {
+    "en": "Low Stock Items (Quantity < 5)",
+    "he": "פריטים במלאי נמוך (כמות < 5)"
+  },
+  "in_stock": {
+    "en": "In Stock",
+    "he": "במלאי"
+  },
+  "part_name": {
+    "en": "Part Name",
+    "he": "שם חלק"
+  },
+  "category": {
+    "en": "Category",
+    "he": "קטגוריה"
+  },
+  "price": {
+    "en": "Price",
+    "he": "מחיר"
+  },
+  "quantity": {
+    "en": "Quantity",
+    "he": "כמות"
+  },
+  "compatible_brands": {
+    "en": "Compatible Brands",
+    "he": "מותגים תואמים"
+  },
+  "total_value_column": {
+    "en": "Total Value",
+    "he": "ערך כולל"
+  },
+  "value_column": {
+    "en": "Value",
+    "he": "ערך"
+  },
+  "time_range": {
+    "en": "Time Range:",
+    "he": "טווח זמן:"
+  },
+  "today": {
+    "en": "Today",
+    "he": "היום"
+  },
+  "yesterday": {
+    "en": "Yesterday",
+    "he": "אתמול"
+  },
+  "this_week": {
+    "en": "This Week",
+    "he": "השבוע"
+  },
+  "last_week": {
+    "en": "Last Week",
+    "he": "שבוע שעבר"
+  },
+  "this_month": {
+    "en": "This Month",
+    "he": "החודש"
+  },
+  "last_month": {
+    "en": "Last Month",
+    "he": "חודש שעבר"
+  },
+  "this_quarter": {
+    "en": "This Quarter",
+    "he": "רבעון נוכחי"
+  },
+  "last_quarter": {
+    "en": "Last Quarter",
+    "he": "רבעון קודם"
+  },
+  "this_year": {
+    "en": "This Year",
+    "he": "השנה"
+  },
+  "last_year": {
+    "en": "Last Year",
+    "he": "שנה שעברה"
+  },
+  "all_time": {
+    "en": "All Time",
+    "he": "כל הזמן"
+  },
+  "custom": {
+    "en": "Custom",
+    "he": "מותאם אישית"
+  },
+  "apply": {
+    "en": "Apply",
+    "he": "החל"
+  },
+  "to": {
+    "en": "to",
+    "he": "עד"
+  },
+  "advanced_filters": {
+    "en": "Advanced Filters",
+    "he": "סינון מתקדם"
+  },
+  "date_range": {
+    "en": "Date Range:",
+    "he": "טווח תאריכים:"
+  },
+  "stock_status_filter": {
+    "en": "Stock Status:",
+    "he": "מצב מלאי:"
+  },
+  "price_range": {
+    "en": "Price Range:",
+    "he": "טווח מחירים:"
+  },
+  "reset": {
+    "en": "Reset",
+    "he": "איפוס"
+  },
+  "apply_filters": {
+    "en": "Apply Filters",
+    "he": "החל סינון"
+  },
+  "last_updated": {
+    "en": "Last updated:",
+    "he": "עדכון אחרון:"
+  },
+  "ready": {
+    "en": "Ready",
+    "he": "מוכן"
+  },
+  "loading_data": {
+    "en": "Loading data...",
+    "he": "טוען נתונים..."
+  },
+  "filter_data": {
+    "en": "Filtering data...",
+    "he": "מסנן נתונים..."
+  },
+  "report_exported": {
+    "en": "Report exported to",
+    "he": "הדוח יוצא אל"
+  },
+  "statistics_title": {
+    "en": "Statistics",
+    "he": "סטטיסטיקה"
+  },
+  "statistics_button": {
+    "en": "Statistics",
+    "he": "סטטיסטיקה"
+  },
+  "parts_by_category": {
+    "en": "Parts by Category",
+    "he": "חלקים לפי קטגוריה"
+  },
+  "inventory_value_by_brand": {
+    "en": "Inventory Value by Brand",
+    "he": "ערך מלאי לפי מותג"
+  }
+}

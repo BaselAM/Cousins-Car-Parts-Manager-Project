@@ -1,8 +1,8 @@
 """Size policy mixins for consistent widget sizing."""
 from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtCore import QSize, QEvent
-from PyQt5.QtGui import QFontMetrics, QFont
-from themes import get_size, get_font_size, get_base_unit
+from PyQt5.QtCore import QEvent
+from PyQt5.QtGui import QFont
+from themes import get_size, get_font_size
 
 
 class SizePolicyMixin:

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer
-from widgets.workers import DatabaseWorker
+from utils.database_worker import DatabaseOperator  # Import the universal DatabaseOperator
 import mysql.connector
 import threading
 
@@ -12,20 +12,26 @@ class ProductLoader(QObject):
     error_occurred = pyqtSignal(str)
     loading_started = pyqtSignal()  # New signal for UI feedback
 
-    # Class-level semaphore to limit concurrent connections
-    _worker_semaphore = threading.Semaphore(2)  # Allow up to 2 concurrent workers
+    # Class-level semaphore to limit concurrent operations
+    _operation_semaphore = threading.Semaphore(2)  # Allow up to 2 concurrent operations
 
     def __init__(self, db, parent=None):
         super().__init__(parent)
         self.db = db
-        self.worker_thread = None
+        # Create the database operator instead of individual workers
+        self.db_operator = DatabaseOperator(db)
         self._default_sort_column = 2  # Product name column
         self._default_sort_order = 0  # Ascending
         self._recent_products = []  # Track recently added/updated products
+        self._is_loading = False
 
     def load_products(self, is_closing=False):
         """Load products with elegant visual feedback."""
         if is_closing:
+            return
+
+        # Prevent duplicate operations
+        if self._is_loading:
             return
 
         # Emit signal that loading has started (for UI feedback)
@@ -34,40 +40,49 @@ class ProductLoader(QObject):
         # Store current sort and selection state
         self._save_current_view_state()
 
-        # Don't start a new worker if we can't acquire the semaphore
-        if not self._worker_semaphore.acquire(blocking=False):
+        # Don't start a new operation if we can't acquire the semaphore
+        if not self._operation_semaphore.acquire(blocking=False):
             self.error_occurred.emit("Operation in progress, please wait")
             return
 
+        # Mark as loading
+        self._is_loading = True
+
         try:
-            # Cancel any running thread
-            if self.worker_thread and self.worker_thread.isRunning():
-                self.worker_thread.quit()
-                self.worker_thread.wait(500)
-
-            # Start new worker
-            self.worker_thread = DatabaseWorker(self.db, "load")
-
-            # Connect signals with proper cleanup
-            def on_finished(result):
-                self._worker_semaphore.release()
-                # Preserve recent products for highlighting
-                self._tag_recent_products(result)
-                self.products_loaded.emit(result)
-
-            def on_error(error_msg):
-                self._worker_semaphore.release()
-                self.error_occurred.emit(error_msg)
-
-            self.worker_thread.finished.connect(on_finished)
-            self.worker_thread.error.connect(on_error)
-            self.worker_thread.start()
-
+            # Use the DatabaseOperator to execute the operation
+            self.db_operator.execute(
+                "get_all_parts",  # Operation name
+                self._on_products_loaded,  # Success callback
+                self._on_operation_error,  # Error callback
+                force_refresh=True  # Optional parameter
+            )
         except Exception as e:
-            self._worker_semaphore.release()
+            self._operation_semaphore.release()
+            self._is_loading = False
             self.error_occurred.emit(f"Loading error: {str(e)}")
 
-    # Add this to your product_loader.py file
+    def _on_products_loaded(self, products):
+        """Handle loaded products."""
+        # Release semaphore and reset loading flag
+        self._operation_semaphore.release()
+        self._is_loading = False
+
+        if products:
+            # Preserve recent products for highlighting
+            self._tag_recent_products(products)
+            # Emit the loaded products
+            self.products_loaded.emit(products)
+        else:
+            # Handle empty result
+            self.products_loaded.emit([])
+
+    def _on_operation_error(self, error_message):
+        """Handle operation errors."""
+        # Release semaphore and reset loading flag
+        self._operation_semaphore.release()
+        self._is_loading = False
+        # Emit the error
+        self.error_occurred.emit(error_message)
 
     def load_single_product(self, product_id):
         """Load a single product without triggering cascading updates."""
@@ -76,29 +91,57 @@ class ProductLoader(QObject):
             print(f"Prevented duplicate load for product {product_id}")
             return None
 
+        # Don't start a new operation if we can't acquire the semaphore
+        if not self._operation_semaphore.acquire(blocking=False):
+            self.error_occurred.emit("Operation in progress, please wait")
+            return None
+
         self._loading_product_id = product_id
 
         try:
-            # Just fetch the product directly
-            product = self.db.get_part(product_id)
-            if not product:
-                self._loading_product_id = None
-                return None
+            # Use the DatabaseOperator to execute the operation
+            self.db_operator.execute(
+                "get_part_details",  # Operation name
+                self._on_single_product_loaded,  # Success callback
+                self._on_single_product_error,  # Error callback
+                part_id=product_id  # Required parameter
+            )
 
-            # Mark as recent for highlighting
-            self._add_recent_product(product_id)
-
-            # Signal just once with this product
-            self.products_loaded.emit([product])
-
-            # Reset the flag after a short delay
-            QTimer.singleShot(500, lambda: setattr(self, '_loading_product_id', None))
-
-            return product
+            # Return a placeholder - actual result will come through the callback
+            return None
         except Exception as e:
+            self._operation_semaphore.release()
             self._loading_product_id = None
             print(f"Error in load_single_product: {e}")
             return None
+
+    def _on_single_product_loaded(self, product):
+        """Handle loaded single product."""
+        # Release semaphore
+        self._operation_semaphore.release()
+
+        if not product:
+            self._loading_product_id = None
+            return
+
+        # Mark as recent for highlighting
+        product_id = product.get('parcode', None)
+        if product_id:
+            self._add_recent_product(product_id)
+
+        # Signal just once with this product
+        self.products_loaded.emit([product])
+
+        # Reset the flag after a short delay
+        QTimer.singleShot(500, lambda: setattr(self, '_loading_product_id', None))
+
+    def _on_single_product_error(self, error_message):
+        """Handle single product load error."""
+        # Release semaphore and reset loading ID
+        self._operation_semaphore.release()
+        self._loading_product_id = None
+        # Emit the error
+        self.error_occurred.emit(error_message)
 
     def _save_current_view_state(self):
         """Save table view state for consistent experience."""
@@ -182,8 +225,5 @@ class ProductLoader(QObject):
 
     def cleanup(self):
         """Clean up resources before closing."""
-        if self.worker_thread and self.worker_thread.isRunning():
-            self.worker_thread.quit()
-            self.worker_thread.wait(1000)
-
-
+        if hasattr(self, 'db_operator'):
+            self.db_operator.cleanup()

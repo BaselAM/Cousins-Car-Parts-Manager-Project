@@ -1,0 +1,11 @@
+Car Model,AC Filter,Air Filter,Brake Discs,Brake Pads,Control Arm,Fuel Filter,Oil Filter,Shock Absorber
+Hyundai_I10,✓,✓,✓,,✓,,,
+Hyundai_I20,✓,✓,✓,,✓,,,✓
+Hyundai_I30,✓,✓,✓,,✓,✓,,✓
+Mazda_CX5,✓,✓,✓,,✓,,,✓
+Mazda_מזדה 3,✓,✓,✓,✓,✓,✓,,✓
+Mazda_מזדה 6,✓,✓,✓,✓,✓,,✓,✓
+Skoda_אוקטביה,✓,✓,✓,,✓,✓,✓,✓
+Skoda_סופרב,,,✓,,✓,,,✓
+Toyota_יאריס,,✓,✓,,✓,,,✓
+Toyota_קורולה,✓,✓,✓,,✓,,✓,✓

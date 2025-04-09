@@ -175,7 +175,7 @@ class GUIBuilder:
             'settings_button': self.parent.show_settings,
             'help_button': self.parent.show_help,
             'parts_button': self.parent.show_parts,
-            'web_search_button': self.parent.show_web_search,
+            'register_button': self.parent.show_register,  # Make sure this line exists
             'exit_button': self.parent.exit_app
         }
 

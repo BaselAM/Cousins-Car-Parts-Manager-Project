@@ -11,7 +11,7 @@ from ..base import BaseStepWidget
 from ..components.search_box import SearchBox
 from ..components.info_header import InfoHeader
 from ..components.tiles_grid import TilesGrid
-from ..utils.database_worker import DatabaseOperator
+from utils.database_worker import DatabaseOperator
 from themes import get_color
 from logger import get_logger
 

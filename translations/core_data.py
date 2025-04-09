@@ -355,9 +355,9 @@ TRANSLATIONS = {
         'en': "Parts",
         'he': "חלקים"
     },
-    'web_search_button': {
-        'en': "Web Search",
-        'he': "חיפוש באינטרנט"
+    'register_button': {
+        'en': "Register",
+        'he': "קופה"
     },
 'home_page_title': {
     'en': "Welcome to Abu Mukh Car Parts Management",

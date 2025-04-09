@@ -253,7 +253,7 @@ class HomePageWidget(QWidget, SizePolicyMixin):
         buttons = [
             {"id": "products_button", "icon": "resources/product_icon.png", "row": 0, "col": 0},
             {"id": "parts_button", "icon": "resources/parts_icon.png", "row": 0, "col": 1},
-            {"id": "web_search_button", "icon": "resources/search_web_icon.png", "row": 0, "col": 2},
+            {"id": "register_button", "icon": "resources/search_web_icon.png", "row": 0, "col": 2},
             {"id": "statistics_button", "icon": "resources/stats_icon.png", "row": 1, "col": 0},
             {"id": "settings_button", "icon": "resources/settings_icon.png", "row": 1, "col": 1},
             {"id": "help_button", "icon": "resources/help_icon.png", "row": 1, "col": 2}

@@ -50,7 +50,7 @@ class BrandStep(BaseStepWidget):
             self.owns_db_operator = False
         else:
             # Backwards compatibility - create our own operator
-            from ..utils.database_worker import DatabaseOperator
+            from utils.database_worker import DatabaseOperator
             self.db_operator = DatabaseOperator(db)
             self.owns_db_operator = True
 

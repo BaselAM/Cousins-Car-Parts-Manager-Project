@@ -52,11 +52,6 @@ class PartsNavigationContainer(QWidget):
     def __init__(self, translator, db, parent=None):
         """
         Initialize the parts navigation container.
-
-        Args:
-            translator: Translator for localization
-            db: Database connection
-            parent: Parent widget
         """
         super().__init__(parent)
         self.translator = translator
@@ -80,7 +75,8 @@ class PartsNavigationContainer(QWidget):
         self._current_animation = None
 
         # Create a shared database operator for preloading
-        from .utils.database_worker import DatabaseOperator
+        # Move import inside the method to avoid circular imports
+        from utils.database_worker import DatabaseOperator
         self.shared_db_operator = DatabaseOperator(db)
 
         # Create and connect all the step widgets with preloading enabled
