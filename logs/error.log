@@ -420,3 +420,27 @@ AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_c
 2025-04-09 15:42:10,482 - gui.gui_main - ERROR - [gui_main.py:209] - show_register - Error in show_register: 'NoneType' object has no attribute 'name'
 2025-04-09 15:44:25,614 - gui.view_manager - ERROR - [view_manager.py:124] - show_register - Error showing register widget: 'NoneType' object has no attribute 'name'
 2025-04-09 15:44:25,616 - gui.gui_main - ERROR - [gui_main.py:209] - show_register - Error in show_register: 'NoneType' object has no attribute 'name'
+2025-04-09 19:22:26,387 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 24: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,394 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 25: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,396 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 26: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,397 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 27: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,399 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 28: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,400 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 29: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,403 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 30: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,405 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 31: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,449 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 32: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,451 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 33: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,453 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 34: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,456 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 35: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,508 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 36: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,510 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 37: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,512 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 38: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:26,513 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 39: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:27,051 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 40: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:27,052 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 41: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:27,052 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:205] - populate - Error creating tile at index 42: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-09 19:22:27,053 - parts_navigation.components.tiles_grid - ERROR - [tiles_grid.py:219] - populate - Error in populate: wrapped C/C++ object of type QGridLayout has been deleted
+2025-04-10 09:12:30,798 - widgets.header.top_bar - ERROR - [top_bar.py:432] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-10 09:12:31,548 - gui.language_manager - ERROR - [language_manager.py:63] - update_language - Language update error: wrapped C/C++ object of type QLabel has been deleted
+2025-04-10 09:12:55,048 - widgets.header.top_bar - ERROR - [top_bar.py:432] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-10 09:12:55,794 - gui.language_manager - ERROR - [language_manager.py:63] - update_language - Language update error: wrapped C/C++ object of type QLabel has been deleted
