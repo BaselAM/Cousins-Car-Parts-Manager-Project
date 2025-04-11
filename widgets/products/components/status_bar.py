@@ -16,6 +16,16 @@ class StatusBar(QFrame):
     # Add state_changed signal
     state_changed = pyqtSignal(bool)  # True when expanded, False when collapsed
 
+    # Message priority levels
+    MESSAGE_PRIORITY = {
+        "error": 100,  # Highest priority
+        "warning": 80,
+        "success": 60,
+        "info": 40,  # Lowest priority
+        "loaded": 30,
+        "select": 20
+    }
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_type = "info"
@@ -30,6 +40,13 @@ class StatusBar(QFrame):
         # Add state tracking
         self.is_expanded = False
         self.is_animating = False
+
+        # Add message queue for better message management
+        self.message_queue = []
+        self.current_message_priority = 0
+        self.queue_timer = QTimer(self)
+        self.queue_timer.setSingleShot(True)
+        self.queue_timer.timeout.connect(self._process_message_queue)
 
         # Configure animations for smoother transitions
         self.setup_animations()
@@ -131,11 +148,11 @@ class StatusBar(QFrame):
 
             # Re-add widgets in the correct order
             if direction == Qt.RightToLeft:
-                layout.addWidget(self.status_text, 1)
+                layout.addWidget(self.status_text)
                 layout.addWidget(self.status_icon)
             else:
                 layout.addWidget(self.status_icon)
-                layout.addWidget(self.status_text, 1)
+                layout.addWidget(self.status_text)
 
     def set_theme(self, theme):
         """
@@ -193,24 +210,29 @@ class StatusBar(QFrame):
             }}
         """
 
-    def show_message(self, message, type="info", duration=None):
-        """
-        Expands the status bar to show a message with an icon,
-        applies the premium style based on the message type,
-        then auto-collapses after `duration` milliseconds.
-
-        If duration is None, will use type-specific duration.
-        """
-        # Skip showing messages for selection deactivation
-        # This fixes the unwanted "Selection mode deactivated" message
-        if message and (
-                "selection mode deactivate" in message.lower() or
-                "selection disabled" in message.lower() or
-                "selection mode off" in message.lower()
-        ):
-            self.collapse()
+    def _process_message_queue(self):
+        """Process the next message in the queue if available"""
+        if not self.message_queue:
+            # Reset current priority when queue is empty
+            self.current_message_priority = 0
             return
 
+        # Get the next message with highest priority
+        self.message_queue.sort(key=lambda x: x["priority"], reverse=True)
+        next_message = self.message_queue.pop(0)
+
+        # Show the message
+        self._show_message_directly(
+            next_message["message"],
+            next_message["type"],
+            next_message["duration"]
+        )
+
+        # Update current priority
+        self.current_message_priority = next_message["priority"]
+
+    def _show_message_directly(self, message, type="info", duration=None):
+        """Internal method to directly show a message without queueing"""
         # Use type-specific duration if none provided
         if duration is None:
             duration = self.message_durations.get(type, 5000)
@@ -276,6 +298,55 @@ class StatusBar(QFrame):
         # Start auto-collapse timer
         self.auto_hide_timer.start(duration)
 
+        # Schedule processing the next message after this one
+        self.queue_timer.start(duration + 100)
+
+    def show_message(self, message, type="info", duration=None, priority=None):
+        """
+        Enhanced show_message with priority handling.
+
+        If a higher priority message is currently shown, this message will be
+        queued. If this message has higher priority, it will interrupt current message.
+        """
+        # Skip showing messages for selection deactivation
+        if message and any(text in message.lower() for text in [
+            "selection mode deactivate", "selection disabled", "selection mode off"
+        ]):
+            self.collapse()
+            return
+
+        # Determine priority
+        if priority is None:
+            priority = self.MESSAGE_PRIORITY.get(type, 0)
+
+        # Use type-specific duration if none provided
+        if duration is None:
+            duration = self.message_durations.get(type, 5000)
+
+        # Check if we should show this message now or queue it
+        if not self.is_expanded or priority >= self.current_message_priority:
+            # Cancel any pending queue processing
+            if self.queue_timer.isActive():
+                self.queue_timer.stop()
+
+            # Update current priority
+            self.current_message_priority = priority
+
+            # Show the message directly
+            self._show_message_directly(message, type, duration)
+
+            # Clear lower priority messages from queue if this is a high priority message
+            if priority > 60:  # Higher than success
+                self.message_queue = [msg for msg in self.message_queue if msg["priority"] >= priority]
+        else:
+            # Add to queue
+            self.message_queue.append({
+                "message": message,
+                "type": type,
+                "duration": duration,
+                "priority": priority
+            })
+
     def collapse(self):
         """
         Animate the collapse back to the slim state and clear the message.
@@ -303,10 +374,18 @@ class StatusBar(QFrame):
         self.is_animating = True
         self.animation_group.start()
 
+        # Process the next message in the queue when collapsed
+        if self.message_queue:
+            self.queue_timer.start(self.animation_duration + 50)
+
     def _clear_message(self):
         """Clear message text and icon after collapse animation completes"""
         self.status_text.setText("")
         self.status_icon.clear()
+
+        # Process the next message in the queue if available
+        if self.message_queue and not self.queue_timer.isActive():
+            self.queue_timer.start(100)
 
     def cancel_auto_hide(self):
         """Cancel the auto-collapse timer."""
@@ -316,6 +395,12 @@ class StatusBar(QFrame):
     def clear(self):
         """Alias for collapse, to support external calls."""
         self.collapse()
+
+    def clear_queue(self):
+        """Clear the message queue"""
+        self.message_queue.clear()
+        if self.queue_timer.isActive():
+            self.queue_timer.stop()
 
     def show_sequential_messages(self, first_message, second_message,
                                  first_type="success",
@@ -369,20 +454,13 @@ class StatusBar(QFrame):
         ]):
             return
 
-        # Schedule the second message with a dedicated timer
-        second_msg_timer = QTimer(self)
-        second_msg_timer.setSingleShot(True)
-        second_msg_timer.timeout.connect(
-            lambda: self._show_second_message(second_message, second_type, second_duration))
-        second_msg_timer.start(first_duration)
+        # Add second message to queue with slightly higher priority to ensure it shows next
+        first_priority = self.MESSAGE_PRIORITY.get(first_type, 40)
+        second_priority = first_priority + 1  # Slightly higher to guarantee sequence
 
-    def _show_second_message(self, message, type, duration):
-        """Helper method to show the second message in the sequence."""
-        # Skip if deactivation message
-        if message and any(txt in message.lower() for txt in [
-            "selection mode deactivate", "selection disabled", "selection mode off"
-        ]):
-            self.collapse()
-            return
-
-        self.show_message(message, type, duration)
+        self.message_queue.append({
+            "message": second_message,
+            "type": second_type,
+            "duration": second_duration,
+            "priority": second_priority
+        })

@@ -78,5 +78,14 @@
   "delete_failed": {
     "en": "Failed to delete products",
     "he": "כשלון במחיקת המוצרים"
+  },
+
+  "unable_to_save": {
+    "en": "Unable to save changes",
+    "he": "לא ניתן לשמור שינויים"
+  },
+  "search_error": {
+    "en": "Error during search",
+    "he": "שגיאה במהלך החיפוש"
   }
 }

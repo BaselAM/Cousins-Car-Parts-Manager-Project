@@ -327,7 +327,7 @@ class AddProductDialog(ElegantDialog):
 
             # Collect all data
             self.product_data = {
-                "barcode": self.barcode_input.text().strip(),
+                "parcode": self.barcode_input.text().strip(),
                 "category": self.category_input.text().strip(),
                 "product_name": product_name,
                 "quantity": self.quantity_input.value(),

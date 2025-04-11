@@ -1,0 +1,198 @@
+{
+  "register_title": {
+    "en": "Register",
+    "he": "קופה"
+  },
+  "sell_mode": {
+    "en": "Sell Mode",
+    "he": "מצב מכירה"
+  },
+  "supply_mode": {
+    "en": "Supply Mode",
+    "he": "מצב קניה"
+  },
+  "search_placeholder": {
+    "en": "Search by product name or ID...",
+    "he": "חיפוש לפי שם מוצר או מזהה..."
+  },
+  "search_button": {
+    "en": "Search",
+    "he": "חיפוש"
+  },
+  "search_mode": {
+    "en": "Search Mode:",
+    "he": "מצב חיפוש:"
+  },
+  "smart_search": {
+    "en": "Smart",
+    "he": "חכם"
+  },
+  "precise_search": {
+    "en": "Precise",
+    "he": "מדויק"
+  },
+  "smart_search_desc": {
+    "en": "Finds products containing your search terms",
+    "he": "מציג מוצרים המכילים את מונחי החיפוש שלך"
+  },
+  "precise_search_desc": {
+    "en": "Finds products matching your search exactly",
+    "he": "מציג מוצרים התואמים בדיוק את החיפוש שלך"
+  },
+  "empty_cart_sell": {
+    "en": "Your sales cart is empty",
+    "he": "עגלת המכירות שלך ריקה"
+  },
+  "empty_cart_supply": {
+    "en": "Your supply list is empty",
+    "he": "רשימת האספקה שלך ריקה"
+  },
+  "empty_cart_hint": {
+    "en": "Add items using the search panel",
+    "he": "הוסף פריטים באמצעות לוח החיפוש"
+  },
+  "subtotal": {
+    "en": "Subtotal:",
+    "he": "סיכום ביניים:"
+  },
+  "total_items": {
+    "en": "Total Items:",
+    "he": "סך הכל פריטים:"
+  },
+  "checkout": {
+    "en": "Checkout",
+    "he": "לקופה"
+  },
+  "process_supply": {
+    "en": "Process Supply",
+    "he": "עיבוד אספקה"
+  },
+  "quantity": {
+    "en": "Quantity",
+    "he": "כמות"
+  },
+  "add_to_cart": {
+    "en": "Add to Cart",
+    "he": "הוסף לעגלה"
+  },
+  "add_to_supply": {
+    "en": "Add to Supply",
+    "he": "הוסף לאספקה"
+  },
+  "search_product_prompt": {
+    "en": "Search for a product using the search bar or scan a barcode",
+    "he": "חפש מוצר באמצעות שורת החיפוש או סרוק ברקוד"
+  },
+  "empty_state_subtitle": {
+    "en": "You can search by product name, ID, or category",
+    "he": "ניתן לחפש לפי שם מוצר, מזהה או קטגוריה"
+  },
+  "related_products": {
+    "en": "Related Products",
+    "he": "מוצרים קשורים"
+  },
+  "add_related": {
+    "en": "Add Related",
+    "he": "הוסף קשור"
+  },
+  "add_related_info": {
+    "en": "To add a related product, please add a new product with similar attributes.",
+    "he": "כדי להוסיף מוצר קשור, נא להוסיף מוצר חדש עם מאפיינים דומים."
+  },
+  "no_results": {
+    "en": "No Results",
+    "he": "אין תוצאות"
+  },
+  "no_precise_results_msg": {
+    "en": "No products exactly matching '{query}'. Try smart search for partial matches.",
+    "he": "אין מוצרים שתואמים בדיוק ל-'{query}'. נסה חיפוש חכם להתאמות חלקיות."
+  },
+  "no_smart_results_msg": {
+    "en": "No products found containing '{query}'.",
+    "he": "לא נמצאו מוצרים המכילים '{query}'."
+  },
+  "search_error": {
+    "en": "Search Error",
+    "he": "שגיאת חיפוש"
+  },
+  "db_connection_error": {
+    "en": "Database connection is not available",
+    "he": "חיבור למסד הנתונים אינו זמין"
+  },
+  "view_details": {
+    "en": "View Details",
+    "he": "הצג פרטים"
+  },
+  "quick_add": {
+    "en": "Quick Add",
+    "he": "הוספה מהירה"
+  },
+  "parcode": {
+    "en": "Parcode",
+    "he": "מקט"
+  },
+  "manufacturer": {
+    "en": "Manufacturer",
+    "he": "יצרן"
+  },
+  "price": {
+    "en": "Price",
+    "he": "מחיר"
+  },
+  "in_stock": {
+    "en": "In Stock",
+    "he": "במלאי"
+  },
+  "no_related_products": {
+    "en": "No related products found",
+    "he": "לא נמצאו מוצרים קשורים"
+  },
+  "select_quantity": {
+    "en": "Quantity",
+    "he": "כמות"
+  },
+  "added_to_cart": {
+    "en": "Added to cart",
+    "he": "נוסף לעגלה"
+  },
+  "added_to_supply": {
+    "en": "Added to supply list",
+    "he": "נוסף לרשימת האספקה"
+  },
+  "insufficient_stock": {
+    "en": "Insufficient Stock",
+    "he": "מלאי לא מספיק"
+  },
+  "insufficient_stock_msg": {
+    "en": "Not enough stock for {product_name}. Available: {current_stock}",
+    "he": "אין מספיק מלאי עבור {product_name}. זמין: {current_stock}"
+  },
+  "checkout_complete": {
+    "en": "Checkout Complete",
+    "he": "התשלום הושלם"
+  },
+  "checkout_complete_msg": {
+    "en": "Sold {total_items} items for ${total_price:.2f}",
+    "he": "נמכרו {total_items} פריטים עבור ${total_price:.2f}"
+  },
+  "supply_complete": {
+    "en": "Supply Processed",
+    "he": "האספקה עובדה"
+  },
+  "supply_complete_msg": {
+    "en": "Added {total_items} items to inventory for ${total_price:.2f}",
+    "he": "נוספו {total_items} פריטים למלאי עבור ${total_price:.2f}"
+  },
+  "process_error": {
+    "en": "Processing Error",
+    "he": "שגיאת עיבוד"
+  },
+  "error": {
+    "en": "Error",
+    "he": "שגיאה"
+  },
+  "remove_item": {
+    "en": "Remove Item",
+    "he": "הסר פריט"
+  }
+}

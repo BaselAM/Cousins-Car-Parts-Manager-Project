@@ -34,5 +34,18 @@
   "clear_filters_tooltip": {
   "en": "Clear Filters",
   "he": "נקה מסננים"
-}
+},
+  "search_too_short": {
+    "en": "Search term is too short",
+    "he": "מונח החיפוש קצר מדי"
+  },
+  "searching": {
+    "en": "Searching...",
+    "he": "מחפש..."
+  },
+  "advanced_search_results": {
+    "en": "Found {count} results matching your criteria",
+    "he": "נמצאו {count} תוצאות התואמות את הקריטריונים שלך"
+  }
+
 }

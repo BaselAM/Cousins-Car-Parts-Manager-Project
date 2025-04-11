@@ -76,9 +76,10 @@ class CarPartsDB:
 
     def create_table(self):
         """Create table with enhanced schema if it doesn't exist"""
+        # Updated to match the actual database schema with id as primary key
         query = '''
         CREATE TABLE IF NOT EXISTS parts (
-            parcode INT AUTO_INCREMENT PRIMARY KEY,
+            id INT AUTO_INCREMENT PRIMARY KEY,
             category VARCHAR(255) NOT NULL,
             product_name VARCHAR(255) NOT NULL,
             quantity INT DEFAULT 0,
@@ -91,8 +92,9 @@ class CarPartsDB:
             position VARCHAR(50),
             side VARCHAR(50),
             engine_type VARCHAR(100),
-            original BOOLEAN DEFAULT FALSE,
+            original TINYINT(1) DEFAULT 0,
             manufacturer VARCHAR(255),
+            parcode VARCHAR(255) NOT NULL,
             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
         '''
@@ -285,7 +287,7 @@ class CarPartsDB:
 
                 # Define the expected columns
                 expected_columns = {
-                    'parcode', 'category', 'product_name', 'quantity', 'price',
+                    'id', 'parcode', 'category', 'product_name', 'quantity', 'price',
                     'compatible_brands', 'compatible_models', 'model_years',
                     'drive_type', 'engine_info', 'position', 'side', 'engine_type',
                     'original', 'manufacturer', 'last_updated'
@@ -298,12 +300,16 @@ class CarPartsDB:
 
                     for column in missing_columns:
                         # Use appropriate data type based on column name
-                        if column in ('quantity'):
+                        if column == 'id' and 'id' not in existing_columns:
+                            data_type = 'INT AUTO_INCREMENT PRIMARY KEY'
+                        elif column in ('quantity'):
                             data_type = 'INT DEFAULT 0'
                         elif column in ('price'):
                             data_type = 'DECIMAL(10, 2) DEFAULT 0.0'
                         elif column == 'original':
-                            data_type = 'BOOLEAN DEFAULT FALSE'
+                            data_type = 'TINYINT(1) DEFAULT 0'
+                        elif column == 'parcode':
+                            data_type = 'VARCHAR(255) NOT NULL'
                         elif column == 'manufacturer':
                             data_type = 'VARCHAR(255)'
                         elif column == 'last_updated':
@@ -324,7 +330,8 @@ class CarPartsDB:
                     self.rollback_transaction()
                 return False
 
-    def add_part(self, category, product_name, quantity=0, price=0.0, original=False, manufacturer=None, **kwargs):
+    def add_part(self, category, product_name, quantity=0, price=0.0, original=False, manufacturer=None, parcode=None,
+                 **kwargs):
         """
         Add a new part with enhanced fields
 
@@ -335,6 +342,7 @@ class CarPartsDB:
             price: Unit price
             original: Boolean indicating if this is an original manufacturer part
             manufacturer: Name of the part manufacturer
+            parcode: Part code or number (string)
             **kwargs: Additional part attributes
         """
         with self.lock:
@@ -349,14 +357,20 @@ class CarPartsDB:
                 # Set defaults for required fields that can't be NULL
                 category = category if category and category.strip() else "Other Parts"
 
+                # Generate a default parcode if not provided
+                if not parcode:
+                    # Create a simple default parcode based on product name and timestamp
+                    timestamp = int(datetime.now().timestamp())
+                    parcode = f"P{timestamp}"
+
                 # Prepare additional fields
-                field_names = ['category', 'product_name', 'quantity', 'price']
-                field_values = [category, product_name, quantity, price]
+                field_names = ['category', 'product_name', 'quantity', 'price', 'parcode']
+                field_values = [category, product_name, quantity, price, parcode]
 
                 # Add the new fields if provided
                 if original is not None:
                     field_names.append('original')
-                    field_values.append(original)
+                    field_values.append(1 if original else 0)  # Convert to tinyint
 
                 if manufacturer is not None:
                     field_names.append('manufacturer')
@@ -391,20 +405,20 @@ class CarPartsDB:
 
                 # Get the ID of the inserted row
                 new_id = self.local.cursor.lastrowid
-                self.logger.info(f"Created new part with Parcode: {new_id}")
+                self.logger.info(f"Created new part with ID: {new_id}")
 
                 # Explicitly commit the transaction
                 self.commit_transaction()
 
                 # Verify the part was added by trying to fetch it
-                self.local.cursor.execute("SELECT * FROM parts WHERE parcode = %s", (new_id,))
+                self.local.cursor.execute("SELECT * FROM parts WHERE id = %s", (new_id,))
                 result = self.local.cursor.fetchone()
 
                 if result:
-                    self.logger.info(f"Successfully verified part was added with Parcode: {new_id}")
+                    self.logger.info(f"Successfully verified part was added with ID: {new_id}")
                     return True
                 else:
-                    self.logger.error(f"Failed to verify part was added with Parcode: {new_id}")
+                    self.logger.error(f"Failed to verify part was added with ID: {new_id}")
                     return False
 
             except mysql.connector.Error as e:
@@ -414,7 +428,18 @@ class CarPartsDB:
                     self.rollback_transaction()
                 return False
 
-    def get_part(self, parcode):
+    def get_part(self, part_id):
+        """Get a single part by ID"""
+        with self.lock:
+            self.ensure_connection()
+            try:
+                self.local.cursor.execute("SELECT * FROM parts WHERE id = %s", (part_id,))
+                return self.local.cursor.fetchone()
+            except mysql.connector.Error as e:
+                self.logger.error(f"Error fetching part {part_id}: {e}")
+                return None
+
+    def get_part_by_parcode(self, parcode):
         """Get a single part by parcode"""
         with self.lock:
             self.ensure_connection()
@@ -422,7 +447,7 @@ class CarPartsDB:
                 self.local.cursor.execute("SELECT * FROM parts WHERE parcode = %s", (parcode,))
                 return self.local.cursor.fetchone()
             except mysql.connector.Error as e:
-                self.logger.error(f"Error fetching part {parcode}: {e}")
+                self.logger.error(f"Error fetching part with parcode {parcode}: {e}")
                 return None
 
     def search_parts(self, search_term=''):
@@ -532,12 +557,12 @@ class CarPartsDB:
                 self.logger.error(f"Error fetching all parts: {e}")
                 return []
 
-    def update_part(self, parcode, **kwargs):
+    def update_part(self, part_id, **kwargs):
         """
         Update a part with the given values
 
         Args:
-            parcode: ID of the part to update
+            part_id: ID of the part to update
             **kwargs: Fields to update, including 'original' (boolean) and 'manufacturer' (string)
         """
         with self.lock:
@@ -547,18 +572,22 @@ class CarPartsDB:
             if not kwargs:
                 return False
 
+            # Convert boolean 'original' to tinyint for database
+            if 'original' in kwargs:
+                kwargs['original'] = 1 if kwargs['original'] else 0
+
             try:
                 # Begin transaction using proper method
                 self.begin_transaction()
 
                 # First verify the part exists
-                verify_query = "SELECT COUNT(*) as count FROM parts WHERE parcode = %s"
-                self.local.cursor.execute(verify_query, (parcode,))
+                verify_query = "SELECT COUNT(*) as count FROM parts WHERE id = %s"
+                self.local.cursor.execute(verify_query, (part_id,))
                 result = self.local.cursor.fetchone()  # Always fetch results
 
                 # If no record found, log and return
                 if not result or result['count'] == 0:
-                    self.logger.warning(f"No part found with parcode: {parcode}")
+                    self.logger.warning(f"No part found with ID: {part_id}")
                     self.rollback_transaction()
                     return False
 
@@ -569,27 +598,27 @@ class CarPartsDB:
                     set_clauses.append(f"{key} = %s")
                     params.append(value)
 
-                # Add the parcode as the last parameter
-                params.append(parcode)
+                # Add the part_id as the last parameter
+                params.append(part_id)
 
                 # Execute the update
-                query = f"UPDATE parts SET {', '.join(set_clauses)} WHERE parcode = %s"
+                query = f"UPDATE parts SET {', '.join(set_clauses)} WHERE id = %s"
                 self.local.cursor.execute(query, params)
 
                 # Commit using proper method
                 self.commit_transaction()
 
                 # Log success
-                self.logger.info(f"Updated part with parcode: {parcode}")
+                self.logger.info(f"Updated part with ID: {part_id}")
                 return True
 
             except mysql.connector.Error as e:
-                self.logger.error(f"Error updating part {parcode}: {e}")
+                self.logger.error(f"Error updating part {part_id}: {e}")
                 self.rollback_transaction()
                 return False
 
-    def delete_part(self, parcode):
-        """Delete a part by parcode"""
+    def delete_part(self, part_id):
+        """Delete a part by ID"""
         with self.lock:
             self.ensure_transaction_state('ready')  # Ensure no active transaction
 
@@ -598,23 +627,23 @@ class CarPartsDB:
                 self.begin_transaction()
 
                 # Check if part exists
-                self.local.cursor.execute("SELECT COUNT(*) as count FROM parts WHERE parcode = %s", (parcode,))
+                self.local.cursor.execute("SELECT COUNT(*) as count FROM parts WHERE id = %s", (part_id,))
                 result = self.local.cursor.fetchone()
 
                 if not result or result['count'] == 0:
-                    self.logger.warning(f"No part found with parcode: {parcode}")
+                    self.logger.warning(f"No part found with ID: {part_id}")
                     self.rollback_transaction()
                     return False
 
                 # Delete the part
-                self.local.cursor.execute("DELETE FROM parts WHERE parcode = %s", (parcode,))
+                self.local.cursor.execute("DELETE FROM parts WHERE id = %s", (part_id,))
                 self.commit_transaction()
 
-                self.logger.info(f"Deleted part with parcode: {parcode}")
+                self.logger.info(f"Deleted part with ID: {part_id}")
                 return True
 
             except mysql.connector.Error as e:
-                self.logger.error(f"Error deleting part {parcode}: {e}")
+                self.logger.error(f"Error deleting part {part_id}: {e}")
                 self.rollback_transaction()
                 return False
 
@@ -634,7 +663,7 @@ class CarPartsDB:
                 placeholders = ', '.join(['%s'] * len(part_ids))
 
                 # Delete in a single query
-                query = f"DELETE FROM parts WHERE parcode IN ({placeholders})"
+                query = f"DELETE FROM parts WHERE id IN ({placeholders})"
                 self.local.cursor.execute(query, part_ids)
 
                 # Commit the transaction
@@ -787,7 +816,9 @@ class CarPartsDB:
         with self.lock:
             self.ensure_connection()
             try:
-                self.local.cursor.execute("SELECT * FROM parts WHERE original = %s", (is_original,))
+                # Convert boolean to tinyint for query
+                is_original_int = 1 if is_original else 0
+                self.local.cursor.execute("SELECT * FROM parts WHERE original = %s", (is_original_int,))
                 return self.local.cursor.fetchall()
             except mysql.connector.Error as e:
                 self.logger.error(f"Error fetching original parts (is_original={is_original}): {e}")

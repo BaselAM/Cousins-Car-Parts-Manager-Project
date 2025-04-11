@@ -1,42 +1,45 @@
-# products_table.py (Enhanced Optimized Version)
-
 from PyQt5.QtWidgets import (QAbstractItemView, QHeaderView, QTableWidget,
                              QTableWidgetItem, QFrame, QVBoxLayout, QWidget,
                              QAbstractButton, QLabel)
 # Import QTimer for deferred actions
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QPoint, QItemSelectionModel, QRect, QAbstractAnimation, \
-    QVariantAnimation, QEasingCurve
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QItemSelectionModel, QRect
+
 from PyQt5.QtGui import QColor, QBrush, QFont, QPalette
 from themes import get_color  # Assuming themes.py provides get_color
+from .components.barcode_scanner_button import ScanningDialog
 # Assuming components are in a sub-directory 'components'
 from .components.table_delegates import ThemedNumericDelegate, ThemedItemDelegate
 # Assuming translations are in a specific structure
-from translations.car_parts_info_translations import translate_category, translate_compatible_models
+
 
 # Typing imports for hints
 from typing import List, Dict, Any, Optional, Tuple, Union
+import re
 
 
 class ProductsTable(QFrame):
     """
     Enhanced table widget for products with improved styling, feedback,
     and usability features. Optimized for performance and reliability.
+    Category column has been removed.
     """
     cellChanged = pyqtSignal(int, int)  # Row, column
 
-    # Column Constants for readability and maintenance
+    # Column Constants for readability and maintenance - UPDATED for category removal
     COL_ID = 0
-    COL_CATEGORY = 1
-    COL_NAME = 2
-    COL_MODELS = 3
-    COL_QTY = 4
-    COL_PRICE = 5
-    COLUMN_COUNT = 6  # Total number of columns
+    COL_NAME = 1
+    COL_MANUFACTURER = 2  # Renamed to match its new content
+    COL_QTY = 3
+    COL_PRICE = 4
+    COLUMN_COUNT = 5
 
-    def __init__(self, translator, parent: Optional[QWidget] = None):
+    def __init__(self, translator, parent=None):
         super().__init__(parent)
         self.translator = translator
         self.setObjectName("tableContainer")
+
+        # Add status_bar attribute for barcode scanning feedback
+        self.status_bar = None
 
         # Internal state tracking
         self._previous_selection_mode = False
@@ -79,6 +82,9 @@ class ProductsTable(QFrame):
         self.table.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
 
+        # Add connection for barcode scanning on double-click
+        self.table.doubleClicked.connect(self.handle_double_click)
+
         # Corner button - attempt removal
         try:
             corner_button = self.table.findChild(QAbstractButton)
@@ -90,9 +96,8 @@ class ProductsTable(QFrame):
         # Themed Delegates for editing
         self.item_delegate = ThemedItemDelegate(self.table)
         self.numeric_delegate = ThemedNumericDelegate(self.table)
-        self.table.setItemDelegateForColumn(self.COL_CATEGORY, self.item_delegate)
         self.table.setItemDelegateForColumn(self.COL_NAME, self.item_delegate)
-        self.table.setItemDelegateForColumn(self.COL_MODELS, self.item_delegate)
+        self.table.setItemDelegateForColumn(self.COL_MANUFACTURER, self.item_delegate)
         self.table.setItemDelegateForColumn(self.COL_QTY, self.numeric_delegate)
         self.table.setItemDelegateForColumn(self.COL_PRICE, self.numeric_delegate)
 
@@ -123,13 +128,106 @@ class ProductsTable(QFrame):
         # Apply initial styling
         self.apply_theme()
 
+    # Add these methods to your ProductsTable class
+
+    def handle_double_click(self, index):
+        """
+        Handle double-click on table cells.
+        If it's the ID column (parcode), show barcode scanner instead of editor.
+        """
+        try:
+            # Only handle parcode column
+            if not index.isValid() or index.column() != self.COL_ID:
+                return
+
+            # Prevent default editing for now
+            original_edit_triggers = self.table.editTriggers()
+            self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+            # Show the barcode scanner dialog
+            try:
+                dialog = ScanningDialog(self.window(), self.translator)
+                # Use a safe lambda that captures the current row
+                current_row = index.row()
+                dialog.barcode_scanned.connect(
+                    lambda barcode: self.safe_update_parcode(current_row, barcode)
+                )
+                dialog.exec_()
+            except Exception as e:
+                print(f"Error showing scanner dialog: {e}")
+            finally:
+                # Restore original edit triggers
+                self.table.setEditTriggers(original_edit_triggers)
+        except Exception as e:
+            print(f"Double-click handler error: {e}")
+
+    def safe_update_parcode(self, row, barcode):
+        """
+        Safely update parcode from barcode scanner with error handling
+        """
+        try:
+            # Validate inputs
+            if barcode is None or not barcode or row < 0 or row >= self.table.rowCount():
+                return
+
+            # Get item safely
+            item = self.table.item(row, self.COL_ID)
+            if item is None:
+                print(f"Error: No item at row {row}, column {self.COL_ID}")
+                return
+
+            # Update the cell with the scanned barcode
+            old_value = item.text()
+
+            # Safely block signals
+            was_blocked = self.table.signalsBlocked()
+            self.table.blockSignals(True)
+
+            try:
+                # Set the new value
+                item.setText(barcode)
+            finally:
+                # Restore original signal state
+                self.table.blockSignals(was_blocked)
+
+            # Trigger cell changed event
+            self.cellChanged.emit(row, self.COL_ID)
+
+            # Highlight the change if method exists
+            if hasattr(self, '_apply_recent_styling'):
+                try:
+                    self._apply_recent_styling(row)
+                except Exception as style_err:
+                    print(f"Styling error: {style_err}")
+
+            # Show status message if available
+            if hasattr(self, 'status_bar') and self.status_bar is not None:
+                try:
+                    message = f"Barcode updated: {barcode}"
+                    # Try to get translated message
+                    if self.translator:
+                        try:
+                            message = self.translator.t('barcode:barcode_scanned', barcode=barcode)
+                        except:
+                            pass
+                    self.status_bar.show_message(message, "success", 3000)
+                except Exception as status_err:
+                    print(f"Status bar error: {status_err}")
+
+            print(f"Updated row {row} parcode from '{old_value}' to '{barcode}'")
+
+        except Exception as e:
+            print(f"Safe update error: {e}")
+            import traceback
+            traceback.print_exc()
+
     def update_headers(self):
         """Update table headers with current translations."""
+        # Updated headers - using manufacturer instead of compatible_models
         headers = [
             self.translator.t('id'),
-            self.translator.t('category'),
             self.translator.t('product_name'),
-            self.translator.t('compatible_models'),
+            self.translator.t('manufacturer'),  # Changed from 'compatible_models'
             self.translator.t('quantity'),
             self.translator.t('price')
         ]
@@ -188,8 +286,10 @@ class ProductsTable(QFrame):
             if was_sorting_enabled:
                 self.table.setSortingEnabled(True)
 
-        # Default column percentages (8%, 12%, 30%, 25%, 10%, 15%)
-        col_percents = [8, 12, 30, 25, 10, 15]
+        # Default column percentages - UPDATED (redistributed category's 12%)
+        # Original: [8, 12, 30, 25, 10, 15]
+        # New: [8, 38, 29, 10, 15]
+        col_percents = [24, 26, 25, 10, 15]
 
         # Calculate minimum width to prevent tiny columns
         min_width = 50
@@ -299,12 +399,17 @@ class ProductsTable(QFrame):
         if preserve_selection and selected_ids:
             QTimer.singleShot(0, lambda: self._restore_selection(selected_ids))
 
-    def get_selected_rows_data(self) -> List[Tuple[int, str]]:
-        """Get data (ID, Name) from selected rows with improved error handling."""
+    def get_selected_rows_data(self) -> List[Tuple[str, str]]:
+        """
+        Get data (Parcode, Name) from selected rows with improved error handling.
+        Returns parcodes instead of database IDs.
+        """
         selected_rows = self.table.selectionModel().selectedRows()
-        # If no rows are explicitly selected but we're in row selection mode,
-        # use current row if there is one
-        if not selected_rows and self.table.selectionBehavior() == QAbstractItemView.SelectRows:
+
+        # IMPORTANT FIX: Only use current row as fallback when NOT in MultiSelection mode
+        # This prevents treating the current row as selected when nothing is actually selected
+        # in selection mode
+        if not selected_rows and self.table.selectionMode() != QAbstractItemView.MultiSelection:
             current_row = self.table.currentRow()
             if current_row >= 0:
                 # Create a mock index for the current row
@@ -317,18 +422,19 @@ class ProductsTable(QFrame):
         for index in selected_rows:
             row = index.row()
             try:
-                id_item = self.table.item(row, self.COL_ID)
+                # Now get parcode from first column
+                parcode_item = self.table.item(row, self.COL_ID)
                 name_item = self.table.item(row, self.COL_NAME)
 
-                if id_item and name_item:
+                if parcode_item and name_item:
                     try:
-                        product_id = int(id_item.text())
+                        parcode = parcode_item.text()  # Get parcode as string
                         product_name = name_item.text() or self.translator.t('unnamed_product')
-                        product_details.append((product_id, product_name))
+                        product_details.append((parcode, product_name))
                     except (ValueError, TypeError):
-                        print(f"Warning: Could not parse ID for selected row {row}")
+                        print(f"Warning: Could not parse parcode for selected row {row}")
                 else:
-                    print(f"Warning: Missing ID or Name item for selected row {row}")
+                    print(f"Warning: Missing parcode or Name item for selected row {row}")
             except Exception as e:
                 print(f"Error processing selected row {row}: {e}")
 
@@ -657,7 +763,8 @@ class ProductsTable(QFrame):
     def update_single_product(self, product: Union[Dict, Tuple]) -> bool:
         """Efficiently update a single product row with minimal redrawing."""
         try:
-            product_id_str = str(product['parcode'] if isinstance(product, dict) else product[0])
+            # Now using 'id' instead of 'parcode' as the primary key
+            product_id_str = str(product['id'] if isinstance(product, dict) else product[0])
         except (IndexError, KeyError, TypeError) as e:
             self._handle_error(e, "update_single_product: invalid product data")
             return False
@@ -726,41 +833,46 @@ class ProductsTable(QFrame):
             return False
 
     def _populate_row(self, row: int, product: Union[Dict, Tuple]):
-        """Efficiently populate a table row with product data, with better error handling."""
+        """Efficiently populate a table row with product data, with better error handling.
+        Uses parcode in the first column instead of database ID."""
         if row < 0 or row >= self.table.rowCount():
             return
 
         try:
             is_dict = isinstance(product, dict)
 
-            # --- ID ---
-            id_value = str(product.get('parcode', '') if is_dict else (product[0] if len(product) > 0 else ''))
+            # --- Parcode (First Column) ---
+            # Get parcode value from the product data
+            if is_dict:
+                # For dictionary format
+                parcode_value = str(product.get('parcode', ''))
+            else:
+                # For tuple format - find the parcode field position
+                # Try common positions or search through the tuple
+                if len(product) > 15 and isinstance(product[15], str):
+                    # Assuming parcode might be at index 15
+                    parcode_value = str(product[15])
+                elif 'parcode' in dir(product) and hasattr(product, 'parcode'):
+                    # If it's a named tuple or has attributes
+                    parcode_value = str(product.parcode)
+                else:
+                    # Fallback: try to find a string that looks like a part code
+                    # or use the ID as a last resort
+                    parcode_value = str(product[0]) if len(product) > 0 else ''
+                    for item in product:
+                        if isinstance(item, str) and (len(item) >= 4 or re.match(r'^[A-Z0-9\-]+$', item)):
+                            parcode_value = item
+                            break
+
+            # Update the parcode item in the first column
             id_item = self.table.item(row, self.COL_ID)
             if not id_item:
-                id_item = QTableWidgetItem(id_value)
-                id_item.setFlags(id_item.flags() & ~Qt.ItemIsEditable)
+                id_item = QTableWidgetItem(parcode_value)
+                id_item.setFlags(id_item.flags() | Qt.ItemIsEditable)  # Make parcode editable
                 id_item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, self.COL_ID, id_item)
-            elif id_item.text() != id_value:
-                id_item.setText(id_value)
-
-            # --- Category ---
-            cat_raw = product.get('category', '') if is_dict else (product[1] if len(product) > 1 else '')
-            cat_text = str(cat_raw) if cat_raw not in [None, ""] else "-"
-            try:
-                cat_text = translate_category(cat_text, self.translator.language)
-            except Exception as e:
-                print(f"Warn: Category translation failed: {e}")
-
-            cat_item = self.table.item(row, self.COL_CATEGORY)
-            if not cat_item:
-                cat_item = QTableWidgetItem(cat_text)
-                cat_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                cat_item.setToolTip(cat_text)
-                self.table.setItem(row, self.COL_CATEGORY, cat_item)
-            else:
-                cat_item.setText(cat_text)
-                cat_item.setToolTip(cat_text)
+            elif id_item.text() != parcode_value:
+                id_item.setText(parcode_value)
 
             # --- Product Name ---
             name_raw = product.get('product_name', '') if is_dict else (product[2] if len(product) > 2 else '')
@@ -775,23 +887,21 @@ class ProductsTable(QFrame):
                 name_item.setText(name_text)
                 name_item.setToolTip(name_text)
 
-            # --- Compatible Models ---
-            model_raw = product.get('compatible_models', '') if is_dict else (product[6] if len(product) > 6 else '')
-            model_text = str(model_raw) if model_raw not in [None, ""] else "-"
-            try:
-                model_text = translate_compatible_models(model_text, self.translator.language)
-            except Exception as e:
-                print(f"Warn: Model translation failed: {e}")
+            # --- Manufacturer --- (CHANGED FROM COMPATIBLE MODELS)
+            manufacturer_raw = product.get('manufacturer', '') if is_dict else (
+                product[14] if len(product) > 14 else '')
+            manufacturer_text = str(manufacturer_raw) if manufacturer_raw not in [None, ""] else "-"
 
-            model_item = self.table.item(row, self.COL_MODELS)
-            if not model_item:
-                model_item = QTableWidgetItem(model_text)
-                model_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-                model_item.setToolTip(model_text)
-                self.table.setItem(row, self.COL_MODELS, model_item)
+            # Use COL_MANUFACTURER instead of COL_MODELS
+            manufacturer_item = self.table.item(row, self.COL_MANUFACTURER)
+            if not manufacturer_item:
+                manufacturer_item = QTableWidgetItem(manufacturer_text)
+                manufacturer_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                manufacturer_item.setToolTip(manufacturer_text)
+                self.table.setItem(row, self.COL_MANUFACTURER, manufacturer_item)
             else:
-                model_item.setText(model_text)
-                model_item.setToolTip(model_text)
+                manufacturer_item.setText(manufacturer_text)
+                manufacturer_item.setToolTip(manufacturer_text)
 
             # --- Quantity ---
             qty_raw = product.get('quantity', 0) if is_dict else (product[3] if len(product) > 3 else 0)
@@ -828,6 +938,9 @@ class ProductsTable(QFrame):
         except Exception as e:
             # Handle cell population errors gracefully
             print(f"Error populating row {row}: {e}")
+            import traceback
+            print(traceback.format_exc())
+
             # Create error indicators if needed
             for col in range(self.COLUMN_COUNT):
                 err_item = self.table.item(row, col)
@@ -919,59 +1032,170 @@ class ProductsTable(QFrame):
             print(f"Error getting sort settings: {e}")
 
         # Default sort settings if we couldn't get the current ones
-        return {'column': 2, 'order': 0}  # Default to sorting by name ascending
+        return {'column': 1, 'order': 0}  # Default to sorting by name ascending (column 1 now that category is removed)
 
     # --- Highlighting and Formatting (Optimized) ---
 
-    def highlight_matching_text(self, search_text: str):
-        """Highlight cells containing search text with improved performance."""
+    def highlight_matching_text(self, search_text):
+        """
+        Highlight cells containing search text with improved visual feedback.
+        Enhanced to show the match quality based on search term placement.
+        """
         if not search_text:
             self._reset_cell_formatting()
             return
 
-        search_text_lower = search_text.lower()
+        search_text_lower = search_text.strip().lower()
+        search_words = search_text_lower.split() if ' ' in search_text_lower else [search_text_lower]
 
         # Block signals once for the entire operation
         self.table.blockSignals(True)
         try:
             self._reset_cell_formatting()
 
-            # Create highlight style once
-            highlight_color = QColor(get_color('highlight'))
-            highlight_color.setAlpha(90)  # Semi-transparent
-            highlight_brush = QBrush(highlight_color)
-            text_color = QColor(get_color('text'))
+            # Create different highlight colors based on match quality
+            exact_match_color = QColor(get_color('highlight'))  # Strong highlight for exact matches
+
+            # Partial match colors with varying opacity
+            strong_partial_match = QColor(get_color('highlight'))
+            strong_partial_match.setAlpha(120)  # More visible for better matches
+
+            weak_partial_match = QColor(get_color('highlight'))
+            weak_partial_match.setAlpha(70)  # Less visible for weaker matches
 
             # Track first match for scrolling
             first_match_row = -1
+            best_match_row = -1
+            best_match_score = -1
+
+            # Text color for highlighted items
+            text_color = QColor(get_color('text'))
 
             # Search only in relevant columns
-            search_columns = [self.COL_CATEGORY, self.COL_NAME, self.COL_MODELS]
+            search_columns = [self.COL_NAME, self.COL_MANUFACTURER]
 
             for row in range(self.table.rowCount()):
+                row_score = 0
                 row_has_match = False
+                row_has_exact_match = False
 
                 for col in search_columns:
                     item = self.table.item(row, col)
-                    if item and search_text_lower in item.text().lower():
-                        item.setBackground(highlight_brush)
-                        item.setForeground(text_color)
+                    if not item:
+                        continue
+
+                    cell_text = item.text().lower()
+                    match_quality = 0
+
+                    # Check for exact matches first
+                    if cell_text == search_text_lower:
+                        match_quality = 3  # Highest quality
+                        row_has_exact_match = True
+                        item.setBackground(QBrush(exact_match_color))
+                        row_score += 100
+
+                    # Check for starts-with matches (second priority)
+                    elif cell_text.startswith(search_text_lower):
+                        match_quality = 2  # High quality
+                        item.setBackground(QBrush(strong_partial_match))
+                        row_score += 50
+
+                    # Check for contains matches (third priority)
+                    elif search_text_lower in cell_text:
+                        match_quality = 1  # Medium quality
+                        item.setBackground(QBrush(weak_partial_match))
+                        row_score += 20
+
+                    # Check for multi-word matches (all words appear but not necessarily together)
+                    elif len(search_words) > 1 and all(word in cell_text for word in search_words):
+                        match_quality = 1  # Medium quality
+                        item.setBackground(QBrush(weak_partial_match))
+                        row_score += 30
+
+                    # Apply styling based on match quality
+                    if match_quality > 0:
                         row_has_match = True
+                        item.setForeground(text_color)
 
-                if row_has_match and first_match_row == -1:
-                    first_match_row = row
+                        # Emphasize the matched part with font (for exact or starts-with)
+                        if match_quality >= 2:
+                            font = item.font()
+                            font.setBold(True)
+                            item.setFont(font)
 
-            # Scroll to first match if found
-            if first_match_row != -1:
-                # Use deferred scroll to allow UI to update
-                QTimer.singleShot(0, lambda row=first_match_row:
-                self.table.scrollToItem(self.table.item(row, 0),
-                                        QAbstractItemView.PositionAtCenter))
+                # Track first and best match
+                if row_has_match:
+                    if first_match_row == -1:
+                        first_match_row = row
+
+                    if row_score > best_match_score:
+                        best_match_score = row_score
+                        best_match_row = row
+
+                    # For exact matches, also highlight the row number in the vertical header
+                    if row_has_exact_match and self.table.verticalHeader().isVisible():
+                        try:
+                            # This assumes the vertical header has items that can be styled
+                            header_item = self.table.verticalHeaderItem(row)
+                            if header_item:
+                                header_font = header_item.font()
+                                header_font.setBold(True)
+                                header_item.setFont(header_font)
+                                header_item.setBackground(QBrush(exact_match_color))
+                        except Exception:
+                            pass
+
+            # Scroll to the best match if found, or first match otherwise
+            if best_match_row != -1:
+                target_row = best_match_row
+            elif first_match_row != -1:
+                target_row = first_match_row
+            else:
+                return
+
+            # Use deferred scroll to allow UI to update
+            QTimer.singleShot(0, lambda row=target_row:
+            self.table.scrollToItem(self.table.item(row, 0),
+                                    QAbstractItemView.PositionAtCenter))
+
+            # Highlight the entire row of the best match for better visibility
+            if best_match_row != -1:
+                QTimer.singleShot(50, lambda row=best_match_row: self._highlight_best_match_row(row))
+
         finally:
             self.table.blockSignals(False)
 
+    def _highlight_best_match_row(self, row):
+        """Add subtle highlighting to the best match row for better visibility"""
+        try:
+            # Apply a subtle background to all cells in the row
+            for col in range(self.table.columnCount()):
+                item = self.table.item(row, col)
+                if item:
+                    # Only change background if it hasn't already been highlighted
+                    if item.background().color().alpha() < 50:
+                        highlight = QColor(get_color('secondary'))
+                        highlight.setAlpha(40)  # Very subtle
+                        item.setBackground(highlight)
+
+                    # Make the text bold in the name column for emphasis
+                    if col == self.COL_NAME:
+                        font = item.font()
+                        if not font.bold():
+                            font.setBold(True)
+                            item.setFont(font)
+
+            # Select the row (without changing the current item)
+            current_item = self.table.currentItem()
+            self.table.selectRow(row)
+            if current_item:
+                self.table.setCurrentItem(current_item)
+
+        except Exception as e:
+            print(f"Error highlighting best match row: {e}")
+
     def _reset_cell_formatting(self):
-        """Reset all cell formatting efficiently."""
+        """Reset all cell formatting thoroughly, ensuring ALL highlight styling is removed."""
         # Skip if table is empty
         if self.table.rowCount() == 0:
             return
@@ -984,14 +1208,52 @@ class ProductsTable(QFrame):
         self.table.blockSignals(True)
         try:
             for row in range(self.table.rowCount()):
+                # Determine the correct background color for this row (alternating)
                 row_bg = secondary_color if row % 2 else bg_color
-                self._apply_row_styling(row, row_bg, text_color)
+
+                # Apply to all cells in the row
+                for col in range(self.COLUMN_COUNT):
+                    item = self.table.item(row, col)
+                    if item:
+                        # Reset background and text color
+                        item.setBackground(QBrush(row_bg))
+                        item.setForeground(QBrush(text_color))
+
+                        # Reset font properties - ensure bold is removed
+                        font = item.font()
+                        if font.bold():
+                            font.setBold(False)
+                            item.setFont(font)
+
+                        # Clear any tooltip that might have been set during search
+                        if col != self.COL_NAME and col != self.COL_MANUFACTURER:
+                            item.setToolTip("")
+
+            # Reset any header formatting in vertical header
+            if self.table.verticalHeader().isVisible():
+                for row in range(self.table.rowCount()):
+                    header_item = self.table.verticalHeaderItem(row)
+                    if header_item:
+                        header_item.setBackground(QBrush())  # Clear background
+                        font = header_item.font()
+                        if font.bold():
+                            font.setBold(False)
+                            header_item.setFont(font)
+
+            # Ensure any selection is maintained
+            self.table.update()
+
+            # Reset any highlight settings in delegates if they exist
+            if hasattr(self, 'item_delegate') and hasattr(self.item_delegate, 'set_highlight_row'):
+                self.item_delegate.set_highlight_row(None, None)  # Clear any row highlight
+
+            if hasattr(self, 'numeric_delegate') and hasattr(self.numeric_delegate, 'set_highlight_row'):
+                self.numeric_delegate.set_highlight_row(None, None)  # Clear any row highlight
+
         finally:
             self.table.blockSignals(False)
 
     # --- Visual Highlighting Effects (Improved) ---
-
-
 
     def _reset_row_styling(self, row: int):
         """Reset row styling by removing highlight from delegates."""
@@ -1054,6 +1316,7 @@ class ProductsTable(QFrame):
         """
         Retrieves the data currently displayed in the table respecting sorting.
         Returns data primarily as tuples reconstructed from table cells.
+        Updated to handle modified column structure.
         """
         data = []
         try:
@@ -1071,13 +1334,13 @@ class ProductsTable(QFrame):
                 if all_valid:
                     try:
                         p_id = int(row_items[self.COL_ID].text())
-                        cat = row_items[self.COL_CATEGORY].text()
                         name = row_items[self.COL_NAME].text()
-                        models = row_items[self.COL_MODELS].text()
+                        manufacturer = row_items[self.COL_MANUFACTURER].text()  # Changed from COL_MODELS
                         qty = int(row_items[self.COL_QTY].text())
                         price = float(row_items[self.COL_PRICE].text())
-                        # Reconstruct tuple: (id, cat, name, qty, price, <placeholder>, models)
-                        data.append((p_id, cat, name, qty, price, "", models))
+
+                        # Reconstruct tuple with the updated structure:
+                        data.append((p_id, "", name, qty, price, "", manufacturer))
                     except (ValueError, TypeError, AttributeError) as e:
                         print(f"Error converting data from table row {row}: {e}")
                 else:

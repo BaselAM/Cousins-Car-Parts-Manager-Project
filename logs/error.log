@@ -444,3 +444,39 @@ AttributeError: 'OptimizedInternetStatusWidget' object has no attribute 'check_c
 2025-04-10 09:12:31,548 - gui.language_manager - ERROR - [language_manager.py:63] - update_language - Language update error: wrapped C/C++ object of type QLabel has been deleted
 2025-04-10 09:12:55,048 - widgets.header.top_bar - ERROR - [top_bar.py:432] - update_translations - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
 2025-04-10 09:12:55,794 - gui.language_manager - ERROR - [language_manager.py:63] - update_language - Language update error: wrapped C/C++ object of type QLabel has been deleted
+2025-04-11 15:37:18,776 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:890] - _generate_pdf - Error generating PDF: list index out of range
+2025-04-11 15:37:18,832 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:892] - _generate_pdf - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\operations\print_operation.py", line 885, in _generate_pdf
+    doc.build(elements)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 1062, in build
+    self._startBuild(filename,canvasmaker)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 1033, in _startBuild
+    self.handle_documentBegin()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 610, in handle_documentBegin
+    self.pageTemplate = self.pageTemplates[self._firstPageTemplateIndex]
+IndexError: list index out of range
+
+2025-04-11 15:37:18,832 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:236] - print_table - Print error: t() takes 2 positional arguments but 3 were given
+2025-04-11 15:37:18,832 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:238] - print_table - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\operations\print_operation.py", line 228, in print_table
+    self.translator.t('print_error', "Error generating PDF"),
+TypeError: t() takes 2 positional arguments but 3 were given
+
+2025-04-11 15:50:12,557 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:923] - _generate_pdf - Error generating PDF: list index out of range
+2025-04-11 15:50:12,561 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:925] - _generate_pdf - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\operations\print_operation.py", line 918, in _generate_pdf
+    doc.build(elements)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 1062, in build
+    self._startBuild(filename,canvasmaker)
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 1033, in _startBuild
+    self.handle_documentBegin()
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\venv_38\lib\site-packages\reportlab\platypus\doctemplate.py", line 610, in handle_documentBegin
+    self.pageTemplate = self.pageTemplates[self._firstPageTemplateIndex]
+IndexError: list index out of range
+
+2025-04-11 16:19:28,474 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:1168] - _generate_pdf - Error generating PDF: module 'reportlab.lib.colors' has no attribute 'dark_blue'
+2025-04-11 16:19:28,475 - widgets.products.product_widget.operations.print_operation - ERROR - [print_operation.py:1170] - _generate_pdf - Traceback (most recent call last):
+  File "C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\widgets\products\product_widget\operations\print_operation.py", line 725, in _generate_pdf
+    textColor=colors.dark_blue
+AttributeError: module 'reportlab.lib.colors' has no attribute 'dark_blue'
+

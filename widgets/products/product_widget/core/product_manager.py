@@ -1,89 +1,125 @@
 class ProductManager:
-    """Manages the product data and operations"""
+    """Manages product data in memory"""
 
     def __init__(self, db):
         self.db = db
-        self.all_products = []
+        self.products = []
+        self.filtered_products = []
 
     def set_products(self, products):
-        """Set the current product list"""
-        self.all_products = products
+        """Set all products"""
+        self.products = products
 
     def get_products(self):
-        """Get the current product list"""
-        return self.all_products
+        """Get all products"""
+        return self.products
 
-    def update_product_in_memory(self, product_id, field, value, column_index=None):
-        """Update a product in the in-memory list"""
-        for i, prod in enumerate(self.all_products):
-            # For dictionary-based results from MySQL
-            if isinstance(prod, dict) and prod['parcode'] == product_id:
-                # Handle special data types
-                if field == 'quantity':
-                    prod['quantity'] = int(value)
-                elif field == 'price':
-                    prod['price'] = float(value)
-                elif field in prod:
-                    prod[field] = value
+    def clear(self):
+        """Clear product data"""
+        self.products = []
+        self.filtered_products = []
 
-                self.all_products[i] = prod
-                return True
-            # For tuple-based results (backward compatibility)
-            elif not isinstance(prod, dict) and prod[0] == product_id:
-                prod_list = list(prod)
+    def update_product_in_memory(self, product_id, field, new_value, column=None):
+        """
+        Update a product in memory after editing
 
-                # Handle special data types
-                if field == 'quantity' or column_index == 5:
-                    prod_list[5] = int(value)
-                elif field == 'price' or column_index == 6:
-                    prod_list[6] = float(value)
-                elif column_index is not None:
-                    prod_list[column_index] = value
+        Args:
+            product_id: Database ID of the product
+            field: Database field name that was updated
+            new_value: New value for the field
+            column: Table column index (optional)
+        """
+        try:
+            # First update the in-memory product if it exists
+            updated = False
+
+            # Look for the product in our in-memory collection
+            for i, product in enumerate(self.products):
+                if isinstance(product, dict):
+                    if product.get('id') == product_id:
+                        self.products[i][field] = new_value
+                        updated = True
+                        break
+                else:  # Tuple format
+                    # Find the tuple index corresponding to the field
+                    if product[0] == product_id:  # index 0 should be 'id'
+                        # Create a dict to help map field names to tuple indices
+                        # Create a dict to help map field names to tuple indices
+                        field_indices = {
+                            'id': 0,
+                            'product_name': 2,  # Updated indices after category removal
+                            'quantity': 3,
+                            'price': 4,
+                            'manufacturer': 14  # Changed from 'compatible_models': 6
+                        }
+
+                        if field in field_indices:
+                            # Convert tuple to list for modification
+                            product_list = list(product)
+                            product_list[field_indices[field]] = new_value
+                            self.products[i] = tuple(product_list)
+                            updated = True
+                        break
+
+            # If we couldn't find and update the product in memory,
+            # refresh it from the database
+            if not updated:
+                # Get fresh data from database
+                fresh_product = self.db.get_part(product_id)
+                if fresh_product:
+                    # Add or replace in our products list
+                    self.update_or_add_product(product_id, fresh_product)
+                    print(f"Refreshed product {product_id} from database")
                 else:
-                    # Map field name to index if column_index not provided
-                    field_map = {
-                        'product_name': 1,
-                        'compatible_models': 2,
-                        'quantity': 3,
-                        'price': 4
-                    }
-                    if field in field_map:
-                        prod_list[field_map[field]] = value
-
-                self.all_products[i] = tuple(prod_list)
-                return True
-
-        return False
-
+                    print(f"Warning: Could not find product {product_id} in database after edit")
+        except Exception as e:
+            print(f"Error updating product in memory: {e}")
+            import traceback
+            print(traceback.format_exc())
 
     def update_or_add_product(self, product_id, product):
-        """Update a product if it exists, or add it if it doesn't"""
-        for i, prod in enumerate(self.all_products):
-            # For dictionary-based results from MySQL
-            if isinstance(prod, dict) and prod['parcode'] == product_id:
-                self.all_products[i] = product
-                return True
-            # For tuple-based results (backward compatibility)
-            elif not isinstance(prod, dict) and prod[0] == product_id:
-                self.all_products[i] = product
-                return True
+        """
+        Update a product if it exists, or add it if it doesn't
 
-        # If we get here, the product doesn't exist, so add it
-        self.all_products.append(product)
-        return False
+        Args:
+            product_id: ID of the product
+            product: Product data (dict or tuple)
+        """
+        found = False
+        # Try to update existing product
+        for i, p in enumerate(self.products):
+            if isinstance(p, dict) and p.get('id') == product_id:
+                self.products[i] = product
+                found = True
+                break
+            elif not isinstance(p, dict) and len(p) > 0 and p[0] == product_id:
+                self.products[i] = product
+                found = True
+                break
+
+        # Add product if not found
+        if not found:
+            self.products.append(product)
+
+        return not found  # Return True if added, False if updated
 
     def remove_products_by_ids(self, product_ids):
-        """Remove products with the given IDs from the in-memory list"""
+        """
+        Remove products with matching IDs
+
+        Args:
+            product_ids: List of product IDs to remove
+        """
         if not product_ids:
-            return 0
+            return
 
-        original_count = len(self.all_products)
+        to_keep = []
+        for product in self.products:
+            if isinstance(product, dict):
+                if product.get('id') not in product_ids:
+                    to_keep.append(product)
+            else:  # Tuple format
+                if product[0] not in product_ids:
+                    to_keep.append(product)
 
-        # Handle both dict and tuple formats
-        self.all_products = [
-            p for p in self.all_products
-            if (isinstance(p, dict) and p['parcode'] not in product_ids) or
-               (not isinstance(p, dict) and p[0] not in product_ids)
-        ]
-
-        return original_count - len(self.all_products)
+        self.products = to_keep

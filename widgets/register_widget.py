@@ -6,7 +6,7 @@ dual mode functionality (sell/supply), and a cart system.
 import datetime
 from PyQt5.QtCore import (
     Qt, pyqtSignal, QSize, QTimer, QEvent, QPropertyAnimation,
-    QEasingCurve, QParallelAnimationGroup
+    QEasingCurve, QParallelAnimationGroup, QPoint
 )
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
@@ -1431,8 +1431,9 @@ class CartWidget(QWidget):
             if isinstance(item, CartItem):
                 item.update_text_display()
 
+
 class ProductDetailCard(QFrame):
-    """An enhanced card that displays product details with improved styling and layout."""
+    """A compact card that displays product details with improved styling and layout."""
 
     add_to_cart = pyqtSignal(dict, int)  # Product data, quantity
 
@@ -1449,60 +1450,75 @@ class ProductDetailCard(QFrame):
         return default
 
     def setup_ui(self):
-        """Set up the card UI with enhanced styling and layout."""
+        """Set up the card UI with a sleek, modern styling and layout."""
         self.setObjectName("productCard")
-        self.setFrameShape(QFrame.StyledPanel)
-        self.setFrameShadow(QFrame.Raised)
-        self.setMinimumHeight(200)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setFrameShadow(QFrame.Plain)
+        self.setMinimumHeight(140)  # Even more compact
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
-        # Main layout with proper margins - more compact
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(15)
+        # Create a container for the content with margins
+        self.content_widget = QWidget(self)
+        self.content_widget.setObjectName("productCardContent")
 
-        # Add a soft shadow effect
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(20)
-        shadow.setColor(QColor(0, 0, 0, 40))
-        shadow.setOffset(0, 5)
-        self.setGraphicsEffect(shadow)
+        # Main layout for the overall widget with margins to create space around the card
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(18, 16, 18, 16)
+        main_layout.setSpacing(0)  # No spacing between the container and content
 
-        # Header layout with product name
+        # Layout for the actual content
+        layout = QVBoxLayout(self.content_widget)
+        layout.setContentsMargins(16, 14, 16, 14)  # Balanced internal margins
+        layout.setSpacing(6)  # Tighter spacing for sleeker look
+
+        # Add the content widget to the main layout
+        main_layout.addWidget(self.content_widget)
+
+        # Modern shadow effect with no dependency on borders
+        shadow = QGraphicsDropShadowEffect(self.content_widget)
+        shadow.setBlurRadius(25)  # Larger blur for softer edges
+        shadow.setColor(QColor(0, 0, 0, 20))  # More subtle shadow
+        shadow.setOffset(0, 3)  # Slight offset for depth
+        self.content_widget.setGraphicsEffect(shadow)
+
+        # Header layout with product name - more modern, clean look
         header_layout = QVBoxLayout()
-        header_layout.setSpacing(5)
+        header_layout.setSpacing(2)
+        header_layout.setContentsMargins(0, 0, 0, 2)  # Minimal margins
 
-        # Product name header
+        # Product name with modern typography
         name = self.product_data.get('product_name', 'Unknown Product')
         self.name_label = QLabel(name)
         self.name_label.setObjectName("productName")
-        self.name_label.setWordWrap(True)  # Allow wrapping for long names
+        self.name_label.setWordWrap(True)
         font = self.name_label.font()
-        font.setPointSize(get_font_size("xlarge"))
+        font.setPointSize(get_font_size("large"))
         font.setBold(True)
         self.name_label.setFont(font)
 
         header_layout.addWidget(self.name_label)
-
         layout.addLayout(header_layout)
 
-        # Divider line after header
-        header_divider = QFrame()
-        header_divider.setFrameShape(QFrame.HLine)
-        header_divider.setFrameShadow(QFrame.Sunken)
-        header_divider.setObjectName("headerDivider")
-        layout.addWidget(header_divider)
+        # No visible divider - more modern approach
+        # Instead of a visible line, use spacing for separation
+        layout.addSpacing(2)
 
-        # Details section with proper layout and styling
+        # Integrated layout with horizontal arrangement for better compactness
+        main_content = QHBoxLayout()
+        main_content.setSpacing(12)  # Slightly more spacing for breathing room
+
+        # Details section with modern styling
         info_container = QFrame()
         info_container.setObjectName("infoContainer")
+        info_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         info_layout = QVBoxLayout(info_container)
-        info_layout.setContentsMargins(15, 15, 15, 15)
-        info_layout.setSpacing(15)
+        info_layout.setContentsMargins(12, 10, 12, 10)
+        info_layout.setSpacing(6)  # Tighter spacing for sleek look
 
-        # Details layout with 2 columns
+        # Details layout with 2 columns - more modern grid
         details_layout = QGridLayout()
-        details_layout.setHorizontalSpacing(20)
-        details_layout.setVerticalSpacing(10)
+        details_layout.setHorizontalSpacing(10)
+        details_layout.setVerticalSpacing(4)  # Even tighter for sleek look
 
         # Get product details with fallbacks
         parcode = self.product_data.get('parcode', 'N/A')
@@ -1521,18 +1537,18 @@ class ProductDetailCard(QFrame):
             (self._translate("quantity", "In Stock"), f"{stock}")
         ]
 
-        # Add all details to grid with enhanced styling
+        # Add all details to grid with modern, sleek styling
         for row, (label_text, value_text) in enumerate(details):
-            # Create label
-            label = QLabel(f"{label_text}:")
+            # Create label with modern typography
+            label = QLabel(f"{label_text}")  # Removed colon for cleaner look
             label.setObjectName("detailLabel")
             font = label.font()
-            font.setPointSize(get_font_size("medium"))
+            font.setPointSize(get_font_size("small"))
             font.setBold(True)
             label.setFont(font)
             label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-            # Create value with container to ensure proper alignment and wrapping
+            # Create value with container for clean alignment
             value_container = QWidget()
             value_container.setObjectName("detailValueContainer")
             value_layout = QHBoxLayout(value_container)
@@ -1543,11 +1559,11 @@ class ProductDetailCard(QFrame):
             value.setWordWrap(True)
             value.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
             value_font = value.font()
-            value_font.setPointSize(get_font_size("medium"))
+            value_font.setPointSize(get_font_size("small"))
             value.setFont(value_font)
 
-            value_layout.addWidget(value, 1)  # Give it stretching priority
-            value_layout.addStretch()  # Add stretch to push content left
+            value_layout.addWidget(value, 1)
+            value_layout.addStretch()
 
             # Add to layout with proper alignment
             details_layout.addWidget(label, row, 0, Qt.AlignLeft | Qt.AlignTop)
@@ -1558,106 +1574,122 @@ class ProductDetailCard(QFrame):
         details_layout.setColumnStretch(1, 1)  # Values stretch
 
         info_layout.addLayout(details_layout)
-        layout.addWidget(info_container)
+        main_content.addWidget(info_container, 3)  # Give info section more space
 
-        # Action section with quantity selector and add to cart button
+        # Action section with sleek controls
         action_container = QFrame()
         action_container.setObjectName("actionContainer")
-        action_layout = QHBoxLayout(action_container)
-        action_layout.setContentsMargins(15, 15, 15, 15)
-        action_layout.setSpacing(15)
+        action_container.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        action_layout = QVBoxLayout(action_container)
+        action_layout.setContentsMargins(12, 10, 12, 10)
+        action_layout.setSpacing(10)  # Slightly more spacing for modern look
 
-        # Quantity label
-        qty_label = QLabel(self._translate("select_quantity", "Quantity:"))
+        # Quantity label with cleaner styling
+        qty_label = QLabel(self._translate("select_quantity", "Quantity"))  # Full word for cleaner look
         qty_label.setObjectName("quantityLabel")
+        qty_label.setAlignment(Qt.AlignLeft)
         font = qty_label.font()
-        font.setPointSize(get_font_size("large"))
+        font.setPointSize(get_font_size("small"))  # Smaller for cleaner look
         font.setBold(True)
         qty_label.setFont(font)
+        action_layout.addWidget(qty_label)
 
-        # Quantity selector
+        # Quantity selector with modern styling
         max_qty = max(1, int(stock)) if stock is not None else 999
         self.quantity_selector = QuantitySelector(initial_value=1, min_value=1, max_value=max_qty, mode="view")
+        self.quantity_selector.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        action_layout.addWidget(self.quantity_selector)
 
-        # Add to cart button
+        # Add some spacing
+        action_layout.addSpacing(8)
+
+        # Modern, sleek button
         self.add_cart_btn = QPushButton(self._translate("add_to_cart", "Add to Cart"))
         self.add_cart_btn.setObjectName("addToCartButton")
         self.add_cart_btn.setCursor(QCursor(Qt.PointingHandCursor))
-        self.add_cart_btn.setMinimumHeight(40)
+        self.add_cart_btn.setMinimumHeight(36)  # Slightly taller for touch-friendly design
+        self.add_cart_btn.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.add_cart_btn.clicked.connect(self.on_add_to_cart)
-
-        # Add to action layout
-        action_layout.addWidget(qty_label)
-        action_layout.addWidget(self.quantity_selector)
-        action_layout.addStretch(1)
         action_layout.addWidget(self.add_cart_btn)
 
-        layout.addWidget(action_container)
+        # Add stretch to push elements to the top
+        action_layout.addStretch(1)
+
+        main_content.addWidget(action_container, 1)  # Give action container less space
+        layout.addLayout(main_content)
 
         # Apply styling
         self.apply_styling()
 
     def apply_styling(self):
-        """Apply enhanced styling to the card."""
+        """Apply ultra-modern, sleek styling to the card."""
         # Create QColor objects
         highlight_color = QColor(get_color('highlight'))
         card_bg_color = QColor(get_color('card_bg'))
+        text_color = QColor(get_color('text'))
+        secondary_text = QColor(get_color('secondary_text'))
+
+        # Modern palette adjustments
+        card_bg_lighter = card_bg_color.lighter(103).name()
 
         self.setStyleSheet(f"""
             #productCard {{
-                background-color: {get_color('card_bg')};
-                border-radius: {get_size('border_radius_medium')}px;
-                border: 2px solid {get_color('border')};
+                background-color: transparent;
+                border: none;
             }}
-            
+
+            #productCardContent {{
+                background-color: {get_color('card_bg')};
+                border-radius: {int(get_size('border_radius_medium') * 1.2)}px;
+                border: none; /* No visible border for ultra-modern look */
+            }}
+
             #productName {{
                 color: {get_color('highlight')};
-                margin-bottom: 5px;
-                font-size: {get_font_size("xlarge")}px;
+                margin-bottom: 2px;
+                font-size: {get_font_size("large")}px;
+                letter-spacing: -0.2px;
             }}
-            
-            #headerDivider {{
-                color: {get_color('border')};
-                background-color: {get_color('border')};
-                height: 1px;
-                margin: 5px 0;
-            }}
-            
+
             #infoContainer, #actionContainer {{
-                background-color: {card_bg_color.darker(105).name()};
+                background-color: {card_bg_lighter};
                 border-radius: 8px;
-                border: 1px solid {get_color('border')};
+                border: none;
             }}
-            
+
             #detailLabel {{
-                color: {get_color('secondary_text')};
-                padding-right: 10px;
-                min-width: 120px;
+                color: {secondary_text.lighter(110).name()};
+                padding-right: 8px;
+                min-width: 75px;
+                font-size: {get_font_size("small")}px;
+                letter-spacing: 0.2px;
             }}
-            
+
             #detailValueContainer {{
-                margin-right: 15px;  /* Prevent touching edge */
+                margin-right: 6px;
             }}
-            
+
             #detailValue {{
-                color: {get_color('text')};
+                color: {text_color.darker(105).name()};
                 font-weight: bold;
             }}
-            
+
             #quantityLabel {{
-                color: {get_color('highlight')};
+                color: {secondary_text.lighter(105).name()};
+                font-size: {get_font_size("small")}px;
+                margin-bottom: 2px;
             }}
-            
+
             #addToCartButton {{
                 background-color: {get_color('highlight')};
                 color: white;
-                border-radius: {get_size('border_radius_medium')}px;
+                border-radius: {int(get_size('border_radius_small') * 1.5)}px;
                 font-weight: bold;
-                font-size: {get_font_size('medium')}px;
-                padding: 8px 20px;
-                min-width: 150px;
+                font-size: {get_font_size("small")}px;
+                padding: 8px 15px;
+                border: none;
             }}
-            
+
             #addToCartButton:hover {{
                 background-color: {highlight_color.lighter(110).name()};
             }}
@@ -1690,7 +1722,7 @@ class ProductDetailCard(QFrame):
         self.add_to_cart.emit(self.product_data, quantity)
 
     def set_mode(self, mode):
-        """Set the mode (sell/supply) and update the UI accordingly."""
+        """Set the mode (sell/supply) and update the UI accordingly with ultra-modern styling."""
         # Update the quantity selector mode
         current_stock = self.product_data.get('quantity', 0)
         self.quantity_selector.set_mode(mode, current_stock if mode == "sell" else None)
@@ -1698,36 +1730,81 @@ class ProductDetailCard(QFrame):
         # Create QColor objects for error and highlight
         error_color = QColor(get_color('error'))
         highlight_color = QColor(get_color('highlight'))
+        card_bg_color = QColor(get_color('card_bg'))
 
-        # Update the add to cart button text
+        # Get theme-specific colors
+        btn_color = error_color if mode == "sell" else highlight_color
+        btn_hover = btn_color.lighter(110).name()
+
+        # Ultra-modern: Instead of borders, use a subtle background tint
+        if mode == "sell":
+            # For sell mode: extremely subtle red tint
+            tint_color = f"rgba({error_color.red()}, {error_color.green()}, {error_color.blue()}, 0.03)"
+            glow_color = error_color
+        else:
+            # For supply mode: extremely subtle blue tint
+            tint_color = f"rgba({highlight_color.red()}, {highlight_color.green()}, {highlight_color.blue()}, 0.03)"
+            glow_color = highlight_color
+
+        # Apply ultra-modern styling: no borders, just subtle effects
+        self.content_widget.setStyleSheet(f"""
+            background-color: {get_color('card_bg')};
+            border-radius: {int(get_size('border_radius_medium') * 1.2)}px;
+            border: none;
+            background-image: radial-gradient(circle at center, {tint_color}, transparent 70%);
+        """)
+
+        # Update the shadow color to match the mode for an ultra-subtle glow effect
+        shadow = QGraphicsDropShadowEffect(self.content_widget)
+        shadow.setBlurRadius(25)
+        shadow_color = QColor(glow_color.red(), glow_color.green(), glow_color.blue(),
+                              15)  # Ultra-subtle colored shadow
+        shadow.setColor(shadow_color)
+        shadow.setOffset(0, 3)
+        self.content_widget.setGraphicsEffect(shadow)
+
+        # Update the add to cart button with flat modern styling
         if mode == "sell":
             self.add_cart_btn.setText(self._translate("add_to_cart", "Add to Cart"))
             self.add_cart_btn.setStyleSheet(f"""
-                background-color: {get_color('error')};
+                background-color: {error_color.name()};
                 color: white;
-                border-radius: {get_size('border_radius_medium')}px;
+                border-radius: {int(get_size('border_radius_small') * 1.5)}px;
                 font-weight: bold;
-                font-size: {get_font_size('medium')}px;
-                padding: 8px 20px;
-                min-width: 150px;
+                font-size: {get_font_size('small')}px;
+                padding: 8px 15px;
+                border: none;
+            """)
+            # Add hover style
+            self.add_cart_btn.setStyleSheet(self.add_cart_btn.styleSheet() + f"""
+                QPushButton#addToCartButton:hover {{
+                    background-color: {error_color.lighter(110).name()};
+                }}
             """)
         else:  # supply mode
             self.add_cart_btn.setText(self._translate("add_to_supply", "Add to Supply"))
             self.add_cart_btn.setStyleSheet(f"""
-                background-color: {get_color('highlight')};
+                background-color: {highlight_color.name()};
                 color: white;
-                border-radius: {get_size('border_radius_medium')}px;
+                border-radius: {int(get_size('border_radius_small') * 1.5)}px;
                 font-weight: bold;
-                font-size: {get_font_size('medium')}px;
-                padding: 8px 20px;
-                min-width: 150px;
+                font-size: {get_font_size('small')}px;
+                padding: 8px 15px;
+                border: none;
+            """)
+            # Add hover style
+            self.add_cart_btn.setStyleSheet(self.add_cart_btn.styleSheet() + f"""
+                QPushButton#addToCartButton:hover {{
+                    background-color: {highlight_color.lighter(110).name()};
+                }}
             """)
 
 
 class RelatedProductItem(QFrame):
-    """A card that displays a related product with enhanced styling and layout."""
+    """A clean, modern card that displays a related product with minimal styling."""
 
     selected = pyqtSignal(dict)
+    quick_add_clicked = pyqtSignal(dict, int)  # product_data, quantity=1
 
     def __init__(self, product_data, parent=None, translator=None):
         super().__init__(parent)
@@ -1742,112 +1819,109 @@ class RelatedProductItem(QFrame):
         return default
 
     def setup_ui(self):
-        """Set up the related product item UI with enhanced styling."""
+        """Set up the related product item UI with clean, modern styling."""
         self.setObjectName("relatedProductItem")
         self.setFrameShape(QFrame.StyledPanel)
-        self.setFrameShadow(QFrame.Raised)
         self.setCursor(QCursor(Qt.PointingHandCursor))
-        self.setMinimumHeight(120)  # Ensure sufficient height
+        self.setMinimumHeight(180)  # Reasonable height
+        self.setMinimumWidth(250)  # Reasonable width
 
-        # Main layout with proper margins
+        # Main layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(15, 15, 15, 15)
-        layout.setSpacing(12)
+        layout.setSpacing(10)
 
-        # Product name header
+        # Product name
         name = self.product_data.get('product_name', 'Unknown Product')
         self.name_label = QLabel(name)
         self.name_label.setObjectName("relatedProductName")
-        self.name_label.setWordWrap(True)  # Allow wrapping for long names
+        self.name_label.setWordWrap(True)
         font = self.name_label.font()
         font.setPointSize(get_font_size("medium"))
         font.setBold(True)
         self.name_label.setFont(font)
         layout.addWidget(self.name_label)
 
-        # Details grid for better organization - only include the requested fields
-        details_grid = QGridLayout()
-        details_grid.setSpacing(8)
-        details_grid.setContentsMargins(0, 0, 0, 0)
+        # Simple separator
+        separator = QFrame()
+        separator.setObjectName("relatedProductSeparator")
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(separator)
 
-        # Parcode
+        # Details grid
+        details_layout = QGridLayout()
+        details_layout.setSpacing(8)
+        details_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Get product details
         parcode = self.product_data.get('parcode', 'N/A')
-        parcode_label = QLabel(f"{self._translate('parcode', 'Parcode')}:")
-        parcode_label.setObjectName("relatedProductDetailLabel")
-        parcode_value = QLabel(str(parcode))
-        parcode_value.setObjectName("relatedProductDetailValue")
-
-        # Manufacturer
-        manufacturer = self.product_data.get('manufacturer', '-')
-        manufacturer_label = QLabel(f"{self._translate('manufacturer', 'Manufacturer')}:")
-        manufacturer_label.setObjectName("relatedProductDetailLabel")
-        manufacturer_value = QLabel(manufacturer)
-        manufacturer_value.setObjectName("relatedProductDetailValue")
-        manufacturer_value.setWordWrap(True)
-
-        # Price with formatting
         price = self.product_data.get('price', 0.0)
-        formatted_price = f"${price:.2f}" if price is not None else "N/A"
-        price_label = QLabel(f"{self._translate('price', 'Price')}:")
-        price_label.setObjectName("relatedProductDetailLabel")
-        price_value = QLabel(formatted_price)
-        price_value.setObjectName("relatedProductDetailValue")
-
-        # In stock
         stock = self.product_data.get('quantity', 0)
-        stock_label = QLabel(f"{self._translate('in_stock', 'In Stock')}:")
-        stock_label.setObjectName("relatedProductDetailLabel")
-        stock_value = QLabel(str(stock))
-        stock_value.setObjectName("relatedProductDetailValue")
+        manufacturer = self.product_data.get('manufacturer', 'N/A')
 
-        # Add items to grid
-        details_grid.addWidget(parcode_label, 0, 0)
-        details_grid.addWidget(parcode_value, 0, 1)
-        details_grid.addWidget(manufacturer_label, 1, 0)
-        details_grid.addWidget(manufacturer_value, 1, 1)
-        details_grid.addWidget(price_label, 2, 0)
-        details_grid.addWidget(price_value, 2, 1)
-        details_grid.addWidget(stock_label, 3, 0)
-        details_grid.addWidget(stock_value, 3, 1)
+        # Format price with 2 decimal places
+        formatted_price = f"${price:.2f}" if price is not None else "N/A"
 
-        # Set column stretch to ensure proper alignment
-        details_grid.setColumnStretch(0, 0)  # Labels don't stretch
-        details_grid.setColumnStretch(1, 1)  # Values stretch
+        # Create detail labels
+        details = [
+            (self._translate("parcode", "Parcode"), f"{parcode}"),
+            (self._translate("manufacturer", "Manufacturer"), manufacturer),
+            (self._translate("price", "Price"), formatted_price),
+            (self._translate("quantity", "In Stock"), f"{stock}")
+        ]
 
-        layout.addLayout(details_grid)
+        # Add details to grid
+        for row, (label_text, value_text) in enumerate(details):
+            label = QLabel(f"{label_text}:")
+            label.setObjectName("relatedDetailLabel")
 
-        # Action buttons with improved layout
+            value = QLabel(value_text)
+            value.setObjectName("relatedDetailValue")
+            value.setWordWrap(True)
+
+            details_layout.addWidget(label, row, 0, Qt.AlignLeft)
+            details_layout.addWidget(value, row, 1, Qt.AlignLeft)
+
+        # Column stretch
+        details_layout.setColumnStretch(0, 0)  # Labels don't stretch
+        details_layout.setColumnStretch(1, 1)  # Values stretch
+
+        layout.addLayout(details_layout)
+        layout.addStretch(1)
+
+        # Action buttons
         buttons_layout = QHBoxLayout()
         buttons_layout.setSpacing(10)
 
-        # "View Details" button
+        # View Details button
         self.details_button = QPushButton(self._translate("view_details", "View Details"))
         self.details_button.setObjectName("viewDetailsButton")
         self.details_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.details_button.clicked.connect(self.on_selected)
 
-        # "Quick Add" button
+        # Quick Add button
         self.add_button = QPushButton(self._translate("quick_add", "Quick Add"))
         self.add_button.setObjectName("quickAddButton")
         self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
-        # This would be connected to a quick add function
+        self.add_button.clicked.connect(self.on_quick_add)
 
         buttons_layout.addWidget(self.details_button)
         buttons_layout.addWidget(self.add_button)
         layout.addLayout(buttons_layout)
 
-        # Add shadow effect
+        # Apply simple shadow effect
         shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
-        shadow.setColor(QColor(0, 0, 0, 30))
-        shadow.setOffset(0, 3)
+        shadow.setBlurRadius(10)
+        shadow.setColor(QColor(0, 0, 0, 25))
+        shadow.setOffset(0, 2)
         self.setGraphicsEffect(shadow)
 
         # Apply styling
         self.apply_styling()
 
     def apply_styling(self):
-        """Apply enhanced styling to the related product item."""
+        """Apply clean, modern styling to the related product item."""
         highlight_color = QColor(get_color('highlight'))
 
         self.setStyleSheet(f"""
@@ -1855,71 +1929,93 @@ class RelatedProductItem(QFrame):
                 background-color: {get_color('card_bg')};
                 border-radius: {get_size('border_radius_medium')}px;
                 border: 1px solid {get_color('border')};
+            }}
+
+            #relatedProductItem:hover {{
+                border: 1px solid {highlight_color.name()};
+                background-color: {QColor(get_color('card_bg')).lighter(105).name()};
+            }}
+
+            #relatedProductName {{
+                color: {highlight_color.name()};
+                font-weight: bold;
+                margin-bottom: 5px;
+            }}
+
+            #relatedProductSeparator {{
+                color: {get_color('border')};
+                background-color: {get_color('border')};
+                height: 1px;
                 margin: 5px 0;
             }}
-            
-            #relatedProductItem:hover {{
-                border: 1px solid {get_color('highlight')};
-                background-color: {highlight_color.lighter(190).name()};
-            }}
-            
-            #relatedProductName {{
-                color: {get_color('highlight')};
-                font-weight: bold;
-                margin-bottom: 8px;
-            }}
-            
-            #relatedProductDetailLabel {{
+
+            #relatedDetailLabel {{
                 color: {get_color('secondary_text')};
                 font-size: {get_font_size('small')}px;
                 padding-right: 10px;
                 min-width: 80px;
             }}
-            
-            #relatedProductDetailValue {{
+
+            #relatedDetailValue {{
                 color: {get_color('text')};
                 font-size: {get_font_size('small')}px;
                 font-weight: bold;
             }}
-            
+
             #viewDetailsButton, #quickAddButton {{
-                background-color: transparent;
-                color: {get_color('highlight')};
-                border: 1px solid {get_color('highlight')};
-                border-radius: 4px;
+                border-radius: {get_size('border_radius_small')}px;
                 padding: 6px 12px;
-                font-size: {get_font_size('small')}px;
-                min-height: 30px;
-                text-align: center;
+                font-weight: bold;
+                margin-top: 5px;
             }}
-            
-            #viewDetailsButton:hover, #quickAddButton:hover {{
-                background-color: {get_color('highlight')};
-                color: {get_color('highlight_text', '#FFFFFF')};
+
+            #viewDetailsButton {{
+                background-color: transparent;
+                color: {highlight_color.name()};
+                border: 1px solid {highlight_color.name()};
             }}
-            
+
+            #viewDetailsButton:hover {{
+                background-color: {QColor(highlight_color).lighter(180).name()};
+            }}
+
             #quickAddButton {{
-                background-color: {get_color('highlight')};
-                color: {get_color('highlight_text', '#FFFFFF')};
+                background-color: {highlight_color.name()};
+                color: white;
+                border: 1px solid {highlight_color.name()};
             }}
-            
+
             #quickAddButton:hover {{
                 background-color: {highlight_color.lighter(110).name()};
             }}
         """)
 
+    def enterEvent(self, event):
+        """Handle mouse enter to raise the shadow slightly."""
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setColor(QColor(0, 0, 0, 40))
+        shadow.setOffset(0, 3)
+        self.setGraphicsEffect(shadow)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        """Handle mouse leave to restore normal shadow."""
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(10)
+        shadow.setColor(QColor(0, 0, 0, 25))
+        shadow.setOffset(0, 2)
+        self.setGraphicsEffect(shadow)
+        super().leaveEvent(event)
+
     def on_selected(self):
         """Emit signal when the product is selected."""
-        # Add a small animation effect when selected
-        animation = QPropertyAnimation(self, b"geometry")
-        animation.setDuration(100)
-        animation.setStartValue(self.geometry())
-        animation.setEndValue(self.geometry())
-        animation.setKeyValueAt(0.5, self.geometry().adjusted(-5, -5, 5, 5))
-        animation.start()
-
-        # Emit the selected signal
         self.selected.emit(self.product_data)
+
+    def on_quick_add(self):
+        """Emit signal to quickly add this product to the cart/list."""
+        # Default quantity is 1
+        self.quick_add_clicked.emit(self.product_data, 1)
 
     def mousePressEvent(self, event):
         """Handle mouse press event."""
@@ -1929,10 +2025,11 @@ class RelatedProductItem(QFrame):
 
 
 class RelatedProductsSection(QWidget):
-    """Section that displays related products in a vertical layout with enhanced styling."""
+    """A simplified, modern section that displays related products."""
 
     product_selected = pyqtSignal(dict)
     add_related_clicked = pyqtSignal()
+    quick_add_product = pyqtSignal(dict, int)  # product_data, quantity
 
     def __init__(self, parent=None, translator=None):
         super().__init__(parent)
@@ -1947,16 +2044,18 @@ class RelatedProductsSection(QWidget):
         return default
 
     def setup_ui(self):
-        """Set up the related products section UI with enhanced styling."""
+        """Set up the related products section UI with a sleek, modern design."""
         self.setObjectName("relatedProductsSection")
+        self.setMinimumHeight(350)  # Increased height for visibility
 
-        # Main layout with proper margins
+        # Main layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
 
         # Header with title and add button
         header_layout = QHBoxLayout()
+        header_layout.setSpacing(10)
 
         # Title
         self.title_label = QLabel(self._translate("related_products", "Related Products"))
@@ -1979,152 +2078,124 @@ class RelatedProductsSection(QWidget):
 
         layout.addLayout(header_layout)
 
-        # Separator line
+        # Simple separator
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
         separator.setFrameShadow(QFrame.Sunken)
         separator.setObjectName("relatedProductsSeparator")
         layout.addWidget(separator)
 
-        # Products scroll area
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setObjectName("relatedProductsScroll")
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.scroll_area.setFrameShape(QFrame.NoFrame)
-
-        # Set custom scrollbar
-        self.vertical_scrollbar = EnhancedScrollBar(Qt.Vertical)
-        self.scroll_area.setVerticalScrollBar(self.vertical_scrollbar)
-
-        # Scroll content
-        self.scroll_content = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
-        self.scroll_layout.setContentsMargins(5, 5, 5, 5)
-        self.scroll_layout.setSpacing(15)
-        self.scroll_layout.setAlignment(Qt.AlignTop)
+        # Grid layout for products - simple but effective
+        self.grid_container = QWidget()
+        self.grid_layout = QGridLayout(self.grid_container)
+        self.grid_layout.setContentsMargins(5, 5, 5, 5)
+        self.grid_layout.setSpacing(15)
 
         # Empty state label
         self.empty_label = QLabel(self._translate("no_related_products", "No related products found"))
         self.empty_label.setObjectName("noRelatedLabel")
         self.empty_label.setAlignment(Qt.AlignCenter)
+        self.grid_layout.addWidget(self.empty_label, 0, 0, 1, 2, Qt.AlignCenter)
 
-        # Initially add empty label
-        self.scroll_layout.addWidget(self.empty_label)
+        # Create a scroll area for the products
+        scroll_area = QScrollArea()
+        scroll_area.setObjectName("relatedProductsScroll")
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.NoFrame)
+        scroll_area.setWidget(self.grid_container)
 
-        # Set scroll widget
-        self.scroll_area.setWidget(self.scroll_content)
+        # Set custom scrollbar
+        scroll_area.setVerticalScrollBar(EnhancedScrollBar(Qt.Vertical))
 
-        # Add to main layout
-        layout.addWidget(self.scroll_area, 1)  # Give scroll area stretching priority
-
-        # Add shadow effect
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
-        shadow.setColor(QColor(0, 0, 0, 30))
-        shadow.setOffset(0, 3)
-        self.setGraphicsEffect(shadow)
+        layout.addWidget(scroll_area, 1)
 
         # Apply styling
         self.apply_styling()
 
     def apply_styling(self):
-        """Apply enhanced styling to the related products section."""
+        """Apply modern, clean styling to the related products section."""
         highlight_color = QColor(get_color('highlight'))
+        card_bg_color = QColor(get_color('card_bg'))
 
         self.setStyleSheet(f"""
             #relatedProductsSection {{
-                background-color: {get_color('card_bg')};
+                background-color: {QColor(card_bg_color).lighter(103).name()};
                 border-radius: {get_size('border_radius_medium')}px;
-                border: 2px solid {get_color('border')};
+                border: 1px solid {QColor(highlight_color).lighter(160).name()};
             }}
-            
+
             #relatedProductsTitle {{
-                color: {get_color('highlight')};
-                margin-bottom: 5px;
+                color: {highlight_color.name()};
+                font-size: {get_font_size("large")}px;
             }}
-            
+
             #relatedProductsSeparator {{
-                color: {get_color('border')};
-                background-color: {get_color('border')};
+                color: {QColor(highlight_color).lighter(170).name()};
+                background-color: {QColor(highlight_color).lighter(170).name()};
                 height: 1px;
-                margin: 0 0 10px 0;
             }}
-            
+
             #addRelatedButton {{
-                background-color: {get_color('highlight')};
+                background-color: {highlight_color.name()};
                 color: white;
                 border-radius: {get_size('border_radius_small')}px;
                 padding: 6px 12px;
                 font-weight: bold;
             }}
-            
+
             #addRelatedButton:hover {{
                 background-color: {highlight_color.lighter(110).name()};
             }}
-            
+
             #noRelatedLabel {{
                 color: {get_color('secondary_text')};
                 font-style: italic;
-                padding: 30px 20px;
+                padding: 30px;
                 font-size: {get_font_size('medium')}px;
-            }}
-            
-            #relatedProductsScroll {{
-                background-color: transparent;
-                border: none;
             }}
         """)
 
     def set_products(self, products):
-        """Set the related products to display with enhanced styling."""
+        """Set the related products to display."""
         self.products = products
 
-        # Clear existing content
-        while self.scroll_layout.count():
-            item = self.scroll_layout.takeAt(0)
+        # Clear existing items from the grid
+        while self.grid_layout.count():
+            item = self.grid_layout.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
 
         # Add products or empty state
-        if not products:
+        if not products or len(products) == 0:
+            # Empty state
             self.empty_label = QLabel(self._translate("no_related_products", "No related products found"))
             self.empty_label.setObjectName("noRelatedLabel")
             self.empty_label.setAlignment(Qt.AlignCenter)
-            self.scroll_layout.addWidget(self.empty_label)
+            self.grid_layout.addWidget(self.empty_label, 0, 0, 1, 2, Qt.AlignCenter)
         else:
-            # Add products with a fade-in animation
+            # Add products in a 2-column grid
             for i, product in enumerate(products):
+                row = i // 2
+                col = i % 2
+
                 product_item = RelatedProductItem(product, translator=self.translator)
                 product_item.selected.connect(self.on_product_selected)
+                product_item.quick_add_clicked.connect(self.on_quick_add_product)
 
-                # Start with opacity 0
-                product_item.setGraphicsEffect(None)  # Remove default shadow for animation
-                opacity_effect = QGraphicsDropShadowEffect()
-                opacity_effect.setBlurRadius(15)
-                opacity_effect.setColor(QColor(0, 0, 0, 0))  # Start transparent
-                opacity_effect.setOffset(0, 3)
-                product_item.setGraphicsEffect(opacity_effect)
+                self.grid_layout.addWidget(product_item, row, col)
 
-                self.scroll_layout.addWidget(product_item)
-
-                # Create animation to fade in with delay based on index
-                anim = QPropertyAnimation(opacity_effect, b"color")
-                anim.setDuration(300)
-                anim.setStartValue(QColor(0, 0, 0, 0))
-                anim.setEndValue(QColor(0, 0, 0, 30))
-                anim.setEasingCurve(QEasingCurve.InOutQuad)
-
-                # Use proper delay mechanism instead of setStartTime
-                QTimer.singleShot(i * 100, lambda a=anim: a.start())
-
-            # Add stretch at the end
-            self.scroll_layout.addStretch(1)
+            # Make sure the grid expands properly
+            self.grid_layout.setRowStretch(len(products) // 2 + 1, 1)
+            self.grid_layout.setColumnStretch(0, 1)
+            self.grid_layout.setColumnStretch(1, 1)
 
     def on_product_selected(self, product_data):
         """Handle when a related product is selected."""
         self.product_selected.emit(product_data)
+
+    def on_quick_add_product(self, product_data, quantity):
+        """Handle when a product's quick add button is clicked."""
+        self.quick_add_product.emit(product_data, quantity)
 
 
 from PyQt5.QtCore import QSortFilterProxyModel, QStringListModel, Qt, QModelIndex
@@ -3138,7 +3209,6 @@ class RegisterWidget(QWidget, SizePolicyMixin):
 
     def display_product(self, product):
         """Display a product in the detail view with enhanced styling."""
-        # Same as original implementation
         if not product:
             return
 
@@ -3159,47 +3229,19 @@ class RegisterWidget(QWidget, SizePolicyMixin):
         # Find related products
         related_products = self.find_related_products(product)
 
-        # Add related products section
+        # Add related products section with quick add support
         related_section = RelatedProductsSection(translator=self.translator)
+        related_section.product_selected.connect(self.display_product)
+        related_section.add_related_clicked.connect(self.handle_add_related)
+        related_section.quick_add_product.connect(self.add_to_cart)  # Connect quick add signal
+        related_section.set_products(related_products)
 
-        # Show product container first with fade-in animation
+        # Show the product container
         self.content_stack.setCurrentWidget(self.product_container)
-        self.product_content.setGraphicsEffect(None)
 
-        # Add widgets with sequential animations
+        # Add widgets to layout
         self.product_layout.addWidget(product_card)
         self.product_layout.addWidget(related_section)
-
-        # Create sequential animations
-        animation_group = QParallelAnimationGroup()
-
-        # Product card fade-in
-        opacity1 = QPropertyAnimation(product_card, b"windowOpacity")
-        opacity1.setDuration(250)
-        opacity1.setStartValue(0.0)
-        opacity1.setEndValue(1.0)
-        opacity1.setEasingCurve(QEasingCurve.OutCubic)
-        animation_group.addAnimation(opacity1)
-
-        # Related section fade-in (delayed)
-        opacity2 = QPropertyAnimation(related_section, b"windowOpacity")
-        opacity2.setDuration(250)
-        opacity2.setStartValue(0.0)
-        opacity2.setEndValue(1.0)
-        opacity2.setEasingCurve(QEasingCurve.OutCubic)
-        animation_group.addAnimation(opacity2)
-
-        # Start animations with a delay for the second animation
-        animation_group.start()
-
-        # Temporarily hide related section and show it after delay
-        related_section.setWindowOpacity(0.0)
-        QTimer.singleShot(150, lambda: related_section.setWindowOpacity(1.0))
-
-        # Set up related products connections (after short delay to allow animation to start)
-        QTimer.singleShot(100, lambda: related_section.product_selected.connect(self.display_product))
-        QTimer.singleShot(100, lambda: related_section.add_related_clicked.connect(self.handle_add_related))
-        QTimer.singleShot(200, lambda: related_section.set_products(related_products))
 
     def find_related_products(self, product):
         """Find related products based on category, compatible cars, and brand."""

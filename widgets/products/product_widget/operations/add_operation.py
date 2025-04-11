@@ -58,52 +58,6 @@ class AddOperation:
                     hasattr(parent_widget, 'product_loader')]):
             print("Warning: AddOperation initialized without full parent components (manager, table, loader). Some features might be limited.")
 
-
-    def show_add_dialog(self):
-        """Creates and shows the 'Add Product' dialog."""
-        try:
-            dialog = AddProductDialog(self.translator, self.parent)
-            # Connect the finished signal to handle the result *after* the dialog closes
-            # The finished signal emits an integer result code (Accepted or Rejected)
-            dialog.finished.connect(lambda result: self._handle_dialog_result(dialog, result))
-            # Use open() for a non-modal dialog or exec_() for a modal one
-            dialog.open()
-        except Exception as e:
-            print(f"ERROR: Failed to create or show AddProductDialog: {e}")
-            traceback.print_exc()
-            if self.status_bar:
-                # Translate error message before showing
-                error_text = self.translator.t('dialog_error')
-                self.status_bar.show_message(error_text, "error")
-
-    def _handle_dialog_result(self, dialog, result):
-        """Processes the data if the dialog was accepted."""
-        if result == QDialog.Accepted:
-            print("Add Product Dialog Accepted.")
-            try:
-                data = dialog.get_data()
-                if data:
-                    # Initiate the process of adding/updating the product in the DB and UI
-                    self.process_add_product(data)
-                else:
-                    print("Warning: Dialog accepted, but no data retrieved.")
-                    if self.status_bar:
-                        # Translate warning message
-                        warning_text = self.translator.t('data_error')
-                        self.status_bar.show_message(warning_text, "warning", 5000)
-            except Exception as e:
-                print(f"ERROR: Failed to process dialog result data: {e}")
-                traceback.print_exc()
-                if self.status_bar:
-                    # Translate error message
-                    error_text = self.translator.t('data_error')
-                    self.status_bar.show_message(error_text, "error")
-        else:
-            # Handle dialog cancellation/rejection
-            print("Add Product Dialog Rejected/Cancelled.")
-            if self.status_bar:
-               pass
-
     def process_add_product(self, data):
         """
         Validates data, interacts with the database (add or update),
@@ -115,13 +69,23 @@ class AddOperation:
         Returns:
             int or None: The product ID if successfully added/updated, otherwise None.
         """
-        product_id = None # Initialize product_id
+        product_id = None  # Initialize product_id
         try:
             product_name_for_messages = data.get('product_name', self.translator.t('unknown_product'))
             print(f"Processing product: '{product_name_for_messages}'")
 
+            # Store the original parcode before sanitization
+            original_parcode = data.get('parcode', '')
+            print(f"Original parcode from dialog: '{original_parcode}'")
+
             # 1. Sanitize and Validate Data
             sanitized_data = self.validator.sanitize_product_data(data)
+
+            # Re-add or ensure parcode is preserved after sanitization
+            if original_parcode:
+                sanitized_data['parcode'] = original_parcode
+                print(f"Preserved parcode after sanitization: '{sanitized_data.get('parcode')}'")
+
             is_valid, error_msg = self.validator.validate_product(sanitized_data)
 
             if not is_valid:
@@ -129,7 +93,7 @@ class AddOperation:
                 if self.status_bar:
                     # error_msg is already translated by the validator
                     self.status_bar.show_message(error_msg, "error")
-                return None # Stop processing
+                return None  # Stop processing
 
             product_name = sanitized_data['product_name']
 
@@ -150,7 +114,11 @@ class AddOperation:
 
                 if confirm:
                     print(f"User confirmed overwrite for '{product_name}'.")
-                    product_id = existing['parcode'] # Assuming parcode exists if existing is True
+                    product_id = existing['parcode']  # Assuming parcode exists if existing is True
+
+                    # Ensure parcode is preserved in the update
+                    if original_parcode:
+                        sanitized_data['parcode'] = original_parcode
 
                     # Perform Database Update
                     success = self.db.update_part(product_id, **sanitized_data)
@@ -190,16 +158,24 @@ class AddOperation:
                     # User cancelled the overwrite
                     print(f"User cancelled overwrite for '{product_name}'.")
                     if self.status_bar:
-                         # Translate cancellation message
-                         cancel_msg = self.translator.t('update_cancelled')
-                         self.status_bar.show_message(cancel_msg, "info", 3000)
+                        # Translate cancellation message
+                        cancel_msg = self.translator.t('update_cancelled')
+                        self.status_bar.show_message(cancel_msg, "info", 3000)
                     return None
 
             # 4. Handle New Product (Add Path)
             else:
                 print(f"No existing product found for '{product_name}'. Proceeding with add.")
+
+                # Make sure the parcode is passed directly to db.add_part
+                # First ensure parcode is in sanitized_data
+                if original_parcode:
+                    sanitized_data['parcode'] = original_parcode
+                    print(f"Using custom parcode for new product: '{sanitized_data['parcode']}'")
+
                 # Perform Database Insert
                 success = self.db.add_part(**sanitized_data)
+
                 if not success:
                     print(f"ERROR: Database add failed for product '{product_name}'.")
                     raise Exception("Failed to add new product to the database")
@@ -207,13 +183,22 @@ class AddOperation:
                 print(f"Database add successful for '{product_name}'.")
 
                 # Verify and Get New Product Data (including ID)
-                verify_product = self.db.get_part_by_name(product_name)
+                # Try to verify by parcode first if we have it, otherwise by name
+                if original_parcode:
+                    verify_product = self.db.get_part_by_parcode(original_parcode)
+                    if not verify_product:
+                        print(f"Warning: Could not find product by parcode '{original_parcode}'. Trying by name.")
+                        verify_product = self.db.get_part_by_name(product_name)
+                else:
+                    verify_product = self.db.get_part_by_name(product_name)
+
                 if not verify_product:
                     print(f"CRITICAL ERROR: Could not verify product '{product_name}' after successful add!")
                     raise Exception("Product verification failed after supposedly successful add")
 
-                product_id = verify_product['parcode'] # Assuming parcode exists
-                print(f"Verified new product. ID: {product_id}")
+                product_id = verify_product['id']  # Use ID for internal references
+                parcode = verify_product['parcode']  # Get the actual parcode used
+                print(f"Verified new product. ID: {product_id}, Parcode: {parcode}")
 
                 # Update In-Memory Store & UI Table
                 if hasattr(self.parent, 'product_manager'):
@@ -237,12 +222,68 @@ class AddOperation:
         # 5. General Error Handling
         except Exception as e:
             print(f"ERROR: Exception during product processing for '{product_name_for_messages}': {e}")
+            import traceback
             traceback.print_exc()
             if self.status_bar:
                 # Translate generic error message
                 error_text = self.translator.t('add_update_error').format(error=str(e))
                 self.status_bar.show_message(error_text, "error")
-            return None # Indicate failure
+            return None  # Indicate failure
+
+    def _handle_dialog_result(self, dialog, result):
+        """Processes the data if the dialog was accepted."""
+        if result == QDialog.Accepted:
+            print("Add Product Dialog Accepted.")
+            try:
+                data = dialog.get_data()
+                if data:
+                    # Check if we have a parcode/barcode and log it
+                    if 'parcode' in data:
+                        print(f"Dialog provided parcode value: '{data['parcode']}'")
+                    elif 'barcode' in data:
+                        # If it's still called 'barcode' in the dialog, rename it to 'parcode'
+                        print(f"Dialog provided barcode value: '{data['barcode']}'")
+                        data['parcode'] = data.pop('barcode')
+
+                    # Initiate the process of adding/updating the product in the DB and UI
+                    self.process_add_product(data)
+                else:
+                    print("Warning: Dialog accepted, but no data retrieved.")
+                    if self.status_bar:
+                        # Translate warning message
+                        warning_text = self.translator.t('data_error')
+                        self.status_bar.show_message(warning_text, "warning", 5000)
+            except Exception as e:
+                print(f"ERROR: Failed to process dialog result data: {e}")
+                import traceback
+                traceback.print_exc()
+                if self.status_bar:
+                    # Translate error message
+                    error_text = self.translator.t('data_error')
+                    self.status_bar.show_message(error_text, "error")
+        else:
+            # Handle dialog cancellation/rejection
+            print("Add Product Dialog Rejected/Cancelled.")
+            if self.status_bar:
+                pass
+
+
+    def show_add_dialog(self):
+        """Creates and shows the 'Add Product' dialog."""
+        try:
+            dialog = AddProductDialog(self.translator, self.parent)
+            # Connect the finished signal to handle the result *after* the dialog closes
+            # The finished signal emits an integer result code (Accepted or Rejected)
+            dialog.finished.connect(lambda result: self._handle_dialog_result(dialog, result))
+            # Use open() for a non-modal dialog or exec_() for a modal one
+            dialog.open()
+        except Exception as e:
+            print(f"ERROR: Failed to create or show AddProductDialog: {e}")
+            traceback.print_exc()
+            if self.status_bar:
+                # Translate error message before showing
+                error_text = self.translator.t('dialog_error')
+                self.status_bar.show_message(error_text, "error")
 
 
     def _ensure_product_visible(self, product_id):

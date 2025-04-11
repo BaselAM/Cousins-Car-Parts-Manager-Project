@@ -21,27 +21,50 @@ class EditHandler:
         if row < 0 or column < 0 or row >= table.rowCount() or column >= table.columnCount():
             return False, None, None, None, None
 
-        if column == 0:  # Skip ID column
-            return False, None, None, None, None
-
         try:
+            # Get the changed cell
             item = table.item(row, column)
-            id_item = table.item(row, 0)
-
-            if not item or not id_item:
+            if not item:
                 return False, None, None, None, None
 
-            try:
-                part_id = int(id_item.text())
-            except (ValueError, TypeError):
+            # Get the ID cell (which contains parcode) - using explicit index 0 instead of COL_ID
+            parcode_item = table.item(row, 0)
+            if not parcode_item:
                 return False, None, None, None, None
 
+            parcode = parcode_item.text()
+
+            # Get the product name for identification
+            name_item = table.item(row, 1)  # Product name is in column 1
+            product_name = name_item.text() if name_item else ""
+
+            # Find the database ID for this product
+            part_id = None
+            for product in all_products:
+                if isinstance(product, dict):
+                    # For regular edits, match by parcode
+                    db_parcode = str(product.get('parcode', ''))
+                    if db_parcode == parcode:
+                        part_id = product.get('id')
+                        break
+
+                    # If editing the parcode itself, try matching by product name
+                    if column == 0 and product.get('product_name') == product_name:
+                        part_id = product.get('id')
+                        break
+
+            # If we couldn't find the product, we can't update it
+            if part_id is None:
+                print(f"Could not find database ID for row {row}")
+                return False, None, None, None, None
+
+            # Map columns to fields
             field_map = {
-                1: 'category',
-                2: 'product_name',
-                3: 'compatible_models',
-                4: 'quantity',
-                5: 'price'
+                0: 'parcode',
+                1: 'product_name',
+                2: 'manufacturer',  # Changed from 'compatible_models'
+                3: 'quantity',
+                4: 'price'
             }
 
             field = field_map.get(column)
@@ -50,48 +73,37 @@ class EditHandler:
 
             new_value = item.text().strip()
 
-            # Handle special field types
+            # Ensure non-empty values for required fields
+            if new_value == "":
+                if field == 'parcode':
+                    return False, None, None, None, "Parcode cannot be empty"
+                elif field == 'product_name':
+                    return False, None, None, None, "Product name cannot be empty"
+
+            # Handle numeric fields
             if field == 'quantity':
                 try:
                     new_value = int(new_value)
                 except ValueError:
+                    new_value = 0
                     table.blockSignals(True)
                     item.setText('0')
                     table.blockSignals(False)
-                    new_value = 0
-
             elif field == 'price':
                 try:
                     new_value = float(new_value)
                 except ValueError:
+                    new_value = 0.0
                     table.blockSignals(True)
                     item.setText('0.0')
                     table.blockSignals(False)
-                    new_value = 0.0
-
-            # Ensure product name is not empty
-            if field == 'product_name' and not new_value:
-                # Find product in memory first before going to DB
-                original_name = "Product"
-                for product in all_products:
-                    if isinstance(product, dict) and product.get('parcode') == part_id:
-                        original_name = product.get('product_name', "Product")
-                        break
-                    elif not isinstance(product, dict) and len(product) > 0 and product[0] == part_id:
-                        original_name = product[2] if len(product) > 2 else "Product"
-                        break
-
-                table.blockSignals(True)
-                item.setText(original_name)
-                table.blockSignals(False)
-                return False, None, None, None, None
 
             # Update the database
             update_data = {field: new_value}
             success = self.db.update_part(part_id, **update_data)
 
             if success:
-                # Format display if necessary
+                # Format display values
                 if field == 'quantity':
                     table.blockSignals(True)
                     item.setText(str(int(new_value)))
@@ -101,8 +113,15 @@ class EditHandler:
                     item.setText(f"{float(new_value):.2f}")
                     table.blockSignals(False)
 
-                # Show success message
-                success_message = self.translator.t('product_updated')
+                # Use appropriate message
+                if field == 'parcode':
+                    try:
+                        success_message = self.translator.t('barcode:barcode_updated', barcode=new_value)
+                    except:
+                        success_message = f"Barcode updated to: {new_value}"
+                else:
+                    success_message = self.translator.t('product_updated')
+
                 return True, part_id, field, new_value, success_message
 
             return False, None, None, None, None
@@ -110,5 +129,5 @@ class EditHandler:
         except Exception as e:
             print(f"Error handling cell change: {e}")
             import traceback
-            print(traceback.format_exc())
+            traceback.print_exc()
             return False, None, None, None, None

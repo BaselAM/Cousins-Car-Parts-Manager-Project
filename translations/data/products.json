@@ -9,7 +9,7 @@
   },
   "id": {
     "en": "ID",
-    "he": "מזהה"
+    "he": "מקט"
   },
   "category": {
     "en": "Category",
@@ -102,5 +102,26 @@
 "brand_placeholder": {
   "en": "Enter brand name",
   "he": "הזן שם מותג"
-}
+},
+  "no_products_found": {
+    "en": "No products found",
+    "he": "לא נמצאו מוצרים"
+  },
+  "table_error": {
+    "en": "Table Error: {message}",
+    "he": "שגיאת טבלה: {message}"
+  },
+  "unnamed_product": {
+    "en": "Unnamed product",
+    "he": "מוצר ללא שם"
+  },
+  "search_results_found": {
+    "en": "Found {count} results for '{term}'",
+    "he": "נמצאו {count} תוצאות עבור '{term}'"
+  },
+  "no_search_results": {
+    "en": "No results found for '{term}'",
+    "he": "לא נמצאו תוצאות עבור '{term}'"
+  }
+
 }

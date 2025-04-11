@@ -30,5 +30,21 @@
   "cancel": {
     "en": "Cancel",
     "he": "ביטול"
-  }
+  },
+  "barcode_updated": {
+    "en": "Barcode updated: {barcode}",
+    "he": "ברקוד עודכן: {barcode}"
+  },
+  "exact_match_found": {
+    "en": "Found exact match: {name}",
+    "he": "נמצאה התאמה מדויקת: {name}"
+  },
+  "barcode": {
+  "en": "Barcode",
+  "he": "ברקוד"
+},
+"barcode_placeholder": {
+  "en": "Enter barcode",
+  "he": "הזן ברקוד"
+}
 }

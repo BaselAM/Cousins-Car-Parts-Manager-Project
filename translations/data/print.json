@@ -1,0 +1,114 @@
+{
+  "print_settings": {
+    "en": "Print Settings",
+    "he": "הגדרות הדפסה"
+  },
+  "print_setup_description": {
+    "en": "Configure print options",
+    "he": "הגדר אפשרויות הדפסה"
+  },
+  "print_scope": {
+    "en": "Print Scope",
+    "he": "היקף הדפסה"
+  },
+  "print_all_products": {
+    "en": "All Products",
+    "he": "כל המוצרים"
+  },
+  "print_selected_products": {
+    "en": "Selected Products",
+    "he": "מוצרים נבחרים"
+  },
+  "print_filtered_products": {
+    "en": "Filtered Products",
+    "he": "מוצרים מסוננים"
+  },
+  "print_all_tooltip": {
+    "en": "Print all products in the table",
+    "he": "הדפס את כל המוצרים בטבלה"
+  },
+  "print_selected_tooltip": {
+    "en": "Print only selected products",
+    "he": "הדפס רק מוצרים נבחרים"
+  },
+  "print_filtered_tooltip": {
+    "en": "Print currently filtered products",
+    "he": "הדפס מוצרים מסוננים נוכחיים"
+  },
+  "print_options": {
+    "en": "Print Options",
+    "he": "אפשרויות הדפסה"
+  },
+  "paper_size": {
+    "en": "Paper Size",
+    "he": "גודל נייר"
+  },
+  "paper_size_tooltip": {
+    "en": "Select the paper size for printing",
+    "he": "בחר את גודל הנייר להדפסה"
+  },
+  "orientation": {
+    "en": "Orientation",
+    "he": "כיוון"
+  },
+  "orientation_tooltip": {
+    "en": "Choose page orientation",
+    "he": "בחר את כיוון העמוד"
+  },
+  "portrait": {
+    "en": "Portrait",
+    "he": "לאורך"
+  },
+  "landscape": {
+    "en": "Landscape",
+    "he": "לרוחב"
+  },
+  "print_header": {
+    "en": "Print Header",
+    "he": "הדפס כותרת"
+  },
+  "print_header_tooltip": {
+    "en": "Include title in the printout",
+    "he": "כלול כותרת בהדפסה"
+  },
+  "print_date": {
+    "en": "Print Date",
+    "he": "הדפס תאריך"
+  },
+  "print_date_tooltip": {
+    "en": "Include date in the printout",
+    "he": "כלול תאריך בהדפסה"
+  },
+  "rtl_mode": {
+    "en": "Right-to-Left Mode",
+    "he": "מצב מימין לשמאל"
+  },
+  "rtl_mode_tooltip": {
+    "en": "Optimize layout for Hebrew text",
+    "he": "מיטוב פריסה לטקסט בעברית"
+  },
+  "preview_and_print": {
+    "en": "Preview & Print",
+    "he": "תצוגה מקדימה והדפסה"
+  },
+  "products_report": {
+    "en": "Products Report",
+    "he": "דוח מוצרים"
+  },
+  "print_success": {
+    "en": "PDF generated successfully",
+    "he": "ה-PDF נוצר בהצלחה"
+  },
+  "print_error": {
+    "en": "Error generating PDF",
+    "he": "שגיאה ביצירת ה-PDF"
+  },
+  "error_opening_pdf": {
+    "en": "Error opening PDF file",
+    "he": "שגיאה בפתיחת קובץ ה-PDF"
+  },
+  "no_data_to_print": {
+    "en": "No data to print",
+    "he": "אין נתונים להדפסה"
+  }
+}

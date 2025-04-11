@@ -22,6 +22,8 @@ class DeleteOperation:
             )
             return
 
+        # Get selected rows data - this now returns parcode in first position
+        # instead of database ID
         product_details = product_table.get_selected_rows_data()
         if not product_details:
             self.status_bar.show_message(
@@ -30,7 +32,7 @@ class DeleteOperation:
             )
             return
 
-        # Create the confirmation dialog
+        # Create the confirmation dialog - still uses the same format
         dialog = DeleteConfirmationDialog(
             products=product_details,
             translator=self.translator,
@@ -38,7 +40,40 @@ class DeleteOperation:
         )
 
         if dialog.exec_() == QDialog.Accepted:
-            deleted_ids = self._perform_deletion(product_details)
+            # First fetch all products to find database IDs matching the parcodes
+            all_products = self.db.get_all_parts()
+
+            # Map parcodes to database IDs
+            db_id_map = {}
+            for product in all_products:
+                if isinstance(product, dict):
+                    if 'parcode' in product and 'id' in product:
+                        parcode = str(product['parcode'])
+                        db_id_map[parcode] = product['id']
+                else:
+                    # Tuple format - assuming parcode is at position 15 and id at position 0
+                    # Adjust these indices based on your actual data structure
+                    if len(product) > 15:
+                        parcode = str(product[15])
+                        db_id = product[0]
+                        db_id_map[parcode] = db_id
+                    # Try other potential formats
+                    elif hasattr(product, 'parcode') and hasattr(product, 'id'):
+                        parcode = str(product.parcode)
+                        db_id_map[parcode] = product.id
+
+            # Convert selected parcodes to database IDs for deletion
+            products_to_delete = []
+            for parcode, name in product_details:
+                if str(parcode) in db_id_map:
+                    # Store as (database_id, name) tuples
+                    products_to_delete.append((db_id_map[str(parcode)], name))
+                else:
+                    print(f"Warning: Could not find database ID for parcode: {parcode}")
+
+            # Perform the deletion with database IDs
+            deleted_ids = self._perform_deletion(products_to_delete)
+
             if deleted_ids:
                 success_message = self.translator.t('items_deleted').format(
                     count=len(deleted_ids))
@@ -59,9 +94,10 @@ class DeleteOperation:
 
         Args:
             product_list: List of (id, name) tuples of products to delete
+                         where id is the database ID (primary key)
 
         Returns:
-            list: IDs of successfully deleted products
+            list: Database IDs of successfully deleted products
         """
         if not product_list:
             return []
