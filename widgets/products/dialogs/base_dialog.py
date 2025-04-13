@@ -1,12 +1,21 @@
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
+"""
+Enhanced base dialog with premium styling.
+
+This module provides a consistent premium dialog experience across the application by
+using the styled widget library and implementing refined appearance features.
+"""
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFrame,
+                             QGraphicsDropShadowEffect, QSpacerItem,
+                             QSizePolicy)
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QColor, QIcon
 
 from themes import get_color
+from widgets.products.components.styled_widgets import StyledPushButton
 
 
 class ElegantDialog(QDialog):
-    """Base class for all elegant dialogs with consistent styling and animations."""
+    """Base class for all elegant dialogs with premium styling and animations."""
 
     def __init__(self, translator, parent=None, title="Dialog"):
         super().__init__(parent)
@@ -18,23 +27,34 @@ class ElegantDialog(QDialog):
         # Set window flags for modern look
         self.setWindowFlags(self.windowFlags() | Qt.WindowCloseButtonHint)
 
+        # Setup main layout with proper spacing
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(20, 20, 20, 20)
+        self.main_layout.setSpacing(15)
+
+        # Add drop shadow for premium feel
+        self._add_drop_shadow()
+
+        # Apply default theming
         self.apply_theme()
 
+    def _add_drop_shadow(self):
+        """Add subtle drop shadow to dialog for depth"""
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setColor(QColor(0, 0, 0, 70))
+        shadow.setOffset(0, 3)
+        self.setGraphicsEffect(shadow)
+
     def apply_theme(self):
-        """Apply theme colors to dialog"""
+        """Apply theme colors to dialog with premium styling"""
         bg_color = get_color('background')
         text_color = get_color('text')
-        card_bg = get_color('card_bg')
         border_color = get_color('border')
-        button_color = get_color('button')
-        button_hover = get_color('button_hover')
-        button_pressed = get_color('button_pressed')
-        highlight_color = get_color('highlight')
 
-        # Create elegant shadow effect for buttons
+        # Determine if using dark theme
         is_dark_theme = QColor(bg_color).lightness() < 128
-        shadow_opacity = "0.4" if is_dark_theme else "0.15"
-        shadow_color = f"rgba(0, 0, 0, {shadow_opacity})"
+        shadow_opacity = "0.3" if is_dark_theme else "0.15"
 
         # Main dialog style
         self.setStyleSheet(f"""
@@ -51,98 +71,85 @@ class ElegantDialog(QDialog):
                 font-size: 14px;
             }}
 
-            QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox {{
-                background-color: {card_bg};
-                color: {text_color};
-                border: 1px solid {border_color};
-                border-radius: 5px;
-                padding: 8px;
-                min-height: 30px;
-                selection-background-color: {highlight_color};
+            QFrame[frameShape="4"] {{ /* HLine */
+                background-color: {border_color};
+                max-height: 1px;
+                border: none;
             }}
 
-            QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus {{
-                border: 2px solid {highlight_color};
-            }}
-
-            QPushButton {{
-                background-color: {button_color};
-                color: {text_color};
-                border: 1px solid {border_color};
-                border-radius: 5px;
-                padding: 8px 16px;
-                font-weight: bold;
-                min-height: 34px;
-            }}
-
-            QPushButton:hover {{
-                background-color: {button_hover};
-                border: 1px solid {highlight_color};
-            }}
-
-            QPushButton:pressed {{
-                background-color: {button_pressed};
-                border: 2px solid {highlight_color};
-            }}
-
-            QGroupBox {{
-                font-weight: bold;
-                border: 1px solid {border_color};
-                border-radius: 6px;
-                margin-top: 12px;
-                padding-top: 12px;
-                background-color: {card_bg};
-            }}
-
-            QGroupBox::title {{
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 3px;
-                background-color: {card_bg};
-            }}
-
-            /* Spinbox styling */
-            QSpinBox::up-button, QDoubleSpinBox::up-button {{
-                subcontrol-origin: border;
-                subcontrol-position: top right;
-                width: 20px;
-                border-left: 1px solid {border_color};
-                border-bottom: 1px solid {border_color};
-                border-top-right-radius: 5px;
-                background-color: {button_color};
-            }}
-
-            QSpinBox::down-button, QDoubleSpinBox::down-button {{
-                subcontrol-origin: border;
-                subcontrol-position: bottom right;
-                width: 20px;
-                border-left: 1px solid {border_color};
-                border-top: 1px solid {border_color};
-                border-bottom-right-radius: 5px;
-                background-color: {button_color};
-            }}
-
-            QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover,
-            QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {{
-                background-color: {button_hover};
-            }}
-
-            QCheckBox {{
-                spacing: 7px;
-                color: {text_color};
-            }}
-
-            QCheckBox::indicator {{
-                width: 18px;
-                height: 18px;
-                border: 1px solid {border_color};
-                border-radius: 3px;
-                background-color: {card_bg};
-            }}
-
-            QCheckBox::indicator:checked {{
-                background-color: {highlight_color};
-                border: 1px solid {highlight_color};
-                image: url(resources/check_icon.png);
+            QFrame[frameShape="5"] {{ /* VLine */
+                background-color: {border_color};
+                max-width: 1px;
+                border: none;
             }}
         """)
+
+    def add_separator(self):
+        """Add a horizontal separator line to the dialog"""
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setMaximumHeight(1)
+        self.main_layout.addWidget(separator)
+        return separator
+
+    def create_button_layout(self, primary_button=None, secondary_button=None,
+                             other_buttons=None, centered=False):
+        """
+        Create a standard button layout for the dialog.
+
+        Args:
+            primary_button: The main action button (styled as primary)
+            secondary_button: The secondary action button
+            other_buttons: List of additional buttons to include
+            centered: Whether to center the buttons instead of right-aligning
+
+        Returns:
+            The button layout that was added to the dialog
+        """
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(10)
+
+        if other_buttons:
+            for button in other_buttons:
+                button_layout.addWidget(button)
+
+        if centered:
+            button_layout.addStretch(1)
+
+        if secondary_button:
+            button_layout.addWidget(secondary_button)
+
+        if primary_button:
+            button_layout.addWidget(primary_button)
+
+        if not centered:
+            button_layout.addStretch(1)
+
+        self.main_layout.addLayout(button_layout)
+        return button_layout
+
+    def create_action_buttons(self, ok_text=None, cancel_text=None):
+        """
+        Create standard OK and Cancel buttons.
+
+        Args:
+            ok_text: Text for the OK button (default: "OK")
+            cancel_text: Text for the Cancel button (default: "Cancel")
+
+        Returns:
+            Tuple of (ok_button, cancel_button)
+        """
+        ok_text = ok_text or self.translator.t('ok')
+        cancel_text = cancel_text or self.translator.t('cancel')
+
+        ok_button = StyledPushButton(ok_text, is_primary=True)
+        ok_button.setObjectName("okButton")
+        ok_button.clicked.connect(self.accept)
+        ok_button.setDefault(True)
+
+        cancel_button = StyledPushButton(cancel_text)
+        cancel_button.setObjectName("cancelButton")
+        cancel_button.clicked.connect(self.reject)
+
+        return ok_button, cancel_button

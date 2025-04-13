@@ -1,15 +1,23 @@
 """
-Fixed Add Product Dialog with proper barcode scanner button import
+Enhanced Add Product Dialog using the new styled widget system.
+
+This dialog shows how to refactor an existing dialog to use the new
+premium styling system with added manufacturer and original fields.
 """
 import os
-from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-                             QPushButton, QFormLayout, QDoubleSpinBox, QSpinBox,
-                             QInputDialog, QMessageBox)
+from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel,
+                             QFormLayout, QInputDialog, QMessageBox,
+                             QButtonGroup)
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QIcon, QColor
 
 from themes import get_color
 from widgets.products.dialogs.base_dialog import ElegantDialog
+from widgets.products.components.styled_widgets import (
+    StyledPushButton, StyledLineEdit, StyledSpinBox,
+    StyledDoubleSpinBox, StyledGroupBox, StyledTitleLabel,
+    StyledRadioButton
+)
 
 # Try importing the BarcodeScannerButton
 try:
@@ -22,33 +30,20 @@ except ImportError:
 
 
 class AddProductDialog(ElegantDialog):
-    """An elegant dialog for adding new products with improved validation and animation."""
+    """An elegant dialog for adding new products with premium styling and improved validation."""
 
     def __init__(self, translator, parent=None):
         super().__init__(translator, parent, title='product_details')
-        self.setWindowTitle(self.translator.t('product_details'))
-        self.setMinimumWidth(500)
-        self.setMinimumHeight(400)
-
         self.product_data = {}
         self.barcode_scanner = None  # Initialize explicitly as None
         self.setup_ui()
 
     def setup_ui(self):
-        """Set up the dialog UI with safe error handling"""
+        """Set up the dialog UI with new styled widgets"""
         try:
-            main_layout = QVBoxLayout(self)
-            main_layout.setSpacing(15)
-            main_layout.setContentsMargins(20, 20, 20, 20)
-
             # Add a title label with larger font
-            title_label = QLabel(self.translator.t('product_details'))
-            title_font = title_label.font()
-            title_font.setPointSize(16)
-            title_font.setBold(True)
-            title_label.setFont(title_font)
-            title_label.setAlignment(Qt.AlignCenter)
-            main_layout.addWidget(title_label)
+            title_label = StyledTitleLabel(self.translator.t('product_details'))
+            self.main_layout.addWidget(title_label)
 
             # Create a form layout for product inputs
             form_layout = QFormLayout()
@@ -62,7 +57,7 @@ class AddProductDialog(ElegantDialog):
             self.barcode_layout.setSpacing(12)  # Space between input and icon
 
             # Add the barcode input
-            self.barcode_input = QLineEdit()
+            self.barcode_input = StyledLineEdit()
             self.barcode_input.setPlaceholderText(self.translator.t('barcode_placeholder'))
 
             # Add the barcode scanner button with error handling using a separate method
@@ -79,39 +74,86 @@ class AddProductDialog(ElegantDialog):
 
             # Category
             category_label = QLabel(self.translator.t('category') + ":")
-            self.category_input = QLineEdit()
+            self.category_input = StyledLineEdit()
             self.category_input.setPlaceholderText(self.translator.t('category_placeholder'))
             form_layout.addRow(category_label, self.category_input)
 
             # Product Name (Required)
             product_name_label = QLabel(self.translator.t('product_name') + " *:")
             product_name_label.setStyleSheet("font-weight: bold;")
-            self.product_name_input = QLineEdit()
+            self.product_name_input = StyledLineEdit()
             self.product_name_input.setPlaceholderText(
                 self.translator.t('product_name_placeholder'))
             form_layout.addRow(product_name_label, self.product_name_input)
 
+            # Manufacturer - New field - FIXED the placeholder issue
+            manufacturer_label = QLabel(self.translator.t('manufacturer') + ":")
+            self.manufacturer_input = StyledLineEdit()
+
+            # Properly handle the manufacturer placeholder with a fallback
+            if self.translator.has_translation('manufacturer_placeholder'):
+                placeholder = self.translator.t('manufacturer_placeholder')
+            else:
+                placeholder = "Enter manufacturer name"  # Default fallback
+            self.manufacturer_input.setPlaceholderText(placeholder)
+
+            form_layout.addRow(manufacturer_label, self.manufacturer_input)
+
             # Compatible Models
             compatible_models_label = QLabel(self.translator.t('compatible_models') + ":")
-            self.compatible_models_input = QLineEdit()
+            self.compatible_models_input = StyledLineEdit()
             self.compatible_models_input.setPlaceholderText(self.translator.t('compatible_models_placeholder'))
             form_layout.addRow(compatible_models_label, self.compatible_models_input)
 
+            # Original (Yes/No) - New field
+            # Check if we have a translation for 'original', otherwise use a default
+            original_key = 'original'
+            original_text = self.translator.t(original_key)
+            if original_text == original_key:  # No translation found
+                original_text = "Original"
+
+            original_label = QLabel(original_text + ":")
+            original_layout = QHBoxLayout()
+
+            # Use translator for Yes/No with fallbacks
+            yes_text = self.translator.t('yes')
+            if yes_text == 'yes':  # No translation found
+                yes_text = "Yes"
+
+            no_text = self.translator.t('no')
+            if no_text == 'no':  # No translation found
+                no_text = "No"
+
+            self.original_yes = StyledRadioButton(yes_text)
+            self.original_no = StyledRadioButton(no_text)
+
+            # Create button group for radio buttons
+            self.original_group = QButtonGroup(self)
+            self.original_group.addButton(self.original_yes, 1)  # 1 = Yes
+            self.original_group.addButton(self.original_no, 0)   # 0 = No
+
+            # Default to "No"
+            self.original_no.setChecked(True)
+
+            original_layout.addWidget(self.original_yes)
+            original_layout.addWidget(self.original_no)
+            original_layout.addStretch(1)  # Add stretch to keep buttons aligned left
+
+            form_layout.addRow(original_label, original_layout)
+
             # Quantity
             quantity_label = QLabel(self.translator.t('quantity') + ":")
-            self.quantity_input = QSpinBox()
+            self.quantity_input = StyledSpinBox()
             self.quantity_input.setRange(0, 9999)
             self.quantity_input.setValue(1)
-            self.quantity_input.setButtonSymbols(QSpinBox.UpDownArrows)
             form_layout.addRow(quantity_label, self.quantity_input)
 
             # Price
             price_label = QLabel(self.translator.t('price') + ":")
-            self.price_input = QDoubleSpinBox()
+            self.price_input = StyledDoubleSpinBox()
             self.price_input.setRange(0, 9999.99)
             self.price_input.setPrefix("$ ")
             self.price_input.setDecimals(2)
-            self.price_input.setButtonSymbols(QDoubleSpinBox.UpDownArrows)
             form_layout.addRow(price_label, self.price_input)
 
             # Required field note
@@ -120,59 +162,32 @@ class AddProductDialog(ElegantDialog):
             required_note.setAlignment(Qt.AlignRight)
             form_layout.addRow("", required_note)
 
-            main_layout.addLayout(form_layout)
+            self.main_layout.addLayout(form_layout)
 
-            # Button layout
-            button_layout = QHBoxLayout()
-            button_layout.setSpacing(10)
+            # Add separator before buttons
+            self.add_separator()
 
-            # Clear button
-            self.clear_btn = QPushButton(self.translator.t('clear_all'))
+            # Create buttons
+            self.clear_btn = StyledPushButton(self.translator.t('clear_all'))
             self.clear_btn.setIcon(QIcon("resources/clear_icon.png"))
             self.clear_btn.clicked.connect(self.clear_fields)
-            self.clear_btn.setCursor(Qt.PointingHandCursor)
-            button_layout.addWidget(self.clear_btn)
 
-            # Spacer
-            button_layout.addStretch()
-
-            # Cancel button
-            self.cancel_btn = QPushButton(self.translator.t('cancel'))
+            self.cancel_btn = StyledPushButton(self.translator.t('cancel'))
             self.cancel_btn.setIcon(QIcon("resources/cancel_icon.png"))
             self.cancel_btn.clicked.connect(self.reject)
-            self.cancel_btn.setCursor(Qt.PointingHandCursor)
-            button_layout.addWidget(self.cancel_btn)
 
-            # Save button
-            self.save_btn = QPushButton(self.translator.t('save'))
+            self.save_btn = StyledPushButton(self.translator.t('save'), is_primary=True)
             self.save_btn.setIcon(QIcon("resources/save_icon.png"))
             self.save_btn.clicked.connect(self.save_product)
-            self.save_btn.setCursor(Qt.PointingHandCursor)
 
-            # Make Save button stand out
-            highlight_color = get_color('highlight')
-            bg_color = get_color('background')
-            button_style = f"""
-                QPushButton {{
-                    background-color: {highlight_color};
-                    color: {bg_color};
-                    border: none;
-                    padding: 8px 16px;
-                    font-weight: bold;
-                    border-radius: 5px;
-                }}
-                QPushButton:hover {{
-                    background-color: {QColor(highlight_color).lighter(110).name()};
-                }}
-                QPushButton:pressed {{
-                    background-color: {QColor(highlight_color).darker(110).name()};
-                }}
-            """
-            self.save_btn.setStyleSheet(button_style)
-
+            # Create button layout with all three buttons
+            button_layout = QHBoxLayout()
+            button_layout.addWidget(self.clear_btn)
+            button_layout.addStretch()
+            button_layout.addWidget(self.cancel_btn)
             button_layout.addWidget(self.save_btn)
 
-            main_layout.addLayout(button_layout)
+            self.main_layout.addLayout(button_layout)
 
         except Exception as e:
             print(f"Error in setup_ui: {e}")
@@ -209,11 +224,7 @@ class AddProductDialog(ElegantDialog):
     def _create_fallback_button(self):
         """Create a simple fallback button if the theme-aware button can't be loaded"""
         try:
-            from PyQt5.QtWidgets import QPushButton
-            from PyQt5.QtCore import Qt
-            from PyQt5.QtGui import QIcon
-
-            self.barcode_scanner = QPushButton("", self)
+            self.barcode_scanner = StyledPushButton("", self)
 
             # Try to load the icon
             icon_paths = ["resources/barcode.png", "resources/icons/barcode.png"]
@@ -246,7 +257,7 @@ class AddProductDialog(ElegantDialog):
                 title = self.translator.t('scan_barcode')
                 prompt = self.translator.t('enter_barcode')
 
-            barcode, ok = QInputDialog.getText(self, title, prompt, QLineEdit.Normal, "")
+            barcode, ok = QInputDialog.getText(self, title, prompt, StyledLineEdit.Normal, "")
 
             if ok and barcode:
                 self.on_barcode_scanned(barcode, "Unknown")
@@ -256,10 +267,6 @@ class AddProductDialog(ElegantDialog):
     def on_barcode_scanned(self, barcode, barcode_format=None):
         """
         Handle barcode scanning result with defensive programming.
-
-        Args:
-            barcode: The barcode string
-            barcode_format: Optional format string
         """
         try:
             # Handle case where barcode might be None or empty
@@ -298,7 +305,9 @@ class AddProductDialog(ElegantDialog):
             self.barcode_input.clear()
             self.category_input.clear()
             self.product_name_input.clear()
+            self.manufacturer_input.clear()
             self.compatible_models_input.clear()
+            self.original_no.setChecked(True)
             self.quantity_input.setValue(1)
             self.price_input.setValue(0.00)
 
@@ -314,13 +323,12 @@ class AddProductDialog(ElegantDialog):
             product_name = self.product_name_input.text().strip()
             if not product_name:
                 # Highlight the required field in red
-                self.product_name_input.setStyleSheet("border: 2px solid red;")
+                self.product_name_input.setStyleSheet(self.product_name_input.styleSheet() + "; border: 2px solid red;")
                 # Show error message
-                error_color = get_color('status_error_text') or "#C62828"
+                error_color = get_color('error') or "#C62828"
                 error_label = QLabel(self.translator.t('name_required'))
                 error_label.setStyleSheet(f"color: {error_color}; font-weight: bold;")
-                layout = self.layout()
-                layout.insertWidget(1, error_label)  # Insert after title
+                self.main_layout.insertWidget(1, error_label)  # Insert after title
                 # Remove the error after 3 seconds
                 QTimer.singleShot(3000, lambda: error_label.setParent(None))
                 return
@@ -330,6 +338,8 @@ class AddProductDialog(ElegantDialog):
                 "parcode": self.barcode_input.text().strip(),
                 "category": self.category_input.text().strip(),
                 "product_name": product_name,
+                "manufacturer": self.manufacturer_input.text().strip(),
+                "is_original": self.original_yes.isChecked(),  # True if Yes is checked, False otherwise
                 "quantity": self.quantity_input.value(),
                 "price": self.price_input.value(),
                 "compatible_brands": "Other",  # Default brand
@@ -342,3 +352,7 @@ class AddProductDialog(ElegantDialog):
     def get_data(self):
         """Return the product data."""
         return self.product_data
+
+
+
+

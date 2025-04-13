@@ -86,12 +86,13 @@ class MoneyFlowable(Flowable):
 class OfficialSealFlowable(Flowable):
     """Creates an official-looking seal or watermark for the document."""
 
-    def __init__(self, width=100, height=100, opacity=0.1, process_hebrew_func=None):
+    def __init__(self, width=100, height=100, opacity=0.1, process_hebrew_func=None, business_name=None):
         Flowable.__init__(self)
         self.width = width
         self.height = height
         self.opacity = opacity
         self.process_hebrew_func = process_hebrew_func
+        self.business_name = business_name or "חלקי חילוף אבו מוך"  # Default value if none provided
 
     def draw(self):
         # Save canvas state to restore it later
@@ -114,8 +115,8 @@ class OfficialSealFlowable(Flowable):
         # Add text around the circle - handle Hebrew text properly
         self.canv.setFont("David", 12)
 
-        # Draw each character separately in a circle
-        seal_text = "חלקי חילוף אבו מוך"
+        # Use the business name for the seal
+        seal_text = self.business_name
         if self.process_hebrew_func:
             # Process the full text once if needed
             seal_text = self.process_hebrew_func(seal_text)
@@ -139,7 +140,7 @@ class PDFPrintOperation:
         self.temp_pdf = None
         self.bidi_support = False
 
-        # Updated Business details
+        # Default Business details - will be overridden by dialog input
         self.business_details = {
             'name': "חלקי חילוף אבו מוך",
             'name_en': "Abu Mukh Car Parts",
@@ -245,11 +246,15 @@ class PDFPrintOperation:
                 except:
                     error_message = "No data to print"
 
-                self.status_bar.show_message(error_message, "warning")
+                # End dialog action with error message
+                if hasattr(self.status_bar, 'end_dialog_action'):
+                    self.status_bar.end_dialog_action(error_message)
+                else:
+                    self.status_bar.show_message(error_message, "warning")
                 return False
 
-            # Create settings dialog
-            dialog = PrintSettingsDialog(self.translator, self.parent)
+            # Create settings dialog with current business details
+            dialog = PrintSettingsDialog(self.translator, self.parent, self.business_details)
 
             # Only enable selected option if in select mode and rows are selected
             has_selection = False
@@ -265,8 +270,11 @@ class PDFPrintOperation:
             result = dialog.exec_()
 
             if result == QDialog.Accepted:
-                # Get settings
+                # Get settings including business details
                 settings = dialog.get_settings()
+
+                # Update our business details with the ones from the dialog
+                self.business_details = settings.get('business_details', self.business_details)
 
                 # Get data to print
                 data_to_print = self._get_data_to_print(product_table, all_products, settings)
@@ -296,7 +304,11 @@ class PDFPrintOperation:
                     except:
                         success_message = "PDF generated successfully"
 
-                    self.status_bar.show_message(success_message, "success")
+                    # Use end_dialog_action for success case
+                    if hasattr(self.status_bar, 'end_dialog_action'):
+                        self.status_bar.end_dialog_action(success_message)
+                    else:
+                        self.status_bar.show_message(success_message, "success")
                     return True
                 else:
                     # Fix translator call
@@ -305,23 +317,37 @@ class PDFPrintOperation:
                     except:
                         error_message = "Error generating PDF"
 
-                    self.status_bar.show_message(error_message, "error")
+                    # Use end_dialog_action for error case
+                    if hasattr(self.status_bar, 'end_dialog_action'):
+                        self.status_bar.end_dialog_action(error_message)
+                    else:
+                        self.status_bar.show_message(error_message, "error")
                     return False
-
-            return False
+            else:
+                # User cancelled the dialog - IMMEDIATELY collapse with NO message
+                if hasattr(self.status_bar, 'force_collapse'):
+                    self.status_bar.force_collapse()  # Most direct approach
+                elif hasattr(self.status_bar, 'end_dialog_action'):
+                    self.status_bar.end_dialog_action("")  # Empty string to avoid showing message
+                else:
+                    self.status_bar.clear()  # Fallback to simple clear
+                return False
 
         except Exception as e:
             logger.error(f"Print error: {e}")
             import traceback
             logger.error(traceback.format_exc())
 
-            # Fix translator call
+            # Fix translator call and use end_dialog_action for exception case
             try:
                 error_message = self.translator.t('print_error')
             except:
                 error_message = "Error generating PDF"
 
-            self.status_bar.show_message(error_message, "error")
+            if hasattr(self.status_bar, 'end_dialog_action'):
+                self.status_bar.end_dialog_action(error_message)
+            else:
+                self.status_bar.show_message(error_message, "error")
             return False
 
     def _open_pdf(self):
@@ -361,12 +387,13 @@ class PDFPrintOperation:
         except Exception:
             return default if default is not None else key
 
-    # Replace the _process_hebrew_text method with this improved version:
-
     def _process_hebrew_text(self, text):
-        """Process Hebrew text for correct RTL display with special handling for mixed content"""
+        """Process Hebrew text for correct RTL display"""
         if not text or not self.bidi_support:
             return text
+
+        # First clean any existing control characters
+        text = self._clean_text_for_pdf(text)
 
         # Check if text contains Hebrew characters
         has_hebrew = any(0x0590 <= ord(c) <= 0x05FF for c in text)
@@ -375,36 +402,10 @@ class PDFPrintOperation:
 
         try:
             import bidi.algorithm
-            import re
-
-            # Special handling for product names that mix Hebrew and Latin text
-            # For example: "מסנן שמן TOYOTA" (Oil Filter TOYOTA)
-
-            # First, we'll separate the text into Hebrew and non-Hebrew segments
-            # This regex pattern will match segments of Hebrew text
-            hebrew_pattern = re.compile(r'[\u0590-\u05FF\s]+')
-
-            # Find all Hebrew segments in the text
-            hebrew_segments = hebrew_pattern.finditer(text)
-
-            # Store the original text
-            result = list(text)
-
-            # Process each Hebrew segment with bidi algorithm
-            for match in hebrew_segments:
-                start, end = match.span()
-                hebrew_text = match.group()
-                # Process only the Hebrew part
-                processed_text = bidi.algorithm.get_display(hebrew_text)
-
-                # Replace the original Hebrew segment with the processed one
-                for i, char in enumerate(processed_text):
-                    if start + i < len(result):
-                        result[start + i] = char
-
-            return ''.join(result)
+            # Process pure Hebrew text with bidi algorithm
+            return bidi.algorithm.get_display(text)
         except Exception as e:
-            logger.error(f"Error processing mixed Hebrew text: {e}")
+            logger.error(f"Error processing Hebrew text: {e}")
 
         # Fallback to original text if processing fails
         return text
@@ -671,8 +672,16 @@ class PDFPrintOperation:
 
             # --- START HEADER SECTION ---
 
-            # Add official-looking mini-seal to the document
-            seal = OfficialSealFlowable(width=80, height=80, opacity=0.1, process_hebrew_func=self._process_hebrew_text)
+            # Add official-looking mini-seal to the document - use business name from settings
+            business_name = self.business_details.get('name', "") if rtl_mode else self.business_details.get('name_en',
+                                                                                                             "")
+            seal = OfficialSealFlowable(
+                width=80,
+                height=80,
+                opacity=0.1,
+                process_hebrew_func=self._process_hebrew_text,
+                business_name=business_name
+            )
             elements.append(seal)
             elements.append(Spacer(1, 0.2 * cm))
 
@@ -681,13 +690,13 @@ class PDFPrintOperation:
             title = Paragraph(title_text, title_style)
             elements.append(title)
 
-            # Add business details
+            # Add business details from the dialog
             if rtl_mode:
-                business_name = self._process_hebrew_text(self.business_details['name'])
-                business_address = self._process_hebrew_text(self.business_details['address'])
+                business_name = self._process_hebrew_text(self.business_details.get('name', ""))
+                business_address = self._process_hebrew_text(self.business_details.get('address', ""))
             else:
-                business_name = self.business_details['name_en']
-                business_address = self.business_details['address']
+                business_name = self.business_details.get('name_en', "")
+                business_address = self.business_details.get('address', "")
 
             elements.append(Spacer(1, 0.2 * cm))
             elements.append(Paragraph(business_name, business_style))
@@ -698,14 +707,14 @@ class PDFPrintOperation:
             if rtl_mode:
                 business_info = [
                     f"{self._process_hebrew_text('כתובת')}: {business_address}",
-                    f"{self._process_hebrew_text('טלפון')}: {self.business_details['phone']}",
-                    f"{self._process_hebrew_text('מס׳ עוסק מורשה')}: {self.business_details['tax_id']}"
+                    f"{self._process_hebrew_text('טלפון')}: {self.business_details.get('phone', '')}",
+                    f"{self._process_hebrew_text('מס׳ עוסק מורשה')}: {self.business_details.get('tax_id', '')}"
                 ]
             else:
                 business_info = [
                     f"Address: {business_address}",
-                    f"Phone: {self.business_details['phone']}",
-                    f"Tax ID: {self.business_details['tax_id']}"
+                    f"Phone: {self.business_details.get('phone', '')}",
+                    f"Tax ID: {self.business_details.get('tax_id', '')}"
                 ]
 
             for info_line in business_info:
@@ -827,9 +836,8 @@ class PDFPrintOperation:
                     price = 0.0
 
                 # Process Hebrew name if needed
+                # Process mixed Hebrew/Latin name for correct display
                 name = raw_name
-                if any(0x0590 <= ord(c) <= 0x05FF for c in raw_name):
-                    name = self._process_hebrew_text(raw_name)
 
                 # Calculate total value
                 total_value = qty * price
@@ -907,16 +915,21 @@ class PDFPrintOperation:
             # Process all rows - ensure names are always formatted as paragraphs
             for row_idx in range(1, len(table_data)):  # Skip header
                 # Always create Paragraph for product name, regardless of length
-                text = str(table_data[row_idx][name_col_idx])
+                # Clean the text of any control characters
+                # Process the text for correct display
+                text = self._process_mixed_text(str(table_data[row_idx][name_col_idx]))
+
+                # Create paragraph style with proper alignment
                 para_style = ParagraphStyle(
                     f'Cell_{row_idx}_{name_col_idx}',
                     fontName=base_font,
                     fontSize=10,
                     alignment=2 if rtl_mode else 0,  # Right for RTL, Left for LTR
                     leading=12,  # Line spacing
-                    spaceAfter=1,
+                    spaceAfter=1
                 )
-                # Always convert name to Paragraph
+
+                # Always convert name to Paragraph with cleaned text
                 table_data[row_idx][name_col_idx] = Paragraph(text, para_style)
 
                 # Standard cell formatting for other columns
@@ -1184,3 +1197,53 @@ class PDFPrintOperation:
             import traceback
             logger.error(traceback.format_exc())
             return False
+
+    def _process_mixed_text(self, text):
+        """
+        Process mixed Hebrew and Latin text for correct display in PDF.
+        Handles the directionality properly for mixed content.
+        """
+        if not text:
+            return text
+
+        # Check if we have any Hebrew characters
+        has_hebrew = any(0x0590 <= ord(c) <= 0x05FF for c in text)
+        if not has_hebrew:
+            return text  # No Hebrew, return as is
+
+        try:
+            import bidi.algorithm
+
+            # For mixed content in a predominantly RTL context,
+            # we need to process it with bidi algorithm
+            # This ensures the text appears in the correct order
+            return bidi.algorithm.get_display(text)
+
+        except Exception as e:
+            logger.error(f"Error processing mixed text: {e}")
+            return text
+
+    def _clean_text_for_pdf(self, text):
+        """
+        Clean text for PDF by removing any existing bidirectional control characters
+        that might cause problems in ReportLab.
+        """
+        if not text:
+            return text
+
+        # Remove common bidirectional control characters that might be present
+        control_chars = [
+            '\u200E',  # LRM - LEFT-TO-RIGHT MARK
+            '\u200F',  # RLM - RIGHT-TO-LEFT MARK
+            '\u202A',  # LRE - LEFT-TO-RIGHT EMBEDDING
+            '\u202B',  # RLE - RIGHT-TO-LEFT EMBEDDING
+            '\u202C',  # PDF - POP DIRECTIONAL FORMATTING
+            '\u202D',  # LRO - LEFT-TO-RIGHT OVERRIDE
+            '\u202E'  # RLO - RIGHT-TO-LEFT OVERRIDE
+        ]
+
+        result = text
+        for char in control_chars:
+            result = result.replace(char, '')
+
+        return result

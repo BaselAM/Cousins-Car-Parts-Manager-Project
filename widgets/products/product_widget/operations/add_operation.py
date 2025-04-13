@@ -15,7 +15,7 @@ from PyQt5.QtGui import QColor
 try:
     # Assuming these paths are correct relative to the project root or Python path
     from widgets.products.dialogs.themed_meesage import ThemedMessageDialog
-    # Ensure this matches your dialog filename/classname
+    # Use the enhanced dialog with new fields
     from widgets.products.dialogs.add_product_dialog import AddProductDialog
     from themes import get_color
 except ImportError as import_error:
@@ -31,6 +31,8 @@ class AddOperation:
     when a duplicate name is found. Integrates with UI elements like dialogs,
     status bar, and product table for a seamless user experience, including
     validation and visual feedback (highlighting).
+
+    Now supports manufacturer and original fields.
     """
 
     def __init__(self, parent_widget, translator, db, validator, status_bar):
@@ -50,13 +52,14 @@ class AddOperation:
         self.validator = validator
         self.status_bar = status_bar
         # Duration (ms) for the highlight effect before fading starts
-        self._highlight_duration = 3000 # 3 seconds
+        self._highlight_duration = 3000  # 3 seconds
 
         # Basic check for required components on parent
         if not all([hasattr(parent_widget, 'product_manager'),
                     hasattr(parent_widget, 'product_table'),
                     hasattr(parent_widget, 'product_loader')]):
-            print("Warning: AddOperation initialized without full parent components (manager, table, loader). Some features might be limited.")
+            print(
+                "Warning: AddOperation initialized without full parent components (manager, table, loader). Some features might be limited.")
 
     def process_add_product(self, data):
         """
@@ -78,6 +81,11 @@ class AddOperation:
             original_parcode = data.get('parcode', '')
             print(f"Original parcode from dialog: '{original_parcode}'")
 
+            # Store manufacturer and is_original before sanitization
+            original_manufacturer = data.get('manufacturer', '')
+            is_original = data.get('is_original', False)
+            print(f"Original manufacturer: '{original_manufacturer}', Is original: {is_original}")
+
             # 1. Sanitize and Validate Data
             sanitized_data = self.validator.sanitize_product_data(data)
 
@@ -85,6 +93,12 @@ class AddOperation:
             if original_parcode:
                 sanitized_data['parcode'] = original_parcode
                 print(f"Preserved parcode after sanitization: '{sanitized_data.get('parcode')}'")
+
+            # Re-add manufacturer and is_original to sanitized data
+            sanitized_data['manufacturer'] = original_manufacturer
+            # Database uses 'original' field name (note the difference from our 'is_original')
+            sanitized_data['original'] = is_original
+            print(f"Added manufacturer and original status to sanitized data")
 
             is_valid, error_msg = self.validator.validate_product(sanitized_data)
 
@@ -174,7 +188,17 @@ class AddOperation:
                     print(f"Using custom parcode for new product: '{sanitized_data['parcode']}'")
 
                 # Perform Database Insert
-                success = self.db.add_part(**sanitized_data)
+                # Include manufacturer and original fields
+                success = self.db.add_part(
+                    category=sanitized_data.get('category', ''),
+                    product_name=sanitized_data.get('product_name', ''),
+                    quantity=sanitized_data.get('quantity', 0),
+                    price=sanitized_data.get('price', 0.0),
+                    original=sanitized_data.get('original', False),
+                    manufacturer=sanitized_data.get('manufacturer', ''),
+                    parcode=sanitized_data.get('parcode', ''),
+                    compatible_models=sanitized_data.get('compatible_models', '')
+                )
 
                 if not success:
                     print(f"ERROR: Database add failed for product '{product_name}'.")
@@ -230,61 +254,6 @@ class AddOperation:
                 self.status_bar.show_message(error_text, "error")
             return None  # Indicate failure
 
-    def _handle_dialog_result(self, dialog, result):
-        """Processes the data if the dialog was accepted."""
-        if result == QDialog.Accepted:
-            print("Add Product Dialog Accepted.")
-            try:
-                data = dialog.get_data()
-                if data:
-                    # Check if we have a parcode/barcode and log it
-                    if 'parcode' in data:
-                        print(f"Dialog provided parcode value: '{data['parcode']}'")
-                    elif 'barcode' in data:
-                        # If it's still called 'barcode' in the dialog, rename it to 'parcode'
-                        print(f"Dialog provided barcode value: '{data['barcode']}'")
-                        data['parcode'] = data.pop('barcode')
-
-                    # Initiate the process of adding/updating the product in the DB and UI
-                    self.process_add_product(data)
-                else:
-                    print("Warning: Dialog accepted, but no data retrieved.")
-                    if self.status_bar:
-                        # Translate warning message
-                        warning_text = self.translator.t('data_error')
-                        self.status_bar.show_message(warning_text, "warning", 5000)
-            except Exception as e:
-                print(f"ERROR: Failed to process dialog result data: {e}")
-                import traceback
-                traceback.print_exc()
-                if self.status_bar:
-                    # Translate error message
-                    error_text = self.translator.t('data_error')
-                    self.status_bar.show_message(error_text, "error")
-        else:
-            # Handle dialog cancellation/rejection
-            print("Add Product Dialog Rejected/Cancelled.")
-            if self.status_bar:
-                pass
-
-
-    def show_add_dialog(self):
-        """Creates and shows the 'Add Product' dialog."""
-        try:
-            dialog = AddProductDialog(self.translator, self.parent)
-            # Connect the finished signal to handle the result *after* the dialog closes
-            # The finished signal emits an integer result code (Accepted or Rejected)
-            dialog.finished.connect(lambda result: self._handle_dialog_result(dialog, result))
-            # Use open() for a non-modal dialog or exec_() for a modal one
-            dialog.open()
-        except Exception as e:
-            print(f"ERROR: Failed to create or show AddProductDialog: {e}")
-            traceback.print_exc()
-            if self.status_bar:
-                # Translate error message before showing
-                error_text = self.translator.t('dialog_error')
-                self.status_bar.show_message(error_text, "error")
-
 
     def _ensure_product_visible(self, product_id):
         """
@@ -320,21 +289,20 @@ class AddOperation:
 
             item_to_scroll = table_widget.item(found_row, 0)
             if item_to_scroll:
-                 print(f"Scrolling to row {found_row}.")
-                 table_widget.scrollToItem(item_to_scroll, QAbstractItemView.PositionAtCenter)
+                print(f"Scrolling to row {found_row}.")
+                table_widget.scrollToItem(item_to_scroll, QAbstractItemView.PositionAtCenter)
             else:
-                 print(f"Warning: Item at row {found_row}, col 0 not found for scrolling.")
+                print(f"Warning: Item at row {found_row}, col 0 not found for scrolling.")
 
             if found_row < table_widget.rowCount():
-                 print(f"Applying highlight animation to row {found_row}.")
-                 self._apply_elegant_highlight(found_row)
+                print(f"Applying highlight animation to row {found_row}.")
+                self._apply_elegant_highlight(found_row)
             else:
-                 print(f"Warning: Row {found_row} became invalid before highlight could start.")
+                print(f"Warning: Row {found_row} became invalid before highlight could start.")
 
         except Exception as e:
             print(f"ERROR: Failed to ensure product visibility (ID: {product_id}): {e}")
             traceback.print_exc()
-
 
     def _apply_elegant_highlight(self, row):
         """
@@ -345,19 +313,19 @@ class AddOperation:
         table = None
         try:
             if not hasattr(self.parent, 'product_table') or not self.parent.product_table:
-                 print("Warning: Parent widget lacks 'product_table'. Cannot apply highlight.")
-                 return
+                print("Warning: Parent widget lacks 'product_table'. Cannot apply highlight.")
+                return
             table = self.parent.product_table.table
             if not table:
-                 print("Warning: 'product_table' object has no 'table' attribute.")
-                 return
+                print("Warning: 'product_table' object has no 'table' attribute.")
+                return
 
             if row < 0 or row >= table.rowCount():
                 print(f"Warning: Invalid row index ({row}) passed to _apply_elegant_highlight.")
                 return
 
             initial_highlight_color = QColor(get_color('success'))
-            text_color_default = QColor(get_color('text')) # Store default text color
+            text_color_default = QColor(get_color('text'))  # Store default text color
             initial_highlight_color.setAlpha(180)
 
             # --- Apply Initial Highlight State (Signals Blocked) ---
@@ -374,7 +342,7 @@ class AddOperation:
                         # Optional: Set initial text color if needed for contrast
                         # item.setForeground(QColor(get_color('background'))) # Example
             except Exception as initial_highlight_err:
-                 print(f"ERROR applying initial highlight for row {row}: {initial_highlight_err}")
+                print(f"ERROR applying initial highlight for row {row}: {initial_highlight_err}")
             finally:
                 table.blockSignals(False)
                 print(f"Initial highlight applied, signals unblocked for row {row}.")
@@ -382,8 +350,8 @@ class AddOperation:
             # --- Nested Function for Fade Animation Steps ---
             def fade_step(color_to_fade, alpha):
                 if not table or row >= table.rowCount():
-                     print(f"Animation stopped: Row {row} became invalid or table disappeared.")
-                     return
+                    print(f"Animation stopped: Row {row} became invalid or table disappeared.")
+                    return
 
                 table.blockSignals(True)
                 try:
@@ -393,17 +361,17 @@ class AddOperation:
                         bg_color = QColor(get_color('background'))
                         secondary_color = QColor(get_color('secondary'))
                         row_bg = secondary_color if row % 2 else bg_color
-                        text_qcolor = QColor(get_color('text')) # Use stored default
+                        text_qcolor = QColor(get_color('text'))  # Use stored default
 
                         for col in range(table.columnCount()):
-                           item = table.item(row, col)
-                           if item:
-                               item.setBackground(row_bg)
-                               item.setForeground(text_qcolor)
-                               font = item.font()
-                               font.setBold(False)
-                               item.setFont(font)
-                        return # End animation
+                            item = table.item(row, col)
+                            if item:
+                                item.setBackground(row_bg)
+                                item.setForeground(text_qcolor)
+                                font = item.font()
+                                font.setBold(False)
+                                item.setFont(font)
+                        return  # End animation
 
                     current_alpha = max(0, int(alpha))
                     color_to_fade.setAlpha(current_alpha)
@@ -417,7 +385,7 @@ class AddOperation:
                             # item.setForeground(current_text_color)
 
                 except Exception as fade_err:
-                     print(f"ERROR during fade step for row {row}, alpha {alpha}: {fade_err}")
+                    print(f"ERROR during fade step for row {row}, alpha {alpha}: {fade_err}")
                 finally:
                     table.blockSignals(False)
 
@@ -425,13 +393,145 @@ class AddOperation:
                 QTimer.singleShot(100, lambda: fade_step(color_to_fade, alpha - 15))
 
             # --- Start the Fade Sequence ---
-            animation_color = QColor(get_color('success')) # Base color for fading
+            animation_color = QColor(get_color('success'))  # Base color for fading
             print(f"Starting fade timer for row {row} after {self._highlight_duration}ms.")
-            QTimer.singleShot(self._highlight_duration, lambda: fade_step(animation_color, 160)) # Start fade
+            QTimer.singleShot(self._highlight_duration, lambda: fade_step(animation_color, 160))  # Start fade
 
         except Exception as e:
             print(f"ERROR: Failed to apply elegant highlight to row {row}: {e}")
             traceback.print_exc()
             if table is not None and hasattr(table, 'signalsBlocked') and table.signalsBlocked():
-                 print(f"Ensuring signals are unblocked after error for row {row}.")
-                 table.blockSignals(False)
+                print(f"Ensuring signals are unblocked after error for row {row}.")
+                table.blockSignals(False)
+
+    # This is a focused fix for the AddOperation class
+    # to ensure the dialog correctly signals the status bar when it closes
+
+    # Fix for show_add_dialog method in AddOperation class
+    def show_add_dialog(self):
+        """Creates and shows the 'Add Product' dialog with status bar integration."""
+        try:
+            # Start dialog action in parent's status bar
+            if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'start_dialog_action'):
+                self.parent.status_bar.start_dialog_action(
+                    "add",
+                    self.translator.t('add:preparing')  # Remove the second positional argument
+                )
+                print("Started add dialog action in status bar")
+            else:
+                # Fallback for older status bar
+                if self.status_bar:
+                    self.status_bar.show_message(
+                        self.translator.t('add:preparing'),  # Remove the second positional argument
+                        "add"
+                    )
+
+            # Use the enhanced dialog with new fields
+            dialog = AddProductDialog(self.translator, self.parent)
+
+            # Connect the finished signal to handle the result *after* the dialog closes
+            dialog.finished.connect(lambda result: self._handle_dialog_result(dialog, result))
+
+            # Use exec_() for a modal dialog to ensure we don't return until dialog closes
+            dialog.exec_()
+
+            # If dialog.exec_() has returned, the dialog has closed
+            print("Add dialog has closed")
+
+        except Exception as e:
+            print(f"ERROR: Failed to create or show AddProductDialog: {e}")
+            import traceback
+            traceback.print_exc()
+
+            # End dialog action with error
+            if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'end_dialog_action'):
+                self.parent.status_bar.end_dialog_action(
+                    self.translator.t('dialog_error')  # Remove the second positional argument
+                )
+            else:
+                # Fallback for older status bar
+                if self.status_bar:
+                    self.status_bar.show_message(
+                        self.translator.t('dialog_error'),  # Remove the second positional argument
+                        "error"
+                    )
+
+    # Similar changes needed in _handle_dialog_result method
+    def _handle_dialog_result(self, dialog, result):
+        """Processes the data if the dialog was accepted, immediately collapses on cancel"""
+        print(f"Dialog result: {result}")
+
+        if result == QDialog.Accepted:
+            print("Add Product Dialog Accepted.")
+            try:
+                data = dialog.get_data()
+                if data:
+                    # Process the product data...
+                    product_id = self.process_add_product(data)
+
+                    # End dialog action with appropriate message
+                    if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'end_dialog_action'):
+                        if product_id:
+                            self.parent.status_bar.end_dialog_action(
+                                self.translator.t('product_added_success')
+                            )
+                        else:
+                            self.parent.status_bar.end_dialog_action(
+                                self.translator.t('product_add_failed')
+                            )
+                        print("Ended add dialog action in status bar")
+                    else:
+                        # Fallback
+                        if self.status_bar:
+                            # Already showing success message in process_add_product
+                            pass
+                else:
+                    print("Warning: Dialog accepted, but no data retrieved.")
+                    if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'end_dialog_action'):
+                        self.parent.status_bar.end_dialog_action(
+                            self.translator.t('data_error')
+                        )
+                    else:
+                        # Fallback
+                        if self.status_bar:
+                            self.status_bar.show_message(
+                                self.translator.t('data_error'),
+                                "warning"
+                            )
+            except Exception as e:
+                print(f"ERROR: Failed to process dialog result data: {e}")
+                import traceback
+                traceback.print_exc()
+
+                # End dialog action with error message
+                if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'end_dialog_action'):
+                    self.parent.status_bar.end_dialog_action(
+                        self.translator.t('add_product_error')
+                    )
+                else:
+                    # Fallback
+                    if self.status_bar:
+                        self.status_bar.show_message(
+                            self.translator.t('data_error'),
+                            "error"
+                        )
+        else:
+            # Handle dialog cancellation/rejection - IMMEDIATELY collapse with NO message
+            print("Add Product Dialog Rejected/Cancelled.")
+
+            # Handle both parent and local status bar scenarios
+            if hasattr(self.parent, 'status_bar'):
+                status_bar = self.parent.status_bar
+                if hasattr(status_bar, 'force_collapse'):
+                    status_bar.force_collapse()  # Most direct approach
+                elif hasattr(status_bar, 'end_dialog_action'):
+                    status_bar.end_dialog_action("")  # Empty string to avoid showing message
+                else:
+                    status_bar.clear()  # Fallback to simple clear
+            elif self.status_bar:
+                if hasattr(self.status_bar, 'force_collapse'):
+                    self.status_bar.force_collapse()
+                elif hasattr(self.status_bar, 'end_dialog_action'):
+                    self.status_bar.end_dialog_action("")
+                else:
+                    self.status_bar.clear()

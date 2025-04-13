@@ -762,12 +762,14 @@ class BarcodeScannerButton(QLabel):
         return default
 
     def update_icon(self):
-        """Update the icon based on the current theme"""
-        # Try to load icon from resources
+        """Update the icon based on the current theme with enhanced contrast and visibility"""
+        # Try to load icon from resources with more paths
         icon_paths = [
             "resources/barcode.png",
             "resources/icons/barcode.png",
-            "../resources/barcode.png"
+            "../resources/barcode.png",
+            "./resources/icons/barcode.png",
+            "../resources/icons/barcode.png"
         ]
 
         icon_loaded = False
@@ -779,15 +781,17 @@ class BarcodeScannerButton(QLabel):
                     bg_color = QColor(get_color('background'))
                     is_dark_theme = bg_color.lightness() < 128
 
-                    # Scale the icon to fit the button (a bit smaller than button size)
+                    # Scale the icon to fit the button with better sizing
                     pixmap = pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
                     if is_dark_theme:
-                        # Create white version for dark themes
+                        # Create bright white version for dark themes
                         colored_pixmap = QPixmap(pixmap.size())
                         colored_pixmap.fill(Qt.transparent)
 
                         painter = QPainter(colored_pixmap)
+                        painter.setRenderHint(QPainter.Antialiasing)
+                        painter.setRenderHint(QPainter.SmoothPixmapTransform)
                         painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
                         painter.drawPixmap(0, 0, pixmap)
                         painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
@@ -796,8 +800,20 @@ class BarcodeScannerButton(QLabel):
 
                         self.setPixmap(colored_pixmap)
                     else:
-                        # Use original (black) for light theme
-                        self.setPixmap(pixmap)
+                        # Use darker version for light theme for better visibility
+                        colored_pixmap = QPixmap(pixmap.size())
+                        colored_pixmap.fill(Qt.transparent)
+
+                        painter = QPainter(colored_pixmap)
+                        painter.setRenderHint(QPainter.Antialiasing)
+                        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+                        painter.drawPixmap(0, 0, pixmap)
+                        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+                        painter.fillRect(colored_pixmap.rect(), QColor(40, 40, 40))
+                        painter.end()
+
+                        self.setPixmap(colored_pixmap)
 
                     self.setAlignment(Qt.AlignCenter)
                     icon_loaded = True

@@ -8,10 +8,12 @@ class StatusBar(QFrame):
     A sleek, elegant status bar that remains slim by default.
     When a message is shown, it expands smoothly to reveal the icon and text,
     then auto-collapses back to its slim state.
-    It supports theme integration via the set_theme() method and custom message types:
-      - "success": for successful operations (green text)
-      - "loaded": for loaded products messages (white text)
-      - "select": for select mode (blue text)
+
+    Enhanced version with:
+    - Action-specific styling with fully colored background
+    - Message deduplication
+    - Better queue management
+    - Dialog-aware behavior (stays open until dialogs close)
     """
     # Add state_changed signal
     state_changed = pyqtSignal(bool)  # True when expanded, False when collapsed
@@ -20,22 +22,36 @@ class StatusBar(QFrame):
     MESSAGE_PRIORITY = {
         "error": 100,  # Highest priority
         "warning": 80,
+        "barcode": 90,  # New: Barcode scanning actions
+        "add": 85,  # New: Add product actions
+        "delete": 85,  # New: Delete actions
+        "filter": 75,  # New: Filter actions
+        "print": 75,  # New: Print actions
+        "export": 70,  # New: Export actions
         "success": 60,
-        "info": 40,  # Lowest priority
-        "loaded": 30,
-        "select": 20
+        "info": 40,  # General info
+        "loaded": 30,  # Product loaded messages
+        "select": 20  # Selection mode - lowest priority
     }
+
+    # Dialog action types that should keep the status bar open
+    DIALOG_ACTIONS = ["barcode", "add", "filter", "print", "export", "delete"]
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_type = "info"
+        self.current_message = ""  # Track current message for deduplication
         self.auto_hide_timer = QTimer(self)
         self.auto_hide_timer.setSingleShot(True)
         self.auto_hide_timer.timeout.connect(self.collapse)
         self.collapsed_height = 20  # Slim height when idle
         self.expanded_height = 60  # Expanded height to display messages
-        self.animation_duration = 200  # Animation duration (ms) - REDUCED for smoother feel
+        self.animation_duration = 200  # Animation duration (ms)
         self.theme = {}  # To be set via set_theme()
+
+        # Track whether a dialog-related action is in progress
+        self.dialog_action_in_progress = False
+        self.current_dialog_action = None
 
         # Add state tracking
         self.is_expanded = False
@@ -48,6 +64,11 @@ class StatusBar(QFrame):
         self.queue_timer.setSingleShot(True)
         self.queue_timer.timeout.connect(self._process_message_queue)
 
+        # Debug timer to log state - helps with debugging dialog state issues
+        self.debug_timer = QTimer(self)
+        self.debug_timer.timeout.connect(self._debug_log_state)
+        self.debug_timer.start(5000)  # Log state every 5 seconds
+
         # Configure animations for smoother transitions
         self.setup_animations()
 
@@ -58,7 +79,13 @@ class StatusBar(QFrame):
             "warning": 5000,  # 5 seconds for warnings
             "info": 4000,  # 4 seconds for info messages
             "loaded": 2500,  # 2.5 seconds for loaded messages
-            "select": 1500  # 1.5 seconds for selection mode messages
+            "select": 1500,  # 1.5 seconds for selection mode messages
+            "barcode": 30000,  # 30 seconds for barcode operations (will be closed manually)
+            "add": 30000,  # 30 seconds for add operations (will be closed manually)
+            "filter": 30000,  # 30 seconds for filter operations (will be closed manually)
+            "print": 30000,  # 30 seconds for print operations (will be closed manually)
+            "export": 30000,  # 30 seconds for export operations (will be closed manually)
+            "delete": 30000  # 30 seconds for delete operations (will be closed manually)
         }
 
         self.setup_ui()
@@ -66,13 +93,20 @@ class StatusBar(QFrame):
         self.setMinimumHeight(self.collapsed_height)
         self.setMaximumHeight(self.collapsed_height)
 
-        # Add a premium drop shadow for a floating effect - IMPROVED for better performance
+        # Add a premium drop shadow for a floating effect
         shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)  # Reduced blur radius for better performance
+        shadow.setBlurRadius(15)
         shadow.setXOffset(0)
         shadow.setYOffset(3)
-        shadow.setColor(QColor(0, 0, 0, 80))  # Reduced opacity for better performance
+        shadow.setColor(QColor(0, 0, 0, 80))
         self.setGraphicsEffect(shadow)
+
+    def _debug_log_state(self):
+        """Log the current state for debugging purposes"""
+        print(f"StatusBar state: dialog_action_in_progress={self.dialog_action_in_progress}, "
+              f"current_dialog_action={self.current_dialog_action}, "
+              f"is_expanded={self.is_expanded}, "
+              f"message_queue={len(self.message_queue)}")
 
     def setup_animations(self):
         """Set up smoother animations with improved performance"""
@@ -81,7 +115,7 @@ class StatusBar(QFrame):
         self.height_animation.setDuration(self.animation_duration)
         self.height_animation.setEasingCurve(QEasingCurve.OutQuad)  # Smoother curve
 
-        # Opacity animation for fade effects (optional, not used yet)
+        # Opacity animation for fade effects
         self.opacity_animation = QPropertyAnimation(self, b"windowOpacity")
         self.opacity_animation.setDuration(self.animation_duration)
         self.opacity_animation.setEasingCurve(QEasingCurve.OutQuad)
@@ -168,40 +202,50 @@ class StatusBar(QFrame):
         """
         self.theme = theme
 
-    def _lighten_color(self, hex_color, percent):
-        """Return a lighter version of the given hex color by the specified percent."""
-        c = QColor(hex_color)
-        return c.lighter(100 + percent).name()
-
     def _get_premium_style(self, type):
         # Custom style overrides for custom message types
+        # THE DARK PURPLE COLOR FOR ALL DIALOG ACTIONS
+        dialog_action_color = "#483d8b"  # DarkSlateBlue - a dark purple
+        dialog_action_border = "#372b6e"  # Darker border
+        dialog_action_text = "#ffffff"  # White text for contrast
+
         custom_types = {
             "loaded": {"bg": "#3c3c3c", "border": "#3c3c3c", "text": "#FFFFFF"},
-            "select": {"bg": "#d0eaff", "border": "#007bff", "text": "#007bff"}
+            "select": {"bg": "#007bff", "border": "#0069d9", "text": "#FFFFFF"},  # Fully colored select
+
+            # Use dark purple for all dialog actions
+            "barcode": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+            "add": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+            "filter": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+            "print": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+            "export": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+            "delete": {"bg": dialog_action_color, "border": dialog_action_border, "text": dialog_action_text},
+
+            # Other message types with full color
+            "success": {"bg": "#28a745", "border": "#1e7e34", "text": "#FFFFFF"},
+            "error": {"bg": "#dc3545", "border": "#bd2130", "text": "#FFFFFF"},
+            "warning": {"bg": "#ffc107", "border": "#d39e00", "text": "#212529"},
+            "info": {"bg": "#17a2b8", "border": "#138496", "text": "#FFFFFF"}
         }
+
         if type in custom_types:
             style = self.theme.get(type, custom_types[type])
         else:
-            defaults = {
-                "success": {"bg": "#e8f5e9", "border": "#81c784", "text": "#2E7D32"},
-                "error": {"bg": "#ffebee", "border": "#e57373", "text": "#C62828"},
-                "warning": {"bg": "#fff8e1", "border": "#ffd54f", "text": "#EF6C00"},
-                "info": {"bg": "#e3f2fd", "border": "#64b5f6", "text": "#1565C0"}
-            }
-            style = self.theme.get(type, defaults.get(type, defaults["info"]))
-        # Create a subtle vertical gradient for a premium feel
-        gradient = (
-            f"qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            f"stop:0 {style['bg']}, stop:1 {self._lighten_color(style['bg'], 30)})"
-        )
+            # Default to info style
+            style = self.theme.get(type, custom_types["info"])
+
+        # Use solid background color with full opacity
+        # Make sure the entire status bar is fully colored
         return f"""
             #statusBar {{
-                background: {gradient};
+                background-color: {style["bg"]};
                 border: 2px solid {style["border"]};
                 border-radius: 15px;
                 padding: 10px 14px;
+                color: {style["text"]};
             }}
-            QLabel {{
+
+            #statusBar QLabel {{
                 background: transparent;
                 color: {style["text"]};
                 font-size: 13px;
@@ -231,8 +275,18 @@ class StatusBar(QFrame):
         # Update current priority
         self.current_message_priority = next_message["priority"]
 
+    def _prune_message_queue(self):
+        """Remove lower priority messages when queue gets too long"""
+        if len(self.message_queue) > 4:  # Don't let queue get too long
+            # Keep only highest priority messages
+            self.message_queue.sort(key=lambda x: x["priority"], reverse=True)
+            self.message_queue = self.message_queue[:3]  # Keep top 3 messages
+
     def _show_message_directly(self, message, type="info", duration=None):
         """Internal method to directly show a message without queueing"""
+        # Update current message for deduplication
+        self.current_message = message
+
         # Use type-specific duration if none provided
         if duration is None:
             duration = self.message_durations.get(type, 5000)
@@ -242,6 +296,12 @@ class StatusBar(QFrame):
             self.auto_hide_timer.stop()
 
         self.current_type = type
+
+        # Check if this is a dialog action
+        if type in self.DIALOG_ACTIONS:
+            self.dialog_action_in_progress = True
+            self.current_dialog_action = type
+            print(f"Started dialog action: {type}")
 
         # If we're already animating, stop current animation
         if self.is_animating:
@@ -259,8 +319,14 @@ class StatusBar(QFrame):
             "error": "resources/error_icon.png",
             "warning": "resources/warning_icon.png",
             "info": "resources/info_icon.png",
-            "loaded": "resources/info_icon.png",  # You can adjust icons per type
-            "select": "resources/select_icon.png"
+            "loaded": "resources/info_icon.png",
+            "select": "resources/select_icon.png",
+            "barcode": "resources/barcode.png",  # New barcode icon
+            "add": "resources/add_icon.png",  # New add icon
+            "filter": "resources/filter_icon.png",  # New filter icon
+            "print": "resources/print_icon.png",  # New print icon
+            "export": "resources/export_icon.png",  # New export icon
+            "delete": "resources/delete_icon.png"  # New delete icon
         }
         icon_path = icon_map.get(type, icon_map["info"])
         try:
@@ -295,25 +361,37 @@ class StatusBar(QFrame):
         self.is_animating = True
         self.animation_group.start()
 
-        # Start auto-collapse timer
-        self.auto_hide_timer.start(duration)
+        # Start auto-collapse timer ONLY for non-dialog actions
+        if type not in self.DIALOG_ACTIONS:
+            self.auto_hide_timer.start(duration)
 
         # Schedule processing the next message after this one
-        self.queue_timer.start(duration + 100)
+        if not self.dialog_action_in_progress:
+            self.queue_timer.start(duration + 100)
 
     def show_message(self, message, type="info", duration=None, priority=None):
         """
-        Enhanced show_message with priority handling.
+        Enhanced show_message with priority handling and deduplication.
 
         If a higher priority message is currently shown, this message will be
         queued. If this message has higher priority, it will interrupt current message.
         """
+        # Skip empty messages
+        if not message or message.strip() == "":
+            return
+
         # Skip showing messages for selection deactivation
         if message and any(text in message.lower() for text in [
             "selection mode deactivate", "selection disabled", "selection mode off"
         ]):
             self.collapse()
             return
+
+        # If a dialog action is in progress and this is a success message,
+        # it might be a completion message, so we'll end the dialog action
+        if self.dialog_action_in_progress and type == "success":
+            # Do not end dialog action here automatically
+            pass
 
         # Determine priority
         if priority is None:
@@ -322,6 +400,18 @@ class StatusBar(QFrame):
         # Use type-specific duration if none provided
         if duration is None:
             duration = self.message_durations.get(type, 5000)
+
+        # Deduplication: If this exact message is already in the queue or currently shown, skip it
+        if message == self.current_message:
+            return
+
+        if any(item["message"] == message for item in self.message_queue):
+            # If it's a duplicate but higher priority, replace the existing one
+            for item in self.message_queue:
+                if item["message"] == message:
+                    item["priority"] = max(item["priority"], priority)
+                    item["type"] = type  # Update type in case it changed
+                    return
 
         # Check if we should show this message now or queue it
         if not self.is_expanded or priority >= self.current_message_priority:
@@ -347,10 +437,104 @@ class StatusBar(QFrame):
                 "priority": priority
             })
 
+            # Prune the queue if it gets too long
+            self._prune_message_queue()
+
+    def start_dialog_action(self, action_type, message=None):
+        """
+        Indicate that a dialog action has started.
+        The status bar will stay expanded until end_dialog_action is called.
+
+        Args:
+            action_type: One of "barcode", "add", "filter", "print", "export", "delete"
+            message: Optional custom message, otherwise uses default for action
+        """
+        if action_type not in self.DIALOG_ACTIONS:
+            return
+
+        action_messages = {
+            "barcode": "Initiating barcode scanner...",
+            "add": "Opening add product form...",
+            "filter": "Preparing filter options...",
+            "print": "Preparing print options...",
+            "export": "Preparing export options...",
+            "delete": "Preparing to delete products..."
+        }
+
+        msg = message if message else action_messages.get(action_type, f"Opening {action_type} dialog...")
+
+        # Mark that dialog action is in progress
+        self.dialog_action_in_progress = True
+        self.current_dialog_action = action_type
+        print(f"Starting dialog action: {action_type} - {msg}")
+
+        # Use action-specific type and appropriate priority
+        priority = self.MESSAGE_PRIORITY.get(action_type, 50)
+        self.show_message(msg, action_type, None, priority)
+
+    def end_dialog_action(self, success_message=None):
+        """
+        Indicate that a dialog action has ended.
+        This will allow the status bar to collapse after showing a success message.
+
+        Args:
+            success_message: Optional success message to show before collapsing
+        """
+        if not self.dialog_action_in_progress:
+            print("Warning: end_dialog_action called but no dialog action in progress")
+            return
+
+        # Clear dialog action status
+        action_type = self.current_dialog_action
+        print(f"Ending dialog action: {action_type} - Success: {success_message}")
+        self.dialog_action_in_progress = False
+        self.current_dialog_action = None
+
+        # Show success message if provided
+        if success_message:
+            self.show_message(success_message, "success", 2000, 60)
+
+        # Force a collapse after a delay
+        QTimer.singleShot(2500, self.force_collapse)
+
+        # Process any queued messages
+        if self.message_queue:
+            self.queue_timer.start(3000)  # Allow success message to show first
+
+    def show_action_feedback(self, action_type, message=None):
+        """
+        Show immediate feedback when user initiates an action
+
+        Args:
+            action_type: One of "barcode", "add", "filter", "print", "export", "delete"
+            message: Optional custom message, otherwise uses default for action
+        """
+        # For dialog actions, use start_dialog_action instead
+        if action_type in self.DIALOG_ACTIONS:
+            self.start_dialog_action(action_type, message)
+            return
+
+        # For non-dialog actions
+        action_messages = {
+            "select": "Entering selection mode..."
+        }
+
+        if action_type in action_messages:
+            msg = message if message else action_messages[action_type]
+            # Use action-specific type and appropriate priority
+            priority = self.MESSAGE_PRIORITY.get(action_type, 50)
+            self.show_message(msg, action_type, None, priority)
+
     def collapse(self):
         """
         Animate the collapse back to the slim state and clear the message.
+        Won't collapse if a dialog action is in progress.
         """
+        # Don't collapse if a dialog action is in progress
+        if self.dialog_action_in_progress:
+            print("Not collapsing because dialog action in progress:", self.current_dialog_action)
+            return
+
         # Don't do anything if we're already collapsed or collapsing
         if not self.is_expanded or (self.is_animating and self.height() < self.expanded_height):
             return
@@ -380,6 +564,7 @@ class StatusBar(QFrame):
 
     def _clear_message(self):
         """Clear message text and icon after collapse animation completes"""
+        self.current_message = ""  # Reset current message for deduplication
         self.status_text.setText("")
         self.status_icon.clear()
 
@@ -394,6 +579,18 @@ class StatusBar(QFrame):
 
     def clear(self):
         """Alias for collapse, to support external calls."""
+        self.collapse()
+
+    def force_collapse(self):
+        """Force collapse even if a dialog action is in progress"""
+        # Reset dialog action status
+        old_action = self.current_dialog_action
+        self.dialog_action_in_progress = False
+        self.current_dialog_action = None
+
+        print(f"Force collapsing status bar (was dialog: {old_action})")
+
+        # Now perform normal collapse
         self.collapse()
 
     def clear_queue(self):
@@ -430,6 +627,10 @@ class StatusBar(QFrame):
                 self.collapse()
             return
 
+        # If a dialog action was in progress, end it
+        if self.dialog_action_in_progress:
+            self.end_dialog_action()
+
         # Use type-specific durations if none provided
         if first_duration is None:
             first_duration = self.message_durations.get(first_type, 2500)
@@ -442,7 +643,7 @@ class StatusBar(QFrame):
 
         # Make sure any pending message updates are cancelled
         for timer in self.findChildren(QTimer):
-            if timer != self.auto_hide_timer and timer.isSingleShot():
+            if timer != self.auto_hide_timer and timer != self.debug_timer and timer.isSingleShot():
                 timer.stop()
 
         # Show the first message immediately

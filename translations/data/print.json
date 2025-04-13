@@ -110,5 +110,49 @@
   "no_data_to_print": {
     "en": "No data to print",
     "he": "אין נתונים להדפסה"
+  },
+  "business_details": {
+    "en": "Business Details",
+    "he": "פרטי העסק"
+  },
+  "back": {
+    "en": "Back",
+    "he": "חזרה"
+  },
+  "business_name": {
+    "en": "Business Name (Hebrew)",
+    "he": "שם העסק (עברית)"
+  },
+  "business_name_en": {
+    "en": "Business Name (English)",
+    "he": "שם העסק (אנגלית)"
+  },
+  "business_address": {
+    "en": "Address",
+    "he": "כתובת"
+  },
+  "business_phone": {
+    "en": "Phone Number",
+    "he": "מספר טלפון"
+  },
+  "business_tax_id": {
+    "en": "Tax ID",
+    "he": "מספר עוסק"
+  },
+  "business_details_help": {
+    "en": "These details will appear on your printed documents.",
+    "he": "פרטים אלה יופיעו במסמכים המודפסים שלך."
+  },
+  "cancel": {
+    "en": "Cancel",
+    "he": "ביטול"
+  },
+  "ok": {
+    "en": "OK",
+    "he": "אישור"
+  },
+  "error": {
+    "en": "Error",
+    "he": "שגיאה"
   }
 }

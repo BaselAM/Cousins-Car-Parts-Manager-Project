@@ -1,8 +1,8 @@
 import os
 from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
                              QLineEdit, QToolButton, QWidget, QSizePolicy,
-                             QFrame, QGraphicsDropShadowEffect, QApplication)
-from PyQt5.QtGui import QIcon, QColor, QFont, QPalette, QLinearGradient, QBrush, QPainter
+                             QFrame, QGraphicsDropShadowEffect, QApplication, QAction, QWidgetAction)
+from PyQt5.QtGui import QIcon, QColor, QFont, QPalette, QLinearGradient, QBrush, QPainter, QPixmap
 from PyQt5.QtCore import Qt, QSize, QPoint, QRect, QCoreApplication
 
 # Direct imports from theme system
@@ -103,7 +103,8 @@ class UIHandler:
         self.search_clear_btn = None
         self.product_table = None
         self.status_bar = None
-        # ---
+        self.barcode_btn = None  # Added barcode button reference
+
     def _create_icon(self, icon_name):
         """Helper to create QIcon, potentially handling missing files."""
         path = os.path.join("resources", icon_name)
@@ -132,13 +133,6 @@ class UIHandler:
         self.title_label.setGraphicsEffect(shadow)
 
         main_layout.addWidget(self.title_label)
-
-        # --- Create a unified container for buttons frame and table ---
-        unified_container = QWidget()
-        unified_container.setObjectName("unifiedContainer")
-        unified_layout = QVBoxLayout(unified_container)
-        unified_layout.setContentsMargins(0, 0, 0, 0)  # No margins
-        unified_layout.setSpacing(0)  # Absolutely no spacing
 
         # --- Buttons Frame ---
         self.buttons_frame = QFrame()
@@ -225,56 +219,69 @@ class UIHandler:
 
         buttons_layout.addLayout(top_panel_layout)
 
-        # --- Enhanced Elegant Search Box ---
-        search_container = QWidget()
-        search_layout = QHBoxLayout(search_container)
-        search_layout.setContentsMargins(0, 0, 0, 0)
-        search_layout.setSpacing(8)
+        # --- Completely Simplified Search Bar ---
+        # Direct layout with no nested containers
+        search_layout = QHBoxLayout()
+        search_layout.setContentsMargins(8, 8, 8, 8)
+        search_layout.setSpacing(18)  # Increased spacing between elements
 
-        # Create elegant search label with custom styling
+        # Search label
         search_label = QLabel(self.translator.t('search_products') + ":")
-        search_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        search_label.setObjectName("elegantSearchLabel")
-
-        # Create an elegant font for the search label
+        search_label.setObjectName("searchLabel")
         search_font = QFont("Segoe UI", 11)
-        search_font.setWeight(QFont.Light)  # Lighter weight for elegance
-        search_font.setLetterSpacing(QFont.AbsoluteSpacing, 0.5)  # Subtle letter spacing
+        search_font.setWeight(QFont.Bold)
         search_label.setFont(search_font)
-
         search_layout.addWidget(search_label)
 
-        # Create a wrapper widget with fixed size policy to prevent layout shifts
-        search_wrapper = QWidget()
-        search_wrapper.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        search_wrapper.setMinimumHeight(36)  # Fixed height to prevent vertical shifts
-        search_wrapper_layout = QHBoxLayout(search_wrapper)
-        search_wrapper_layout.setContentsMargins(0, 0, 0, 0)
-        search_wrapper_layout.setSpacing(0)
-
-        # Search input with enhanced styling
+        # Search input
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText(self.translator.t('search_placeholder'))
         self.search_input.setObjectName("searchInput")
-        self.search_input.setMinimumHeight(34)  # Fixed height, slightly increased for elegance
-        self.search_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.search_input.setPlaceholderText(self.translator.t('search_placeholder'))
+        self.search_input.setMinimumHeight(40)
 
-        # Add search icon to the left side using property
-        self.search_input.addAction(self._create_icon("search_icon.png"), QLineEdit.LeadingPosition)
+        # We'll set up the search icon in apply_theme to make it theme-aware
+        # For now, just set up a placeholder left padding for the icon
+        self.search_input.setTextMargins(38, 0, 0, 0)  # Larger left margin for the bigger icon
 
-        # Create a shadow effect for the search input - lighter shadow
+        # Add shadow to search input
         search_shadow = QGraphicsDropShadowEffect()
-        search_shadow.setBlurRadius(4)  # Reduced from 8
-        search_shadow.setColor(QColor(0, 0, 0, 15))  # Reduced opacity from 20
-        search_shadow.setOffset(0, 2)
+        search_shadow.setBlurRadius(10)
+        search_shadow.setColor(QColor(0, 0, 0, 40))
+        search_shadow.setOffset(1, 2)
         self.search_input.setGraphicsEffect(search_shadow)
 
-        search_wrapper_layout.addWidget(self.search_input)
+        # Add right margin to search input with padding
+        self.search_input.setStyleSheet("padding-right: 10px;")
 
-        # Add the wrapper to the main search layout
-        search_layout.addWidget(search_wrapper, 1)
+        search_layout.addWidget(self.search_input, 1)
 
-        buttons_layout.addWidget(search_container)
+        # Add extra spacing between search input and barcode button
+        search_layout.addSpacing(5)  # Additional explicit spacing
+
+        # Barcode button - directly in the layout
+        self.barcode_btn = QToolButton()
+        self.barcode_btn.setObjectName("barcodeButton")
+        self.barcode_btn.setCursor(Qt.PointingHandCursor)
+        self.barcode_btn.setFixedSize(46, 46)  # Keep the same size for button container
+
+        # We'll set the barcode icon in apply_theme with its color based on the theme
+        try:
+            tooltip = self.translator.t('barcode:scan_barcode_tooltip')
+        except:
+            tooltip = "Scan Barcode"
+        self.barcode_btn.setToolTip(tooltip)
+
+        # Add shadow to barcode button
+        barcode_shadow = QGraphicsDropShadowEffect()
+        barcode_shadow.setBlurRadius(10)
+        barcode_shadow.setColor(QColor(0, 0, 0, 40))
+        barcode_shadow.setOffset(1, 2)
+        self.barcode_btn.setGraphicsEffect(barcode_shadow)
+
+        search_layout.addWidget(self.barcode_btn, 0, Qt.AlignTop)
+
+        # Add search layout directly to buttons layout
+        buttons_layout.addLayout(search_layout)
 
         # Add the buttons frame to main layout
         main_layout.addWidget(self.buttons_frame)
@@ -329,7 +336,7 @@ class UIHandler:
         button_pressed = get_color('button_pressed')
         highlight_color = get_color('highlight')
         accent_color = get_color('accent', highlight_color)
-        input_bg = get_color('input_bg')
+        input_bg = get_color('input_bg', card_bg)
 
         # Update title style - use the optimized refresh method
         if self.title_label is not None:
@@ -347,12 +354,6 @@ class UIHandler:
         # Disabled text color
         disabled_text = get_color('text_disabled', QColor(text_color).lighter(130).name() if is_dark_theme
         else QColor(text_color).darker(130).name())
-
-        # Enhanced search input focus border
-        search_focus_border = QColor(highlight_color).lighter(110).name() if is_dark_theme else highlight_color
-
-        # Soft interior shadow for search input (light source from top)
-        input_inner_shadow = "inset 0px 1px 2px rgba(0,0,0,0.07)" if is_dark_theme else "inset 0px 1px 2px rgba(0,0,0,0.05)"
 
         # Create the stylesheet with the new colors
         style = f"""
@@ -453,26 +454,59 @@ class UIHandler:
                 padding: 3px 2px 1px 2px;
             }}
 
-            /* Search input */
-            QLabel {{
-                padding-top: 4px;
-            }}
+            /* === Search Elements === */
+            #searchLabel {{
+    color: {text_color};
+    font-size: 14px;
+    font-weight: bold;       /* Make the text bold */
+    padding-right: 5px;
+    border: none;            /* Remove any border/frame */
+    background: transparent; /* Ensure the background is transparent */
+    margin: 0;               /* Remove any extra margin */
+}}
 
+            /* Elegant Search Input */
             QLineEdit#searchInput {{
-                background-color: {input_bg};
-                color: {text_color};
-                border: 1px solid {border_color};
-                border-radius: 8px;
-                padding: 8px 12px;
-                font-size: 14px;
-                min-height: 34px;
-                letter-spacing: 0.2px;
-                box-shadow: {input_inner_shadow};
-            }}
+    background-color: {input_bg};
+    color: {text_color};
+    border: 2px solid {QColor(highlight_color).darker(110).name()};
+    border-radius: 8px;
+    padding: 8px 12px 8px 50px;  /* Further increased left padding for even larger icon */
+    padding-right: 16px;  /* Additional right padding */
+    font-size: 15px;
+    min-height: 40px;
+    letter-spacing: 0.3px;
+}}
 
             QLineEdit#searchInput:focus {{
-                border: 1.5px solid {search_focus_border};
-                background-color: {QColor(input_bg).lighter(105).name() if is_dark_theme else input_bg};
+                border: 2px solid {highlight_color};
+                background-color: {QColor(input_bg).lighter(105).name()};
+            }}
+
+            QLineEdit#searchInput::placeholder {{
+                color: {disabled_text};
+                letter-spacing: 0.5px;
+            }}
+
+            /* Elegant Barcode Button */
+            QToolButton#barcodeButton {{
+    background-color: transparent;  /* Makes the background transparent */
+    border: none;                   /* Removes the border/frame */
+    border-radius: 8px;
+    padding: 3px;
+    min-height: 46px;
+    min-width: 46px;
+}}
+
+            QToolButton#barcodeButton:hover {{
+                background-color: {button_hover};
+                border: 2px solid {highlight_color};
+            }}
+
+            QToolButton#barcodeButton:pressed {{
+                background-color: {button_pressed};
+                border: 2px solid {highlight_color};
+                padding: 9px 7px 7px 9px;
             }}
 
             QToolButton#clearFilterButton {{
@@ -515,21 +549,21 @@ class UIHandler:
         if self.status_bar:
             theme_status = {
                 "success": {"bg": get_color('success'),
-                           "border": QColor(get_color('success')).darker(130).name(),
-                           "text": bg_color},
+                            "border": QColor(get_color('success')).darker(130).name(),
+                            "text": bg_color},
                 "error": {"bg": get_color('error'),
-                         "border": QColor(get_color('error')).darker(130).name(),
-                         "text": bg_color},
+                          "border": QColor(get_color('error')).darker(130).name(),
+                          "text": bg_color},
                 "warning": {"bg": get_color('warning'),
                             "border": QColor(get_color('warning')).darker(130).name(),
                             "text": QColor(bg_color).darker(150).name()},
                 "info": {"bg": highlight_color,
-                        "border": QColor(highlight_color).darker(130).name(),
-                        "text": bg_color}
+                         "border": QColor(highlight_color).darker(130).name(),
+                         "text": bg_color}
             }
             self.status_bar.set_theme(theme_status)
 
-        # Update buttons frame directly instead of updating individual buttons
+        # Update buttons frame directly
         if self.buttons_frame:
             self.buttons_frame.setStyleSheet(f"""
                 background-color: {buttons_bg};
@@ -537,8 +571,150 @@ class UIHandler:
                 border-radius: {border_radius}px;
             """)
 
-        # We don't force a QCoreApplication.processEvents() here to allow the UI thread to continue
+        # Add theme-aware colored search icon with increased size (14% larger)
+        if hasattr(self, 'search_input') and self.search_input:
+            try:
+                # Find the search icon file
+                search_icon_path = None
+                icon_paths = [
+                    os.path.join("resources", "search_icon.png"),
+                    os.path.join("resources", "icons", "search_icon.png"),
+                    os.path.join(".", "resources", "search_icon.png"),
+                    os.path.join("..", "resources", "search_icon.png")
+                ]
 
+                for path in icon_paths:
+                    if os.path.exists(path):
+                        search_icon_path = path
+                        break
+
+                if search_icon_path:
+                    # Load the icon as a pixmap
+                    pixmap = QPixmap(search_icon_path)
+                    if not pixmap.isNull():
+                        # Create a colored version based on theme
+                        colored_pixmap = QPixmap(pixmap.size())
+                        colored_pixmap.fill(Qt.transparent)
+
+                        painter = QPainter(colored_pixmap)
+                        painter.setRenderHint(QPainter.Antialiasing)
+                        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+                        painter.drawPixmap(0, 0, pixmap)
+                        painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+
+                        # Choose color based on theme
+                        if is_dark_theme:
+                            # Use white for dark themes
+                            painter.fillRect(colored_pixmap.rect(), QColor(255, 255, 255))
+                        else:
+                            # Use black for light themes
+                            painter.fillRect(colored_pixmap.rect(), QColor(0, 0, 0))
+
+                        painter.end()
+
+                        # Create icon from colored pixmap and set it as action
+                        search_icon = QIcon(colored_pixmap)
+
+                        # Remove any existing actions
+                        for action in self.search_input.actions():
+                            self.search_input.removeAction(action)
+
+                        # Add the colored icon as an action with 14% larger size (around 21-22px)
+                        search_action = self.search_input.addAction(search_icon, QLineEdit.LeadingPosition)
+
+                        # Set larger icon size for QLineEdit action
+                        # Since we can't directly set the icon size for a QLineEdit action,
+                        # we adjust the textMargins to accommodate the larger icon
+                        self.search_input.setTextMargins(38, 0, 0, 0)
+                else:
+                    # Fallback to emoji if icon not found
+                    self.search_input.setTextMargins(45, 0, 0, 0)
+                    search_label = QLabel("🔍")
+                    search_label.setAlignment(Qt.AlignCenter)
+                    search_label.setFixedSize(45, 40)
+                    search_label.setStyleSheet("font-size: 24px;")
+                    search_action = QWidgetAction(self.search_input)
+                    search_action.setDefaultWidget(search_label)
+                    self.search_input.addAction(search_action, QLineEdit.LeadingPosition)
+            except Exception as e:
+                print(f"Error updating search icon: {e}")
+                # Fallback to basic left padding
+                self.search_input.setTextMargins(38, 0, 0, 0)
+
+        # Update barcode button icon with theme-aware coloring and larger size (14% larger)
+        if hasattr(self, 'barcode_btn') and self.barcode_btn:
+            try:
+                # Find the barcode icon file
+                barcode_icon = None
+                icon_paths = [
+                    os.path.join("resources", "barcode.png"),
+                    os.path.join("resources", "icons", "barcode.png"),
+                    os.path.join(".", "resources", "barcode.png"),
+                    os.path.join("..", "resources", "barcode.png")
+                ]
+
+                for path in icon_paths:
+                    if os.path.exists(path):
+                        # Load the icon as a pixmap
+                        pixmap = QPixmap(path)
+                        if not pixmap.isNull():
+                            # Create a colored version based on theme
+                            colored_pixmap = QPixmap(pixmap.size())
+                            colored_pixmap.fill(Qt.transparent)
+
+                            painter = QPainter(colored_pixmap)
+                            painter.setRenderHint(QPainter.Antialiasing)
+                            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                            painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+                            painter.drawPixmap(0, 0, pixmap)
+                            painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+
+                            # Choose color based on theme
+                            if is_dark_theme:
+                                # Use white for dark themes
+                                painter.fillRect(colored_pixmap.rect(), QColor(255, 255, 255))
+                            else:
+                                # Use black for light themes
+                                painter.fillRect(colored_pixmap.rect(), QColor(0, 0, 0))
+
+                            painter.end()
+
+                            # Create icon from colored pixmap with 14% larger size
+                            # Original size was 22px, 14% larger is about 25px
+                            self.barcode_btn.setIcon(QIcon(colored_pixmap))
+                            self.barcode_btn.setIconSize(QSize(36, 36))  # 14% larger than 22px
+                            break
+
+                # Fallback to text if no icon could be loaded
+                if self.barcode_btn.icon().isNull():
+                    self.barcode_btn.setText("📊")
+                    self.barcode_btn.setStyleSheet("font-size: 20px;")  # Larger emoji (was 18px)
+            except Exception as e:
+                print(f"Error updating barcode icon: {e}")
+                self.barcode_btn.setText("📊")  # Fallback to text emoji
+                self.barcode_btn.setStyleSheet("font-size: 20px;")  # Larger emoji
+
+        # Update search and barcode shadow effects
+        if hasattr(self, 'search_input') and self.search_input:
+            try:
+                search_shadow = QGraphicsDropShadowEffect()
+                search_shadow.setBlurRadius(10)
+                search_shadow.setColor(QColor(0, 0, 0, 40))
+                search_shadow.setOffset(1, 2)
+                self.search_input.setGraphicsEffect(search_shadow)
+            except Exception as e:
+                print(f"Error updating search shadow: {e}")
+
+        if hasattr(self, 'barcode_btn') and self.barcode_btn:
+            try:
+                barcode_shadow = QGraphicsDropShadowEffect()
+                barcode_shadow.setBlurRadius(10)
+                barcode_shadow.setColor(QColor(0, 0, 0, 40))
+                barcode_shadow.setOffset(1, 2)
+                self.barcode_btn.setGraphicsEffect(barcode_shadow)
+            except Exception as e:
+                print(f"Error updating barcode button shadow: {e}")
     def update_filter_button_style(self, active):
         """Update filter button appearance and visibility of clear button."""
         self.filter_btn.setProperty("filterActive", active)
@@ -577,19 +753,43 @@ class UIHandler:
             pass
         self.refresh_btn.setText(self.translator.t('refresh'))
 
-        # Search - update with preservation of elegant styling
-        search_label_widget = self.search_input.parent().layout().itemAt(0).widget()
-        if isinstance(search_label_widget, QLabel):
-            search_label_widget.setText(self.translator.t('search_products') + ":")
+        # Search label - find by object name
+        search_label = self.widget.findChild(QLabel, "searchLabel")
+        if search_label:
+            search_label.setText(self.translator.t('search_products') + ":")
 
-            # Ensure elegant styling is maintained when translations change
-            if search_label_widget.objectName() == "elegantSearchLabel":
-                search_font = QFont("Segoe UI", 11)
-                search_font.setWeight(QFont.Light)
-                search_font.setLetterSpacing(QFont.AbsoluteSpacing, 0.5)
-                search_label_widget.setFont(search_font)
+        # Search input placeholder
+        if hasattr(self, 'search_input') and self.search_input:
+            self.search_input.setPlaceholderText(self.translator.t('search_placeholder'))
 
-        self.search_input.setPlaceholderText(self.translator.t('search_placeholder'))
+        # Barcode button tooltip
+        if hasattr(self, 'barcode_btn') and self.barcode_btn:
+            try:
+                self.barcode_btn.setToolTip(self.translator.t('barcode:scan_barcode_tooltip'))
+            except:
+                self.barcode_btn.setToolTip("Scan Barcode")
 
         # Table Headers
-        self.product_table.update_headers()
+        if hasattr(self, 'product_table') and self.product_table:
+            self.product_table.update_headers()
+
+    def connect_barcode_button(self, callback):
+        """Connect the barcode button to the callback function"""
+        if hasattr(self, 'barcode_btn') and self.barcode_btn is not None:
+            try:
+                print("Connecting barcode button to callback function")
+
+                # Properly disconnect any existing connections
+                try:
+                    if self.barcode_btn.receivers(self.barcode_btn.clicked) > 0:
+                        self.barcode_btn.clicked.disconnect()
+                except Exception:
+                    pass  # Ignore disconnect errors
+
+                # Connect the button click signal to the callback
+                self.barcode_btn.clicked.connect(callback)
+                print("Barcode button successfully connected")
+            except Exception as e:
+                print(f"Failed to connect barcode button: {e}")
+                import traceback
+                traceback.print_exc()
