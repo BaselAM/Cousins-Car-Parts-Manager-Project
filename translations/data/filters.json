@@ -46,6 +46,9 @@
   "advanced_search_results": {
     "en": "Found {count} results matching your criteria",
     "he": "נמצאו {count} תוצאות התואמות את הקריטריונים שלך"
+  },
+"filter:preparing": {
+    "en": "Opening filter options...",
+    "he": "פותח אפשרויות סינון..."
   }
-
 }

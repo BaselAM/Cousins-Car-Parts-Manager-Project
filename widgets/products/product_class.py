@@ -1,9 +1,13 @@
 # products_class.py (Enhanced Version)
 import inspect
 import traceback
+import logging
 
 from PyQt5.QtWidgets import QWidget, QDialog
 from PyQt5.QtCore import QTimer, pyqtSlot, QEvent, Qt
+
+# Create module logger
+logger = logging.getLogger(__name__)
 
 # Assuming original imports were correct for the first version
 from .product_widget.core.product_loader import ProductLoader
@@ -137,8 +141,9 @@ class ProductsWidget(QWidget):
             self.barcode_scanner = BarcodeScannerButton(self, self.translator)
             self.barcode_scanner.setVisible(False)  # Make sure it's not visible
             self.barcode_scanner.setFixedSize(0, 0)  # Zero size
+            logger.debug("Barcode scanner button successfully connected")
         except Exception as e:
-            print(f"Error setting up barcode scanner handler: {e}")
+            logger.error(f"Error setting up barcode scanner: {e}")
             self.barcode_scanner = None
 
     def _delayed_search(self):
@@ -165,7 +170,6 @@ class ProductsWidget(QWidget):
             self._search_in_progress = False
             # Note: _is_search_refresh is reset after products are loaded
 
-
     def _ensure_highlights_cleared(self):
         """Ensure all highlights are properly cleared after search is reset"""
         # Double-check that highlighting is removed
@@ -186,8 +190,7 @@ class ProductsWidget(QWidget):
                                 font.setBold(False)
                                 item.setFont(font)
         except Exception as e:
-            print(f"Error ensuring highlights cleared: {e}")
-
+            logger.error(f"Error clearing highlights: {e}")
 
     def _highlight_exact_match(self, product, search_text):
         """Highlight and focus an exact match in the search results"""
@@ -214,8 +217,7 @@ class ProductsWidget(QWidget):
                     3000
                 )
         except Exception as e:
-            print(f"Error highlighting exact match: {e}")
-
+            logger.error(f"Error highlighting exact match: {e}")
 
     def _reset_search_flags(self):
         """Reset search-related flags after operations are complete"""
@@ -250,10 +252,7 @@ class ProductsWidget(QWidget):
         except Exception as e:
             # Reset the search refresh flag in case of error
             self._is_search_refresh = False
-
-            print(f"Load error: {e}")
-            import traceback
-            print(traceback.format_exc())
+            logger.error(f"Error loading products: {e}")
             self.status_bar.show_message(
                 self.translate('load_error', "Error loading products"),
                 "error"
@@ -398,7 +397,6 @@ class ProductsWidget(QWidget):
         if self.export_btn:
             self.export_btn.setEnabled(checked)
 
-
     def apply_filters(self, filters):
         """Apply filters to products"""
         filtered_products, message = self.filter_handler.filter_products(
@@ -407,7 +405,6 @@ class ProductsWidget(QWidget):
         )
         self.product_table.update_table_data(filtered_products)
         self.status_bar.show_message(message, "info")
-
 
     def export_products(self):
         """Export products to CSV"""
@@ -457,7 +454,7 @@ class ProductsWidget(QWidget):
 
             self.status_bar.show_message(loaded_message, "info", 5000)
         except Exception as e:
-            print(f"Error highlighting product: {e}")
+            logger.error(f"Error highlighting product: {e}")
 
     def cancel_status_timer(self):
         """Cancel the status bar's auto-hide timer"""
@@ -498,8 +495,23 @@ class ProductsWidget(QWidget):
                     return default
                 return result
         except Exception as e:
-            print(f"Translation error for key '{key}': {e}")
+            logger.error(f"Translation error for key '{key}': {e}")
             return default if default else key
+
+    def _handle_add_button_click(self):
+        """Handle add button click with proper translation"""
+        # Get properly translated text
+        add_preparing_text = self.translate('add:preparing', "Opening add product form...")
+
+        # First show status message
+        self.show_status_message(
+            add_preparing_text,
+            "add",
+            priority=85
+        )
+
+        # Then show the dialog
+        self.add_operation.show_add_dialog()
 
     def closeEvent(self, event):
         """Handle widget close event"""
@@ -509,10 +521,8 @@ class ProductsWidget(QWidget):
                 self.product_loader.cleanup()
             self.product_manager.clear()
         except Exception as e:
-            print(f"Cleanup error: {e}")
+            logger.error(f"Error during close event: {e}")
         event.accept()
-
-
 
     def _handle_status_bar_state_change(self, is_expanded):
         """Handle status bar expansion/collapse by updating layouts"""
@@ -602,8 +612,7 @@ class ProductsWidget(QWidget):
             if self.product_table and hasattr(self.product_table, 'table'):
                 self.product_table.table.setFocus()
         except Exception as e:
-            print(f"Error handling barcode scan: {e}")
-
+            logger.error(f"Error processing barcode scan: {e}")
             # Error message with translation
             error_message = self.translate(
                 'barcode:barcode_scan_error',
@@ -647,8 +656,6 @@ class ProductsWidget(QWidget):
             if hasattr(self.status_bar, 'clear'):
                 self.status_bar.clear()
 
-
-
     # UPDATE the on_cell_changed method
     def on_cell_changed(self, row, column):
         """Handle cell value changes"""
@@ -674,10 +681,9 @@ class ProductsWidget(QWidget):
                 # Show the message with high priority
                 self.show_status_message(message, "success", priority=70)
         except Exception as e:
-            print(f"Cell change error: {e}")
+            logger.error(f"Error handling cell change: {e}")
         finally:
             self._updating_cell = False
-
 
     def _on_search_input_changed(self, text):
         """Handle search input changes with delay to improve performance"""
@@ -757,7 +763,7 @@ class ProductsWidget(QWidget):
                     # Refresh products from database for important searches
                     self.product_loader.load_products_silent()
                 except Exception as e:
-                    print(f"Error refreshing search data: {e}")
+                    logger.error(f"Error refreshing products for search: {e}")
 
             # Filter products using priority-based search
             filtered_products, _ = self.search_handler.search_products(
@@ -798,9 +804,7 @@ class ProductsWidget(QWidget):
                 self._highlight_exact_match(filtered_products[0], search_text)
 
         except Exception as e:
-            print(f"Search error: {e}")
-            import traceback
-            print(traceback.format_exc())
+            logger.error(f"Error during search: {e}")
             self.show_status_message(
                 self.translate('search_error', "Error during search"),
                 "error",
@@ -815,21 +819,13 @@ class ProductsWidget(QWidget):
     def _connect_signals(self):
         """Connect all signals for the widget with enhanced status bar feedback"""
         # Action buttons with status feedback
-        self.add_btn.clicked.connect(lambda: (
-            self.show_status_message(
-                self.translate('add:preparing', "Opening add product form..."),  # Using translate method instead of t()
-                "add",
-                priority=85
-            ),
-            self.add_operation.show_add_dialog()
-        ))
+        self.add_btn.clicked.connect(self._handle_add_button_click)
 
         self.select_toggle.toggled.connect(self.toggle_selection_mode)
 
         self.remove_btn.clicked.connect(lambda: (
             self.show_status_message(
                 self.translate('delete:preparing', "Preparing to delete products..."),
-                # Using translate method instead of t()
                 "delete",
                 priority=85
             ),
@@ -839,7 +835,6 @@ class ProductsWidget(QWidget):
         self.filter_btn.clicked.connect(lambda: (
             self.show_status_message(
                 self.translate('filter:preparing', "Opening filter options..."),
-                # Using translate method instead of t()
                 "filter",
                 priority=75
             ),
@@ -851,7 +846,6 @@ class ProductsWidget(QWidget):
         self.export_btn.clicked.connect(lambda: (
             self.show_status_message(
                 self.translate('export:preparing', "Preparing to export products..."),
-                # Using translate method instead of t()
                 "export",
                 priority=70
             ),
@@ -861,7 +855,6 @@ class ProductsWidget(QWidget):
         self.print_btn.clicked.connect(lambda: (
             self.show_status_message(
                 self.translate('print:preparing', "Preparing print options..."),
-                # Using translate method instead of t()
                 "print",
                 priority=75
             ),
@@ -890,6 +883,7 @@ class ProductsWidget(QWidget):
         if hasattr(self.delete_operation, 'products_deleted'):
             self.delete_operation.products_deleted.connect(self.on_products_deleted)
 
+        logger.debug("All signals connected")
 
     # Add this utility method for showing status messages
     def show_status_message(self, message, type="info", duration=None, priority=None):
@@ -919,7 +913,7 @@ class ProductsWidget(QWidget):
                     # Fall back to standard show_message
                     self.status_bar.show_message(message, type, duration)
         except Exception as e:
-            print(f"Error showing status message: {e}")
+            logger.error(f"Error showing status message: {e}")
 
     # These are the updated method implementations that integrate with the enhanced StatusBar
     # to keep it open until dialogs close
@@ -952,9 +946,8 @@ class ProductsWidget(QWidget):
                     try:
                         from components.barcode_scanner_button import ScanningDialog
                     except ImportError:
-                        print("Could not import ScanningDialog - barcode scanning not available")
-
                         # Show error in status bar and end dialog action
+                        logger.error("Barcode scanning module not available")
                         if hasattr(self.status_bar, 'end_dialog_action'):
                             self.status_bar.end_dialog_action(
                                 self.translate('barcode:scan_error', "Barcode scanning module not available")
@@ -995,10 +988,7 @@ class ProductsWidget(QWidget):
                 )
 
         except Exception as e:
-            print(f"Error showing barcode scanner: {e}")
-            import traceback
-            traceback.print_exc()
-
+            logger.error(f"Error showing barcode scanner: {e}")
             # End dialog action with error message
             if hasattr(self.status_bar, 'end_dialog_action'):
                 self.status_bar.end_dialog_action(
@@ -1009,6 +999,25 @@ class ProductsWidget(QWidget):
                     self.translate('barcode:scan_error', "Error showing barcode scanner"),
                     "error"
                 )
+
+    def handle_filter_button_press(self):
+        """Handles filter button press: translates message and calls start_dialog_action."""
+        try:
+            filter_key = "filter:preparing"
+            translated_message = self.translate(filter_key, "Opening filter options...")  # Use translate helper
+
+            # Call start_dialog_action directly
+            if hasattr(self.status_bar, 'start_dialog_action'):
+                self.status_bar.start_dialog_action("filter", translated_message)
+            else:  # Fallback
+                self.status_bar.show_message(translated_message, "filter")
+
+            # Now show the dialog
+            self.show_filter_dialog()
+        except Exception as e:
+            logger.error(f"Error handling filter button press: {e}")
+            if hasattr(self.status_bar, 'end_dialog_action'):
+                self.status_bar.end_dialog_action(self.translate('dialog_error', "Error opening dialog"))
 
     # Now update the show_filter_dialog method
     def show_filter_dialog(self):
@@ -1064,75 +1073,97 @@ class ProductsWidget(QWidget):
     def _handle_dialog_result(self, dialog, result):
         """Processes the data if the dialog was accepted and updates status bar."""
         if result == QDialog.Accepted:
-            print("Add Product Dialog Accepted.")
             try:
                 data = dialog.get_data()
                 if data:
                     # Check if we have a parcode/barcode and log it
                     if 'parcode' in data:
-                        print(f"Dialog provided parcode value: '{data['parcode']}'")
+                        logger.debug(f"Dialog returned parcode: {data['parcode']}")
                     elif 'barcode' in data:
                         # If it's still called 'barcode' in the dialog, rename it to 'parcode'
-                        print(f"Dialog provided barcode value: '{data['barcode']}'")
                         data['parcode'] = data.pop('barcode')
-
-                    # Log manufacturer and original status
-                    print(f"Dialog provided manufacturer: '{data.get('manufacturer', '')}'")
-                    print(f"Dialog provided is_original: {data.get('is_original', False)}")
+                        logger.debug(f"Renamed barcode to parcode: {data['parcode']}")
 
                     # Initiate the process of adding/updating the product
                     product_id = self.process_add_product(data)
 
+                    # Get translations using parent's translate method if available
+                    success_msg = "Product added successfully"
+                    fail_msg = "Failed to add product"
+
+                    if hasattr(self.parent, 'translate'):
+                        success_msg = self.parent.translate('product_added_success', "Product added successfully")
+                        fail_msg = self.parent.translate('product_add_failed', "Failed to add product")
+                    elif hasattr(self.translator, 't'):
+                        success_msg_translated = self.translator.t('product_added_success')
+                        if success_msg_translated != 'product_added_success':
+                            success_msg = success_msg_translated
+
+                        fail_msg_translated = self.translator.t('product_add_failed')
+                        if fail_msg_translated != 'product_add_failed':
+                            fail_msg = fail_msg_translated
+
                     # End dialog action with appropriate message
                     if hasattr(self.parent.status_bar, 'end_dialog_action'):
                         if product_id:
-                            self.parent.status_bar.end_dialog_action(
-                                self.translator.t('product_added_success', "Product added successfully")
-                            )
+                            self.parent.status_bar.end_dialog_action(success_msg)
                         else:
-                            self.parent.status_bar.end_dialog_action(
-                                self.translator.t('product_add_failed', "Failed to add product")
-                            )
+                            self.parent.status_bar.end_dialog_action(fail_msg)
                 else:
-                    print("Warning: Dialog accepted, but no data retrieved.")
+                    # Get error message translation
+                    error_msg = "Error retrieving product data"
+                    if hasattr(self.parent, 'translate'):
+                        error_msg = self.parent.translate('data_error', "Error retrieving product data")
+                    elif hasattr(self.translator, 't'):
+                        error_msg_translated = self.translator.t('data_error')
+                        if error_msg_translated != 'data_error':
+                            error_msg = error_msg_translated
+
                     if hasattr(self.parent.status_bar, 'end_dialog_action'):
-                        self.parent.status_bar.end_dialog_action(
-                            self.translator.t('data_error', "Error retrieving product data")
-                        )
+                        self.parent.status_bar.end_dialog_action(error_msg)
                     else:
                         # Fallback for older status bar
                         if self.status_bar:
-                            self.status_bar.show_message(
-                                self.translator.t('data_error', "Error retrieving product data"),
-                                "warning",
-                                5000
-                            )
+                            self.status_bar.show_message(error_msg, "warning", 5000)
             except Exception as e:
-                print(f"ERROR: Failed to process dialog result data: {e}")
-                import traceback
-                traceback.print_exc()
+                logger.error(f"Error handling dialog result: {e}")
+                # Get error message translation
+                error_msg = "Error adding product"
+                data_error_msg = "Error processing product data"
+
+                if hasattr(self.parent, 'translate'):
+                    error_msg = self.parent.translate('add_product_error', "Error adding product")
+                    data_error_msg = self.parent.translate('data_error', "Error processing product data")
+                elif hasattr(self.translator, 't'):
+                    error_translated = self.translator.t('add_product_error')
+                    if error_translated != 'add_product_error':
+                        error_msg = error_translated
+
+                    data_error_translated = self.translator.t('data_error')
+                    if data_error_translated != 'data_error':
+                        data_error_msg = data_error_translated
 
                 # End dialog action with error message
                 if hasattr(self.parent.status_bar, 'end_dialog_action'):
-                    self.parent.status_bar.end_dialog_action(
-                        self.translator.t('add_product_error', "Error adding product")
-                    )
+                    self.parent.status_bar.end_dialog_action(error_msg)
                 else:
                     # Fallback for older status bar
                     if self.status_bar:
-                        self.status_bar.show_message(
-                            self.translator.t('data_error', "Error processing product data"),
-                            "error"
-                        )
+                        self.status_bar.show_message(data_error_msg, "error")
         else:
             # Handle dialog cancellation/rejection
-            print("Add Product Dialog Rejected/Cancelled.")
+            # Get cancel message translation
+            cancel_msg = "Add product cancelled"
+            if hasattr(self.parent, 'translate'):
+                cancel_msg = self.parent.translate('add_cancelled', "Add product cancelled")
+            elif hasattr(self.translator, 't'):
+                cancel_translated = self.translator.t('add_cancelled')
+                if cancel_translated != 'add_cancelled':
+                    cancel_msg = cancel_translated
 
             # End dialog action in status bar
             if hasattr(self.parent.status_bar, 'end_dialog_action'):
-                self.parent.status_bar.end_dialog_action(
-                    self.translator.t('add_cancelled', "Add product cancelled")
-                )
+                self.parent.status_bar.end_dialog_action(cancel_msg)
             elif self.status_bar:
                 self.status_bar.clear()
 
@@ -1140,17 +1171,28 @@ class ProductsWidget(QWidget):
     def show_add_dialog(self):
         """Creates and shows the 'Add Product' dialog with status bar integration."""
         try:
+            # Get the proper translation directly from the parent widget that has the translator
+            add_preparing_text = "Opening add product form..."
+            if hasattr(self.parent, 'translate'):
+                # Use parent's translate method which has proper error handling
+                add_preparing_text = self.parent.translate('add:preparing', "Opening add product form...")
+            elif hasattr(self.translator, 't'):
+                # Fallback to direct translator usage
+                add_preparing_text = self.translator.t('add:preparing')
+                if add_preparing_text == 'add:preparing':  # If translation failed and returned the key
+                    add_preparing_text = "Opening add product form..."
+
             # Start dialog action in parent's status bar
             if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'start_dialog_action'):
                 self.parent.status_bar.start_dialog_action(
                     "add",
-                    self.translator.t('add:preparing', "Opening add product form...")
+                    add_preparing_text
                 )
             else:
                 # Fallback for older status bar
                 if self.status_bar:
                     self.status_bar.show_message(
-                        self.translator.t('add:preparing', "Opening add product form..."),
+                        add_preparing_text,
                         "add"
                     )
 
@@ -1164,25 +1206,27 @@ class ProductsWidget(QWidget):
             # Use open() for a non-modal dialog or exec_() for a modal one
             dialog.open()
         except Exception as e:
-            print(f"ERROR: Failed to create or show AddProductDialog: {e}")
-            traceback.print_exc()
+            logger.error(f"Error showing add dialog: {e}")
+            # Get error message translation
+            error_msg = "Error showing dialog"
+            if hasattr(self.parent, 'translate'):
+                error_msg = self.parent.translate('dialog_error', "Error showing dialog")
+            elif hasattr(self.translator, 't'):
+                error_msg_translated = self.translator.t('dialog_error')
+                if error_msg_translated != 'dialog_error':
+                    error_msg = error_msg_translated
 
             # End dialog action with error
             if hasattr(self.parent, 'status_bar') and hasattr(self.parent.status_bar, 'end_dialog_action'):
-                self.parent.status_bar.end_dialog_action(
-                    self.translator.t('dialog_error', "Error showing dialog")
-                )
+                self.parent.status_bar.end_dialog_action(error_msg)
             else:
                 # Fallback for older status bar
                 if self.status_bar:
-                    self.status_bar.show_message(
-                        self.translator.t('dialog_error', "Error showing dialog"),
-                        "error"
-                    )
+                    self.status_bar.show_message(error_msg, "error")
 
     # Update the delete_selected_products method
     def delete_selected_products(self):
-        """Delete selected products with immediate status bar collapse on cancel"""
+        """Delete selected products with status bar integration"""
         if not self.select_toggle.isChecked():
             self.status_bar.show_message(
                 self.translate('select_mode_required', "Selection mode must be enabled to delete items"),
@@ -1230,7 +1274,8 @@ class ProductsWidget(QWidget):
 
         if result == QDialog.Accepted:
             # User confirmed deletion - proceed with deletion operation
-            # Extract code for processing deletion here...
+            # This will be handled by the DeleteOperation class which will
+            # show appropriate success messages
 
             # First fetch all products to find database IDs matching the parcodes
             all_products = self.db.get_all_parts()
@@ -1258,8 +1303,6 @@ class ProductsWidget(QWidget):
             for parcode, name in product_details:
                 if str(parcode) in db_id_map:
                     products_to_delete.append((db_id_map[str(parcode)], name))
-                else:
-                    print(f"Warning: Could not find database ID for parcode: {parcode}")
 
             # Perform the deletion with database IDs
             deleted_ids = self.delete_operation._perform_deletion(products_to_delete)
@@ -1268,11 +1311,13 @@ class ProductsWidget(QWidget):
                 # End dialog action with success message
                 if hasattr(self.status_bar, 'end_dialog_action'):
                     self.status_bar.end_dialog_action(
-                        self.translate('items_deleted').format(count=len(deleted_ids))
+                        self.translate('items_deleted', "Successfully deleted {count} items").format(
+                            count=len(deleted_ids))
                     )
                 else:
                     self.status_bar.show_message(
-                        self.translate('items_deleted').format(count=len(deleted_ids)),
+                        self.translate('items_deleted', "Successfully deleted {count} items").format(
+                            count=len(deleted_ids)),
                         "success"
                     )
 
@@ -1290,10 +1335,11 @@ class ProductsWidget(QWidget):
                         "error"
                     )
         else:
-            # User cancelled deletion - IMMEDIATELY collapse with NO message
-            if hasattr(self.status_bar, 'force_collapse'):
-                self.status_bar.force_collapse()  # Most direct approach
-            elif hasattr(self.status_bar, 'end_dialog_action'):
-                self.status_bar.end_dialog_action("")  # Empty string to avoid showing message
+            # User cancelled deletion
+            # End dialog action with cancelled message
+            if hasattr(self.status_bar, 'end_dialog_action'):
+                self.status_bar.end_dialog_action(
+                    self.translate('delete_cancelled', "Delete operation cancelled")
+                )
             else:
-                self.status_bar.clear()  # Fallback to simple clear
+                self.status_bar.clear()  # Just clear the status bar

@@ -46,5 +46,21 @@
 "barcode_placeholder": {
   "en": "Enter barcode",
   "he": "הזן ברקוד"
-}
+},
+  "initiating_scan": {
+    "en": "Preparing barcode scanner...",
+    "he": "מכין סורק ברקוד..."
+  },
+  "scan_complete": {
+    "en": "Barcode scanning completed",
+    "he": "סריקת ברקוד הושלמה"
+  },
+  "scan_cancelled": {
+    "en": "Barcode scanning cancelled",
+    "he": "סריקת ברקוד בוטלה"
+  },
+  "scan_error": {
+    "en": "Error showing barcode scanner",
+    "he": "שגיאה בהצגת סורק ברקוד"
+  }
 }

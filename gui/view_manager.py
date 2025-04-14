@@ -9,7 +9,6 @@ from widgets.products import ProductsWidget
 from widgets.statistics import StatisticsWidget
 from widgets.settings.settings_widget import SettingsWidget
 from widgets.help import HelpWidget
-from parts_navigation import PartsNavigationContainer
 from widgets.register_widget import RegisterWidget
 
 # Configure module logger
@@ -40,7 +39,7 @@ class GUIViewManager:
         self.statistics_widget = None
         self.settings_widget = None
         self.help_widget = None
-        self.parts_navigation_widget = None
+        self.smart_search_widget = None  # Add the new widget reference
         self.register_widget = None
         self.home_page = None
 
@@ -55,11 +54,10 @@ class GUIViewManager:
 
         self.settings_widget = SettingsWidget(self.translator, self.parent.update_language, self.parent)
         self.help_widget = HelpWidget(self.translator, parent=self.parent)
-        self.parts_navigation_widget = PartsNavigationContainer(
-            self.translator,
-            self.parts_db,
-            parent=self.parent
-        )
+
+        # Initialize the Smart Search widget (will implement later)
+        # Commented out for now until the widget is implemented
+        # self.smart_search_widget = SmartSearchWidget(self.translator, self.parts_db, parent=self.parent)
 
         # Pre-initialize the register widget to prevent loading delay when first accessed
         self.register_widget = RegisterWidget(
@@ -179,46 +177,49 @@ class GUIViewManager:
         """Switch to help documentation view"""
         content_stack.setCurrentWidget(self.help_widget)
 
-    def show_parts(self, content_stack, translator):
-        """Open the parts navigation system"""
+    def show_smart_search(self, content_stack):
+        """Show the Smart Search widget"""
         try:
-            # First check if we need to recreate the parts navigation widget
-            # This ensures any existing lingering animations/operations are properly cleaned up
-            if self.parts_navigation_widget:
-                # Explicitly clean up any running operations in the component
-                if hasattr(self.parts_navigation_widget, 'cleanup_animations'):
-                    self.parts_navigation_widget.cleanup_animations()
+            # Check if Smart Search widget already exists or create it
+            if not self.smart_search_widget:
+                logger.info("Creating new Smart Search widget")
 
-                # For any brand loading threads
-                if hasattr(self.parts_navigation_widget, 'ui_builder') and \
-                        hasattr(self.parts_navigation_widget.ui_builder, 'brand_step') and \
-                        hasattr(self.parts_navigation_widget.ui_builder.brand_step, 'logo_manager'):
-                    logo_manager = self.parts_navigation_widget.ui_builder.brand_step.logo_manager
-                    if hasattr(logo_manager, 'thread_pool'):
-                        # Wait for thread pool to finish current tasks
-                        logo_manager.thread_pool.waitForDone(300)  # 300ms timeout
+                # Import here to avoid circular imports
+                from smart_search.smart_search_widget import SmartSearchWidget
 
-                # Remove from content stack and mark for deletion
-                content_stack.removeWidget(self.parts_navigation_widget)
-                self.parts_navigation_widget.deleteLater()
-
-                # Create a new instance
-                self.parts_navigation_widget = PartsNavigationContainer(
-                    self.translator,
-                    self.parts_db,
+                # Create the Smart Search widget
+                self.smart_search_widget = SmartSearchWidget(
+                    translator=self.translator,
+                    db=self.parts_db,
                     parent=self.parent
                 )
 
                 # Add to content stack
-                content_stack.addWidget(self.parts_navigation_widget)
+                content_stack.addWidget(self.smart_search_widget)
+            elif self.smart_search_widget.parent() is None:
+                # If widget exists but isn't in the stack (was removed)
+                logger.info("Re-adding existing Smart Search widget to stack")
+                content_stack.addWidget(self.smart_search_widget)
 
-            # Now show the widget
-            content_stack.setCurrentWidget(self.parts_navigation_widget)
+            # Check if widget is already in stack
+            index = content_stack.indexOf(self.smart_search_widget)
+            if index == -1:
+                # Widget isn't in the stack yet
+                logger.info("Adding Smart Search widget to stack")
+                content_stack.addWidget(self.smart_search_widget)
+
+            # Switch to Smart Search widget
+            logger.info("Switching to Smart Search widget")
+            content_stack.setCurrentWidget(self.smart_search_widget)
 
         except Exception as e:
-            logger.error(f"Error showing parts navigation: {str(e)}")
-            QMessageBox.warning(self.parent, translator.t("parts_button"),
-                                f"Could not load parts navigation: {str(e)}")
+            logger.error(f"Error showing Smart Search widget: {str(e)}")
+            # Show temporary message until widget is implemented
+            QMessageBox.information(
+                self.parent,
+                self.translator.t("smart_search_button") if hasattr(self, 'translator') else "Smart Search",
+                "Smart Search functionality is under development."
+            )
 
     def show_web_search(self, translator):
         """Open web search for car parts"""
@@ -258,7 +259,7 @@ class GUIViewManager:
             self.statistics_widget,
             self.settings_widget,
             self.help_widget,
-            self.parts_navigation_widget,
+            self.smart_search_widget,  # Added
             self.register_widget
         ]:
             if widget and hasattr(widget, 'update_translations'):

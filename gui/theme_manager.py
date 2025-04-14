@@ -86,8 +86,7 @@ class GUIThemeManager:
                 view_manager.products_widget,
                 view_manager.statistics_widget,
                 view_manager.settings_widget,
-                view_manager.help_widget,
-                view_manager.parts_navigation_widget
+                view_manager.help_widget
             ])
 
         return [w for w in themed_widgets if w is not None]

@@ -3,6 +3,7 @@ Complete barcode scanner button implementation with enhanced animations and tran
 Replace your entire barcode_scanner_button.py file with this.
 """
 import os
+import logging
 from PyQt5.QtWidgets import (QLabel, QDialog, QVBoxLayout, QHBoxLayout,
                              QPushButton, QApplication, QMessageBox, QFrame, QGraphicsDropShadowEffect,
                              QInputDialog, QLineEdit)
@@ -10,10 +11,15 @@ from PyQt5.QtCore import (Qt, pyqtSignal, QTimer, QEvent, QObject, QPropertyAnim
                           QEasingCurve, QRect, QSize, QPoint, pyqtProperty)
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QIcon, QFontMetrics, QLinearGradient, QBrush
 
+# Create module logger
+logger = logging.getLogger(__name__)
+
 # Try importing themes, with fallback
 try:
     from themes import get_color
 except ImportError:
+    logger.warning("Could not import themes module. Using fallback colors.")
+
     def get_color(name, default=None):
         """Fallback color function if themes module is not available"""
         colors = {
@@ -529,7 +535,7 @@ class ScanningDialog(QDialog):
             icon_loaded = False
             for path in icon_paths:
                 if os.path.exists(path):
-                    print(f"Found barcode icon at: {path}")
+                    logger.debug(f"Found barcode icon at: {path}")
                     pixmap = QPixmap(path)
                     if not pixmap.isNull():
                         # Scale the icon to fit properly - make it larger for better visibility
@@ -585,7 +591,7 @@ class ScanningDialog(QDialog):
                             icon_shadow.setOffset(0, 1)
                             self.icon_frame.icon_label.setGraphicsEffect(icon_shadow)
                         except Exception as shadow_err:
-                            print(f"Could not apply icon shadow: {shadow_err}")
+                            logger.error(f"Could not apply icon shadow: {shadow_err}")
 
                         # Set additional styling for the icon label
                         self.icon_frame.icon_label.setStyleSheet("""
@@ -600,7 +606,7 @@ class ScanningDialog(QDialog):
 
             # Fallback if icon not loaded
             if not icon_loaded:
-                print("No barcode icon found! Using text fallback.")
+                logger.warning("No barcode icon found! Using text fallback.")
                 self.icon_frame.icon_label.setText("🔍")
                 font = self.icon_frame.icon_label.font()
                 font.setPointSize(40)  # Larger emoji
@@ -608,7 +614,7 @@ class ScanningDialog(QDialog):
                 self.icon_frame.icon_label.setAlignment(Qt.AlignCenter)
                 self.icon_frame.icon_label.setStyleSheet("color: #333333;")
         except Exception as e:
-            print(f"Error loading icon: {e}")
+            logger.error(f"Error loading icon: {e}")
             # Last resort fallback
             self.icon_frame.icon_label.setText("🔍")
             self.icon_frame.icon_label.setAlignment(Qt.AlignCenter)
@@ -692,7 +698,7 @@ class ScanningDialog(QDialog):
             self.icon_frame.setStyleSheet(icon_frame_style)
 
         except Exception as e:
-            print(f"Style application error: {e}")
+            logger.error(f"Style application error: {e}")
             # If styling fails, apply minimal styling to ensure usability
             self.setStyleSheet("""
                 QDialog {
@@ -821,6 +827,7 @@ class BarcodeScannerButton(QLabel):
 
         # Fallback if icon not loaded
         if not icon_loaded:
+            logger.warning("No barcode icon found for button, using text fallback.")
             self.setText("🔍")
             font = self.font()
             font.setPointSize(20)
@@ -877,4 +884,5 @@ class BarcodeScannerButton(QLabel):
             barcode_format = "EAN-8"
 
         # Emit the barcode scanned signal
+        logger.info(f"Barcode detected: {barcode} (Format: {barcode_format})")
         self.barcode_scanned.emit(barcode, barcode_format)

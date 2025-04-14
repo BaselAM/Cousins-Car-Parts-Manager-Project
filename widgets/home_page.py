@@ -250,9 +250,10 @@ class HomePageWidget(QWidget, SizePolicyMixin):
         button_grid.setSpacing(get_size("spacing_medium"))  # Reduced for a more compact layout
 
         # Define buttons configuration
+        # Define buttons configuration
         buttons = [
             {"id": "products_button", "icon": "resources/product_icon.png", "row": 0, "col": 0},
-            {"id": "parts_button", "icon": "resources/parts_icon.png", "row": 0, "col": 1},
+            {"id": "smart_search_button", "icon": "resources/parts_icon.png", "row": 0, "col": 1},
             {"id": "register_button", "icon": "resources/search_web_icon.png", "row": 0, "col": 2},
             {"id": "statistics_button", "icon": "resources/stats_icon.png", "row": 1, "col": 0},
             {"id": "settings_button", "icon": "resources/settings_icon.png", "row": 1, "col": 1},
@@ -546,14 +547,15 @@ class HomePageWidget(QWidget, SizePolicyMixin):
         # Simple capitalization for modern look
         self.title.setText(title_text.upper())
 
-        # No direct styling here - will be handled by the theme
-
         # Update welcome message
         self.welcome_label.setText(self.translator.t("welcome_message"))
 
         # Update button texts
         for btn_id, button in self.nav_buttons.items():
-            button.setText(self.translator.t(btn_id))
+            if btn_id == "smart_search_button":
+                button.setText("Smart Search")  # Direct text instead of translation
+            else:
+                button.setText(self.translator.t(btn_id))
 
         # Ensure user info is up to date
         if hasattr(self, 'user_info') and self.username:

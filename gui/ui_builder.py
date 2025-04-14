@@ -89,7 +89,6 @@ class GUIBuilder:
         self.content_stack.addWidget(self.view_manager.statistics_widget)
         self.content_stack.addWidget(self.view_manager.settings_widget)
         self.content_stack.addWidget(self.view_manager.help_widget)
-        self.content_stack.addWidget(self.view_manager.parts_navigation_widget)
 
         # Set parent's content stack reference
         self.parent.content_stack = self.content_stack
@@ -171,11 +170,11 @@ class GUIBuilder:
         """Create dictionary of navigation functions"""
         return {
             'products_button': self.parent.show_products,
+            'smart_search_button': self.parent.show_smart_search,  # Changed from parts_button to smart_search_button
             'statistics_button': self.parent.show_statistics,
             'settings_button': self.parent.show_settings,
             'help_button': self.parent.show_help,
-            'parts_button': self.parent.show_parts,
-            'register_button': self.parent.show_register,  # Make sure this line exists
+            'register_button': self.parent.show_register,
             'exit_button': self.parent.exit_app
         }
 

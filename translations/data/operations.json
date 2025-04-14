@@ -1,0 +1,24 @@
+{"product_added_success": {
+    "en": "Product added successfully",
+    "he": "המוצר נוסף בהצלחה"
+  },
+  "product_add_failed": {
+    "en": "Failed to add product",
+    "he": "כשלון בהוספת מוצר"
+  },
+  "add_cancelled": {
+    "en": "Add product cancelled",
+    "he": "הוספת מוצר בוטלה"
+  },
+  "add_product_error": {
+    "en": "Error adding product",
+    "he": "שגיאה בהוספת מוצר"
+  },
+  "data_error": {
+    "en": "Error retrieving product data",
+    "he": "שגיאה בקבלת נתוני מוצר"
+  },
+  "product_updated_fetch_error": {
+    "en": "Product updated but could not fetch details",
+    "he": "המוצר עודכן אך לא ניתן לשלוף את הפרטים"
+  }}

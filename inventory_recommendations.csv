@@ -1,9 +1,0 @@
-category,frequency_count,is_critical,seasonal_factor,stocking_priority,popular_models
-Brake Discs,413,True,1.0,619.5,"['Skoda_אוקטביה', 'Toyota_קורולה', 'Mazda_מזדה 3']"
-Control Arm,208,True,1.0,312.0,"['Skoda_אוקטביה', 'Mazda_מזדה 6', 'Hyundai_I30']"
-Shock Absorber,144,True,1.4,302.4,"['Mazda_מזדה 3', 'Skoda_אוקטביה', 'Toyota_קורולה']"
-Air Filter,216,False,1.0,216.0,"['Mazda_מזדה 3', 'Toyota_יאריס', 'Toyota_קורולה']"
-Oil Filter,76,True,1.0,114.0,"['Skoda_אוקטביה', 'Toyota_קורולה', 'Mazda_מזדה 6']"
-AC Filter,104,False,1.0,104.0,"['Mazda_מזדה 3', 'Hyundai_I20', 'Skoda_אוקטביה']"
-Fuel Filter,48,True,1.0,72.0,"['Skoda_אוקטביה', 'Mazda_מזדה 3', 'Hyundai_I30']"
-Brake Pads,10,True,1.0,15.0,"['Mazda_מזדה 3', 'Mazda_מזדה 6']"

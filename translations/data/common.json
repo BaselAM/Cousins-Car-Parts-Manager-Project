@@ -1,0 +1,26 @@
+{
+  "original": {
+    "en": "Original",
+    "he": "מקורי"
+  },
+  "yes": {
+    "en": "Yes",
+    "he": "כן"
+  },
+  "no": {
+    "en": "No",
+    "he": "לא"
+  },
+  "cancel": {
+    "en": "Cancel",
+    "he": "ביטול"
+  },
+  "confirm": {
+    "en": "Confirm",
+    "he": "אישור"
+  },
+  "ok": {
+    "en": "OK",
+    "he": "אישור"
+  }
+}

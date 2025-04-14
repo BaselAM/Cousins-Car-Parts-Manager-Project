@@ -28,7 +28,12 @@ MODULE_LEVELS = {
     "database": "INFO",
     "gui": "INFO",
     "widgets": "INFO",
+    "widgets.products.status_bar": "INFO",  # Added for status bar
+    "widgets.products.add_operation": "INFO",  # Added for add operation
+    "widgets.products.components.barcode_scanner_button": "INFO",  # Added for barcode scanner
+    "widgets.products.product_class": "INFO",  # Added for main product class
+    "widgets.products.operations.print_operation": "INFO",  # Added for print operation
     "translations": "INFO",
     "themes": "INFO",
-    "car_chat": "DEBUG",  # Add this line for chat logging
+    "car_chat": "DEBUG",  # For chat logging
 }

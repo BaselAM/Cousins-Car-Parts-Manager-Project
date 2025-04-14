@@ -154,5 +154,9 @@
   "error": {
     "en": "Error",
     "he": "שגיאה"
+  },
+  "preparing": {
+    "en": "Preparing print options...",
+    "he": "מכין אפשרויות הדפסה..."
   }
 }

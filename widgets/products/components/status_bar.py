@@ -1,6 +1,10 @@
 from PyQt5.QtWidgets import QFrame, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
 from PyQt5.QtGui import QPixmap, QFont, QColor
 from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, pyqtSignal, QParallelAnimationGroup
+import logging
+
+# Create module logger
+logger = logging.getLogger(__name__)
 
 
 class StatusBar(QFrame):
@@ -103,7 +107,7 @@ class StatusBar(QFrame):
 
     def _debug_log_state(self):
         """Log the current state for debugging purposes"""
-        print(f"StatusBar state: dialog_action_in_progress={self.dialog_action_in_progress}, "
+        logger.debug(f"StatusBar state: dialog_action_in_progress={self.dialog_action_in_progress}, "
               f"current_dialog_action={self.current_dialog_action}, "
               f"is_expanded={self.is_expanded}, "
               f"message_queue={len(self.message_queue)}")
@@ -301,7 +305,7 @@ class StatusBar(QFrame):
         if type in self.DIALOG_ACTIONS:
             self.dialog_action_in_progress = True
             self.current_dialog_action = type
-            print(f"Started dialog action: {type}")
+            logger.debug(f"Started dialog action: {type}")
 
         # If we're already animating, stop current animation
         if self.is_animating:
@@ -441,35 +445,24 @@ class StatusBar(QFrame):
             self._prune_message_queue()
 
     def start_dialog_action(self, action_type, message=None):
-        """
-        Indicate that a dialog action has started.
-        The status bar will stay expanded until end_dialog_action is called.
-
-        Args:
-            action_type: One of "barcode", "add", "filter", "print", "export", "delete"
-            message: Optional custom message, otherwise uses default for action
-        """
         if action_type not in self.DIALOG_ACTIONS:
+            logger.warning(f"Invalid action_type '{action_type}' for start_dialog_action")
             return
 
-        action_messages = {
-            "barcode": "Initiating barcode scanner...",
-            "add": "Opening add product form...",
-            "filter": "Preparing filter options...",
-            "print": "Preparing print options...",
-            "export": "Preparing export options...",
-            "delete": "Preparing to delete products..."
-        }
+        # Use the message provided by the caller.
+        # If no message is provided, create a basic fallback.
+        if not message:
+            logger.warning(f"No message provided for start_dialog_action type '{action_type}'. Using generic fallback.")
+            msg = f"Processing {action_type}..."
+        else:
+            msg = message
 
-        msg = message if message else action_messages.get(action_type, f"Opening {action_type} dialog...")
-
-        # Mark that dialog action is in progress
         self.dialog_action_in_progress = True
         self.current_dialog_action = action_type
-        print(f"Starting dialog action: {action_type} - {msg}")
+        logger.debug(f"Starting dialog action: {action_type} - Message: '{msg}'")
 
-        # Use action-specific type and appropriate priority
-        priority = self.MESSAGE_PRIORITY.get(action_type, 50)
+        priority = self.MESSAGE_PRIORITY.get(action_type, 75)
+
         self.show_message(msg, action_type, None, priority)
 
     def end_dialog_action(self, success_message=None):
@@ -481,12 +474,12 @@ class StatusBar(QFrame):
             success_message: Optional success message to show before collapsing
         """
         if not self.dialog_action_in_progress:
-            print("Warning: end_dialog_action called but no dialog action in progress")
+            logger.warning("end_dialog_action called but no dialog action in progress")
             return
 
         # Clear dialog action status
         action_type = self.current_dialog_action
-        print(f"Ending dialog action: {action_type} - Success: {success_message}")
+        logger.debug(f"Ending dialog action: {action_type} - Success: {success_message}")
         self.dialog_action_in_progress = False
         self.current_dialog_action = None
 
@@ -532,7 +525,7 @@ class StatusBar(QFrame):
         """
         # Don't collapse if a dialog action is in progress
         if self.dialog_action_in_progress:
-            print("Not collapsing because dialog action in progress:", self.current_dialog_action)
+            logger.debug(f"Not collapsing because dialog action in progress: {self.current_dialog_action}")
             return
 
         # Don't do anything if we're already collapsed or collapsing
@@ -588,7 +581,7 @@ class StatusBar(QFrame):
         self.dialog_action_in_progress = False
         self.current_dialog_action = None
 
-        print(f"Force collapsing status bar (was dialog: {old_action})")
+        logger.debug(f"Force collapsing status bar (was dialog: {old_action})")
 
         # Now perform normal collapse
         self.collapse()

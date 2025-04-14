@@ -168,26 +168,25 @@ class GUI(QMainWindow, SizePolicyMixin):
         """Switch to help documentation view"""
         self.view_manager.show_help(self.content_stack)
 
-    def show_parts(self):
-        """Open the parts navigation system with safer error handling"""
+    def show_smart_search(self):
+        """Open the Smart Search functionality"""
         try:
             if hasattr(self, 'view_manager') and self.view_manager:
-                # Use a safer approach with exception handling
-                self.view_manager.show_parts(self.content_stack, self.translator)
+                self.view_manager.show_smart_search(self.content_stack)
             else:
                 # Fallback if view_manager is not available
                 QMessageBox.information(
                     self,
-                    self.translator.t("parts_button") if hasattr(self, 'translator') else "Parts",
-                    "Parts navigation is not available at this time."
+                    self.translator.t("smart_search_button") if hasattr(self, 'translator') else "Smart Search",
+                    "Smart Search is not available at this time."
                 )
         except Exception as e:
-            logger.error(f"Error in show_parts: {str(e)}")
+            logger.error(f"Error in show_smart_search: {str(e)}")
             # Show a user-friendly message
             QMessageBox.warning(
                 self,
                 self.translator.t("error") if hasattr(self, 'translator') else "Error",
-                f"Could not show parts navigation: {str(e)}"
+                f"Could not show Smart Search: {str(e)}"
             )
 
     def show_register(self):
