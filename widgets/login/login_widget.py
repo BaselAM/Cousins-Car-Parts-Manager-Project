@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
     QApplication, QGraphicsDropShadowEffect
 )
 from PyQt5.QtGui import QFont, QIcon, QPixmap, QColor
-from PyQt5.QtCore import Qt, pyqtSignal, QSize, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from pathlib import Path
 import time
 import logging
@@ -35,6 +35,7 @@ class LoginWidget(QWidget):
         self.translator = translator
         self.users_db = UsersDB()
         self.current_user = None
+        self.is_layout_ready = False  # Track if layout is fully processed
 
         # Load theme from settings
         try:
@@ -50,6 +51,11 @@ class LoginWidget(QWidget):
         self.resize(450, 500)
         self.setup_ui()
         self.apply_theme()
+
+        # Process the layout completely before showing
+        self.layout().activate()
+        self.ensurePolished()
+        self.is_layout_ready = True
 
         # Remember me functionality
         self.remembered_username = self._load_remembered_username()
@@ -196,6 +202,17 @@ class LoginWidget(QWidget):
         options_layout.addStretch()
 
         parent_layout.addLayout(options_layout)
+
+    def prepare_show(self):
+        """
+        Prepare the widget for showing by ensuring all layouts are fully processed.
+        Call this before show() to avoid visual layout changes after the widget appears.
+        """
+        if not self.is_layout_ready:
+            self.layout().activate()  # Force layout calculations
+            QApplication.processEvents()  # Process pending events
+            self.ensurePolished()  # Ensure all styles are applied
+            self.is_layout_ready = True
 
     def apply_theme(self):
         """Apply styling and theme to the login widget."""
@@ -464,15 +481,19 @@ class LoginWidget(QWidget):
                 break
 
         if form_layout:
-            # Update username row
-            username_label = form_layout.itemAt(0, QFormLayout.LabelRole).widget()
-            username_label.setText(self.translator.t('login:username_label') + ":")
+            # Update input placeholders directly
             self.username_edit.setPlaceholderText(self.translator.t('login:username_placeholder'))
-
-            # Update password row
-            password_label = form_layout.itemAt(1, QFormLayout.LabelRole).widget()
-            password_label.setText(self.translator.t('login:password_label') + ":")
             self.password_edit.setPlaceholderText(self.translator.t('login:password_placeholder'))
+
+            # For form layouts in PyQt5, we need to manually find the labels
+            for i in range(form_layout.rowCount()):
+                label_item = form_layout.itemAt(i * 2)  # Label items are at even indices
+                if label_item and label_item.widget():
+                    label = label_item.widget()
+                    if i == 0:  # First row (username)
+                        label.setText(self.translator.t('login:username_label') + ":")
+                    elif i == 1:  # Second row (password)
+                        label.setText(self.translator.t('login:password_label') + ":")
 
         # Update other UI elements
         self.remember_me_checkbox.setText(self.translator.t('login:remember_me'))

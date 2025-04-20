@@ -114,24 +114,35 @@ class AddOperation:
 
             product_name = sanitized_data['product_name']
 
-            # 2. Check if Product Already Exists (by name)
-            logger.debug(f"Checking for existing product: '{product_name}'")
-            existing = self.db.get_part_by_name(product_name)
+            # 2. Check if Product Already Exists (by parcode/barcode rather than name)
+            if original_parcode:
+                logger.debug(f"Checking for existing product with parcode: '{original_parcode}'")
+                existing = self.db.get_part_by_parcode(original_parcode)
+            else:
+                # No parcode provided, cannot check for duplicates by barcode
+                existing = None
+                logger.debug("No parcode provided, skipping duplicate barcode check")
 
             # 3. Handle Existing Product (Update Path)
             if existing:
-                logger.debug(f"Found existing product: ID {existing.get('parcode', 'N/A')}")
+                logger.debug(
+                    f"Found existing product with parcode '{original_parcode}': ID {existing.get('id', 'N/A')}")
                 # Confirm Overwrite with User
-                # Translate title and message (using format for name)
+                # Translate title and message (using format for barcode)
                 title = self.translator.t('overwrite_title')
-                message = self.translator.t('overwrite_message').format(name=product_name)
+                # Try to get a specific translation for barcode duplication, fall back to a generic message
+                try:
+                    message = self.translator.t('overwrite_message_barcode').format(barcode=original_parcode)
+                except:
+                    message = f"A product with barcode '{original_parcode}' already exists. Do you want to update it?"
+
                 confirm = ThemedMessageDialog.confirm(
                     title, message, parent=self.parent, icon_type="question"
                 )
 
                 if confirm:
-                    logger.info(f"User confirmed overwrite for '{product_name}'.")
-                    product_id = existing['parcode']  # Assuming parcode exists if existing is True
+                    logger.info(f"User confirmed overwrite for product with barcode '{original_parcode}'.")
+                    product_id = existing['id']  # Get the database ID
 
                     # Ensure parcode is preserved in the update
                     if original_parcode:
@@ -173,7 +184,7 @@ class AddOperation:
 
                 else:
                     # User cancelled the overwrite
-                    logger.info(f"User cancelled overwrite for '{product_name}'.")
+                    logger.info(f"User cancelled overwrite for product with barcode '{original_parcode}'.")
                     if self.status_bar:
                         # Translate cancellation message
                         cancel_msg = self.translator.t('update_cancelled')
@@ -182,7 +193,7 @@ class AddOperation:
 
             # 4. Handle New Product (Add Path)
             else:
-                logger.info(f"No existing product found for '{product_name}'. Proceeding with add.")
+                logger.info(f"No existing product found with barcode '{original_parcode}'. Proceeding with add.")
 
                 # Make sure the parcode is passed directly to db.add_part
                 # First ensure parcode is in sanitized_data

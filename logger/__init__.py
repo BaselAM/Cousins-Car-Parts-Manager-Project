@@ -31,7 +31,8 @@ def initialize_logging(level: str = "INFO", config_file: Optional[str] = None) -
         return
 
     # Fix for Windows console encoding issues with non-ASCII characters
-    if sys.platform == 'win32':
+    # Fix for Windows console encoding issues with non-ASCII characters
+    if sys.platform == 'win32' and hasattr(sys, 'stdout') and sys.stdout is not None:
         sys.stdout.reconfigure(encoding='utf-8')
 
     # Create log directory if it doesn't exist

@@ -1,42 +1,48 @@
 """Theme color definitions and size constants for the application."""
 
 # Base unit for consistent sizing across the application
+# Base unit for consistent sizing across the application
 BASE_UNIT = 8  # 8px as base unit
 
 # Size constants defined as multiples of BASE_UNIT
 SIZE = {
-    "tiny": BASE_UNIT,              # 8px
-    "small": BASE_UNIT * 2,         # 16px
-    "medium": BASE_UNIT * 3,        # 24px
-    "large": BASE_UNIT * 4,         # 32px
-    "xlarge": BASE_UNIT * 5,        # 40px
-    "xxlarge": BASE_UNIT * 6,       # 48px
+    # Basic sizes
+    "tiny": BASE_UNIT,  # 8px
+    "small": BASE_UNIT * 2,  # 16px
+    "medium": BASE_UNIT * 3,  # 24px
+    "large": BASE_UNIT * 4,  # 32px
+    "xlarge": BASE_UNIT * 5,  # 40px
+    "xxlarge": BASE_UNIT * 6,  # 48px
 
     # Specific element sizes
-    "button_min_width": BASE_UNIT * 20,    # 160px
-    "button_min_height": BASE_UNIT * 7,    # 56px
-    "button_max_width": BASE_UNIT * 37,    # 296px
-    "button_max_height": BASE_UNIT * 20,   # 160px
+    "button_min_width": BASE_UNIT * 20,  # 160px
+    "button_min_height": BASE_UNIT * 7,  # 56px
+    "button_max_width": BASE_UNIT * 37,  # 296px
+    "button_max_height": BASE_UNIT * 20,  # 160px
 
     # Header and footer heights
-    "header_height": BASE_UNIT * 9,       # 72px
-    "footer_height": BASE_UNIT * 4,       # 32px
-    "copyright_height": BASE_UNIT * 4,    # 32px
+    "header_height": BASE_UNIT * 9,  # 72px
+    "footer_height": BASE_UNIT * 4,  # 32px
+    "copyright_height": BASE_UNIT * 4,  # 32px
 
     # Spacing and margins
-    "spacing_tiny": BASE_UNIT / 2,         # 4px
-    "spacing_small": BASE_UNIT,            # 8px
-    "spacing_medium": BASE_UNIT * 2,       # 16px
-    "spacing_large": BASE_UNIT * 3,        # 24px
-    "spacing_xlarge": BASE_UNIT * 4,       # 32px
-    "spacing_xxlarge": BASE_UNIT * 5,      # 40px
+    "spacing_tiny": BASE_UNIT / 2,  # 4px
+    "spacing_small": BASE_UNIT,  # 8px
+    "spacing_medium": BASE_UNIT * 2,  # 16px
+    "spacing_large": BASE_UNIT * 3,  # 24px
+    "spacing_xlarge": BASE_UNIT * 4,  # 32px
+    "spacing_xxlarge": BASE_UNIT * 5,  # 40px
 
     # Borders and radiuses
     "border_radius_small": BASE_UNIT / 2,  # 4px
-    "border_radius_medium": BASE_UNIT,     # 8px
+    "border_radius_medium": BASE_UNIT,  # 8px
     "border_radius_large": BASE_UNIT * 2,  # 16px
-}
 
+    # Additional aliases used by widgets (these prevent the warnings)
+    "border_radius": BASE_UNIT,  # Maps to border_radius_medium
+    "padding": BASE_UNIT,  # Maps to spacing_small
+    "margin": BASE_UNIT,  # Maps to spacing_small
+}
 # Font sizes
 FONT_SIZE = {
     "tiny": 8,

@@ -1,0 +1,338 @@
+{
+    "parts_navigation_title": {
+        "en": "Parts Selection Wizard",
+        "he": "אשף בחירת חלקים"
+    },
+    "search_parts": {
+        "en": "Search",
+        "he": "חיפוש"
+    },
+    "search_parts_placeholder": {
+        "en": "Search by part name, code, or category...",
+        "he": "חיפוש לפי שם חלק, קוד, או קטגוריה..."
+    },
+    "search_button": {
+        "en": "Search",
+        "he": "חיפוש"
+    },
+    "search_results": {
+        "en": "Search Results",
+        "he": "תוצאות חיפוש"
+    },
+    "no_results_found": {
+        "en": "No matching parts found",
+        "he": "לא נמצאו חלקים תואמים"
+    },
+    "search_error": {
+        "en": "Search Error",
+        "he": "שגיאת חיפוש"
+    },
+    "brand_step": {
+        "en": "Brand",
+        "he": "יצרן"
+    },
+    "model_step": {
+        "en": "Model",
+        "he": "דגם"
+    },
+    "year_step": {
+        "en": "Year",
+        "he": "שנה"
+    },
+    "category_step": {
+        "en": "Category",
+        "he": "קטגוריה"
+    },
+    "product_step": {
+        "en": "Product",
+        "he": "מוצר"
+    },
+    "details_step": {
+        "en": "Details",
+        "he": "פרטים"
+    },
+    "final_step": {
+        "en": "Summary",
+        "he": "סיכום"
+    },
+    "back_button": {
+        "en": "Back",
+        "he": "חזור"
+    },
+    "next_button": {
+        "en": "Next",
+        "he": "הבא"
+    },
+    "finish_button": {
+        "en": "Finish",
+        "he": "סיים"
+    },
+    "done_button": {
+        "en": "Done",
+        "he": "סיום"
+    },
+    "select_brand": {
+        "en": "Select Car Brand",
+        "he": "בחר יצרן רכב"
+    },
+    "search_brands": {
+        "en": "Search Brands",
+        "he": "חיפוש יצרנים"
+    },
+    "search_brands_placeholder": {
+        "en": "Type brand name...",
+        "he": "הקלד שם יצרן..."
+    },
+    "select_brand_help": {
+        "en": "Select the brand of the car you need parts for",
+        "he": "בחר את יצרן הרכב שעבורו אתה צריך חלקים"
+    },
+    "no_brands_found": {
+        "en": "No brands found",
+        "he": "לא נמצאו יצרנים"
+    },
+    "select_model": {
+        "en": "Select Car Model",
+        "he": "בחר דגם רכב"
+    },
+    "models_for_brand": {
+        "en": "Models for {brand}",
+        "he": "דגמים עבור {brand}"
+    },
+    "search_models": {
+        "en": "Search Models",
+        "he": "חיפוש דגמים"
+    },
+    "search_models_placeholder": {
+        "en": "Type model name...",
+        "he": "הקלד שם דגם..."
+    },
+    "select_model_help": {
+        "en": "Select the model of the car you need parts for",
+        "he": "בחר את דגם הרכב שעבורו אתה צריך חלקים"
+    },
+    "no_models_found": {
+        "en": "No models found for this brand",
+        "he": "לא נמצאו דגמים ליצרן זה"
+    },
+    "select_year": {
+        "en": "Select Car Year",
+        "he": "בחר שנת רכב"
+    },
+    "search_years": {
+        "en": "Search Years",
+        "he": "חיפוש שנים"
+    },
+    "search_years_placeholder": {
+        "en": "Type year...",
+        "he": "הקלד שנה..."
+    },
+    "select_year_help": {
+        "en": "Select the production year of your car",
+        "he": "בחר את שנת הייצור של הרכב שלך"
+    },
+    "no_years_found": {
+        "en": "No years found for this model",
+        "he": "לא נמצאו שנים לדגם זה"
+    },
+    "select_category": {
+        "en": "Select Part Category",
+        "he": "בחר קטגורית חלק"
+    },
+    "search_categories": {
+        "en": "Search Categories",
+        "he": "חיפוש קטגוריות"
+    },
+    "search_categories_placeholder": {
+        "en": "Type category name...",
+        "he": "הקלד שם קטגוריה..."
+    },
+    "select_category_help": {
+        "en": "Select the category of part you need",
+        "he": "בחר את קטגורית החלק שאתה צריך"
+    },
+    "no_categories_found": {
+        "en": "No categories found for this car",
+        "he": "לא נמצאו קטגוריות לרכב זה"
+    },
+    "select_product": {
+        "en": "Select Product",
+        "he": "בחר מוצר"
+    },
+    "search_products": {
+        "en": "Search Products",
+        "he": "חיפוש מוצרים"
+    },
+    "search_products_placeholder": {
+        "en": "Type product name...",
+        "he": "הקלד שם מוצר..."
+    },
+    "select_product_help": {
+        "en": "Select the specific product you need",
+        "he": "בחר את המוצר הספציפי שאתה צריך"
+    },
+    "no_products_found": {
+        "en": "No products found in this category",
+        "he": "לא נמצאו מוצרים בקטגוריה זו"
+    },
+    "in_stock": {
+        "en": "In Stock",
+        "he": "במלאי"
+    },
+    "out_of_stock": {
+        "en": "Out of Stock",
+        "he": "אזל מהמלאי"
+    },
+    "stock": {
+        "en": "Stock",
+        "he": "מלאי"
+    },
+    "select_details": {
+        "en": "Configure Product Details",
+        "he": "הגדר פרטי מוצר"
+    },
+    "manufacturer": {
+        "en": "Manufacturer",
+        "he": "יצרן"
+    },
+    "material": {
+        "en": "Material",
+        "he": "חומר"
+    },
+    "quality": {
+        "en": "Quality",
+        "he": "איכות"
+    },
+    "quality_standard": {
+        "en": "Standard",
+        "he": "סטנדרט"
+    },
+    "quality_premium": {
+        "en": "Premium",
+        "he": "פרימיום"
+    },
+    "quality_oem": {
+        "en": "OEM",
+        "he": "מקורי"
+    },
+    "comments": {
+        "en": "Comments",
+        "he": "הערות"
+    },
+    "comments_placeholder": {
+        "en": "Add any special requirements or notes...",
+        "he": "הוסף דרישות מיוחדות או הערות..."
+    },
+    "select_details_help": {
+        "en": "Configure the specifications for this part",
+        "he": "הגדר את המפרט עבור חלק זה"
+    },
+    "continue_button": {
+        "en": "Continue",
+        "he": "המשך"
+    },
+    "part_details": {
+        "en": "Part Details Summary",
+        "he": "סיכום פרטי חלק"
+    },
+    "part_name": {
+        "en": "Part Name",
+        "he": "שם חלק"
+    },
+    "car_info": {
+        "en": "Car Info",
+        "he": "פרטי רכב"
+    },
+    "selected_quantity": {
+        "en": "Selected Quantity",
+        "he": "כמות נבחרת"
+    },
+    "add_to_cart": {
+        "en": "Add to Cart",
+        "he": "הוסף לסל"
+    },
+    "print_details": {
+        "en": "Print Details",
+        "he": "הדפס פרטים"
+    },
+    "no_image": {
+        "en": "No Image",
+        "he": "אין תמונה"
+    },
+    "image_error": {
+        "en": "Image Error",
+        "he": "שגיאת תמונה"
+    },
+    "similar_parts": {
+        "en": "Similar Parts",
+        "he": "חלקים דומים"
+    },
+    "switch_part": {
+        "en": "Switch Part",
+        "he": "החלף חלק"
+    },
+    "switch_part_confirm": {
+        "en": "Would you like to switch to {part}?",
+        "he": "האם ברצונך להחליף ל{part}?"
+    },
+    "added_to_cart_title": {
+        "en": "Added to Cart",
+        "he": "נוסף לסל"
+    },
+    "added_to_cart_message": {
+        "en": "Added {quantity} x {name} to cart. Total: ₪{price:.2f}",
+        "he": "נוסף {quantity} x {name} לסל. סה\"כ: ₪{price:.2f}"
+    },
+    "print_title": {
+        "en": "Print",
+        "he": "הדפסה"
+    },
+    "print_message": {
+        "en": "Printing details for {name}",
+        "he": "מדפיס פרטים עבור {name}"
+    },
+    "currency_symbol": {
+        "en": "₪",
+        "he": "₪"
+    },
+    "error": {
+        "en": "Error",
+        "he": "שגיאה"
+    },
+    "load_error": {
+        "en": "Error loading data",
+        "he": "שגיאה בטעינת נתונים"
+    },
+    "operation_error": {
+        "en": "Operation failed",
+        "he": "הפעולה נכשלה"
+    },
+    "loading": {
+    "en": "Loading",
+    "he": "טוען"
+},
+"select_brand_subtitle": {
+    "en": "Select the brand of the car you need parts for",
+    "he": "בחר את יצרן הרכב שעבורו אתה צריך חלקים"
+},
+"configure_details": {
+    "en": "Configure Details",
+    "he": "הגדרת פרטים"
+},
+"configure_details_help": {
+    "en": "Configure the specifications for this part",
+    "he": "הגדר את המפרט עבור חלק זה"
+},
+"summary_title": {
+    "en": "Order Summary",
+    "he": "סיכום הזמנה"
+},
+"summary_help": {
+    "en": "Review your selection before adding to cart",
+    "he": "סקור את הבחירה שלך לפני הוספה לסל"
+},
+"more_options": {
+    "en": "More Options",
+    "he": "אפשרויות נוספות"
+}
+}

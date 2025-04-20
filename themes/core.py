@@ -25,6 +25,14 @@ def set_theme(theme_name):
     global _current_theme
     _current_theme = theme_name if theme_name in THEMES else "classic"
 
+def get_current_theme():
+    """Get the current theme name.
+
+    Returns:
+        str: The name of the current theme
+    """
+    return _current_theme
+
 def get_color(color_key, fallback=None):
     """Retrieve a theme color value using a key, with an optional fallback.
 

@@ -1,0 +1,30 @@
+{
+  "help_documentation": {
+    "en": "Help Documentation",
+    "he": "תיעוד עזרה"
+  },
+  "help_description": {
+    "en": "Find all documentation about the app here.",
+    "he": "מצא כאן את כל התיעוד על האפליקציה."
+  },
+  "contact_support": {
+    "en": "Contact Support",
+    "he": "צור קשר עם תמיכה"
+  },
+  "quick_steps": {
+    "en": "Quick Steps",
+    "he": "שלבים מהירים"
+  },
+  "email_us": {
+    "en": "Email Us",
+    "he": "שלחו לנו אימייל"
+  },
+  "user_guide": {
+    "en": "User Guide",
+    "he": "מדריך למשתמש"
+  },
+  "help_footer_note": {
+    "en": "This is the footer note for help section.",
+    "he": "זו הערת תחתית עבור החלק של עזרה."
+  }
+}

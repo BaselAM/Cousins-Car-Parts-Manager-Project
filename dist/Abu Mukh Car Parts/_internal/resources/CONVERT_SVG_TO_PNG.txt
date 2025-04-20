@@ -1,0 +1,2 @@
+Please convert barcode_icon.svg to barcode_icon.png using an image editor.
+You can use online tools like https://svgtopng.com/ for this.

@@ -1,0 +1,217 @@
+2025-04-20 04:33:44,186 - root - INFO - Logging system initialized (level: INFO)
+2025-04-20 04:33:44,186 - root - INFO - Log files directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\logs
+2025-04-20 04:33:44,207 - __main__ - INFO - Resource directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\resources
+2025-04-20 04:33:44,207 - __main__ - INFO - Translations directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations
+2025-04-20 04:33:44,207 - __main__ - INFO - Translations data directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations\data
+2025-04-20 04:33:44,211 - __main__ - INFO - Checking for translation files...
+2025-04-20 04:33:44,211 - __main__ - INFO - Found translations data directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations\data
+2025-04-20 04:33:44,211 - translations - INFO - Loaded 0 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations\data
+2025-04-20 04:33:44,211 - __main__ - INFO - Loaded 0 translation files from data directory
+2025-04-20 04:33:44,212 - config - INFO - Determined application root: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal
+2025-04-20 04:33:44,212 - config - INFO - Created directory: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\database
+2025-04-20 04:33:44,213 - config - INFO - Running as frozen application, resources at: C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\resources
+2025-04-20 04:33:44,911 - __main__ - INFO - Application starting at: 2025-04-20 04:33:44
+2025-04-20 04:33:44,911 - __main__ - INFO - Current user: BaselAM
+2025-04-20 04:33:44,942 - __main__ - INFO - Loading emoji fonts...
+2025-04-20 04:33:44,943 - __main__ - INFO - Initializing database connection...
+2025-04-20 04:33:45,147 - database.car_parts_db - INFO - Thread 19548: Database connection established
+2025-04-20 04:33:45,147 - database.car_parts_db - INFO - Initialized database connection to localhost
+2025-04-20 04:33:45,170 - __main__ - INFO - Connected to database. Found 2849 parts.
+2025-04-20 04:33:45,170 - translations - INFO - Loading translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations\data
+2025-04-20 04:33:45,170 - translations - INFO - Loaded 0 translation files from C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\translations\data
+2025-04-20 04:33:45,170 - translations - INFO - Loaded 0 translation files
+2025-04-20 04:33:45,170 - __main__ - INFO - Initialized translator with language: en
+2025-04-20 04:33:45,337 - UsersDB - INFO - Connected to user database at C:\Users\97253\Desktop\BeastMode-CSIntro-Excercises\CousinTestProject\dist\Abu Mukh Car Parts\_internal\database\users.db
+2025-04-20 04:33:45,372 - UsersDB - INFO - Database tables created successfully
+2025-04-20 04:33:45,495 - UsersDB - INFO - Initial users created: sabea, fahed, raed (password: 123)
+2025-04-20 04:33:45,496 - translations - WARNING - Missing translation for 'login:login_subtitle' in 'en'
+2025-04-20 04:33:46,008 - translations - WARNING - Missing translation for 'login:username_placeholder' in 'en'
+2025-04-20 04:33:46,008 - translations - WARNING - Missing translation for 'login:password_placeholder' in 'en'
+2025-04-20 04:33:46,008 - translations - WARNING - Missing translation for 'login:username_label' in 'en'
+2025-04-20 04:33:46,008 - translations - WARNING - Missing translation for 'login:password_label' in 'en'
+2025-04-20 04:33:46,008 - translations - WARNING - Missing translation for 'login:remember_me' in 'en'
+2025-04-20 04:33:46,009 - translations - WARNING - Missing translation for 'login:login_button' in 'en'
+2025-04-20 04:33:46,009 - translations - WARNING - Missing translation for 'login:forgot_password' in 'en'
+2025-04-20 04:33:46,043 - translations - WARNING - Missing translation for 'smart_search_button' in 'en'
+2025-04-20 04:33:46,044 - translations - WARNING - Missing translation for 'welcome_message' in 'en'
+2025-04-20 04:33:46,166 - translations - WARNING - Missing translation for 'suggestion_parts' in 'en'
+2025-04-20 04:33:46,166 - translations - WARNING - Missing translation for 'suggestion_service' in 'en'
+2025-04-20 04:33:46,166 - translations - WARNING - Missing translation for 'suggestion_repair' in 'en'
+2025-04-20 04:33:46,166 - translations - WARNING - Missing translation for 'suggestion_brands' in 'en'
+2025-04-20 04:33:46,166 - translations - WARNING - Missing translation for 'suggestion_inventory' in 'en'
+2025-04-20 04:33:46,180 - widgets.header.chatbot.api_key_manager - INFO - API key loaded successfully
+2025-04-20 04:33:46,206 - widgets.header.chatbot.openai_client - INFO - OpenAI client initialized successfully
+2025-04-20 04:33:46,231 - translations - WARNING - Missing translation for 'clear_filters_tooltip' in 'en'
+2025-04-20 04:33:46,231 - translations - WARNING - Missing translation for 'print' in 'en'
+2025-04-20 04:33:46,231 - translations - WARNING - Missing translation for 'print_with_preview_tooltip' in 'en'
+2025-04-20 04:33:46,231 - translations - WARNING - Missing translation for 'barcode:scan_barcode_tooltip' in 'en'
+2025-04-20 04:33:46,233 - translations - WARNING - Missing translation for 'manufacturer' in 'en'
+2025-04-20 04:33:46,234 - translations - WARNING - Missing translation for 'no_products_found' in 'en'
+2025-04-20 04:33:46,242 - widgets.products.components.barcode_scanner_button - WARNING - No barcode icon found for button, using text fallback.
+2025-04-20 04:33:46,269 - widgets.products.product_widget.operations.print_operation - INFO - Available fonts for PDF: ['Arial', 'Tahoma', 'David']
+2025-04-20 04:33:46,296 - translations - WARNING - Missing translation for 'statistics:analytics_dashboard' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:inventory_insights' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:categories' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:brands' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:low_stock' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:total_parts' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:total_value' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:average_price' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:out_of_stock' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:low_stock_items' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:items_need_reordering' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:total_categories' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:car_brands_compatible' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:inventory_value_trend' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:parts_by_category' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:inventory_value_by_brand' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:part_distribution' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:price_distribution' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:categories_for_brand' in 'en'
+2025-04-20 04:33:46,297 - translations - WARNING - Missing translation for 'statistics:low_stock_by_category' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:low_stock_items_quantity' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:select_brand' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:parts_for_brand' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:select_category' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:parts_in_category' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:most_valuable_items' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:advanced_filters' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:date_range' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:stock_status_filter' in 'en'
+2025-04-20 04:33:46,300 - translations - WARNING - Missing translation for 'statistics:in_stock' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:apply_filters' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:time_range' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:to' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:apply' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:part_name' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:total_value_column' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:compatible_brands' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:value_column' in 'en'
+2025-04-20 04:33:46,301 - translations - WARNING - Missing translation for 'statistics:ready' in 'en'
+2025-04-20 04:33:46,330 - translations - WARNING - Missing translation for 'select_labels_folder' in 'en'
+2025-04-20 04:33:46,330 - translations - WARNING - Missing translation for 'select_bartender_executable' in 'en'
+2025-04-20 04:33:46,330 - translations - WARNING - Missing translation for 'bartender_integration' in 'en'
+2025-04-20 04:33:46,330 - translations - WARNING - Missing translation for 'labels_folder' in 'en'
+2025-04-20 04:33:46,330 - translations - WARNING - Missing translation for 'bartender_executable' in 'en'
+2025-04-20 04:33:46,344 - translations - WARNING - Missing translation for 'search_by_name' in 'en'
+2025-04-20 04:33:46,345 - translations - WARNING - Missing translation for 'search_by_barcode' in 'en'
+2025-04-20 04:33:46,345 - translations - WARNING - Missing translation for 'search_results_title' in 'en'
+2025-04-20 04:33:46,345 - translations - WARNING - Missing translation for 'sort_by_price' in 'en'
+2025-04-20 04:33:46,346 - translations - WARNING - Missing translation for 'duplicate_product' in 'en'
+2025-04-20 04:33:46,346 - translations - WARNING - Missing translation for 'search_by_name_placeholder' in 'en'
+2025-04-20 04:33:46,594 - database_sync - INFO - Database sync manager initialized
+2025-04-20 04:33:46,594 - widgets.smart_search_widget - INFO - SmartSearchWidget connected to database sync manager
+2025-04-20 04:33:46,594 - translations - WARNING - Missing translation for 'register_title' in 'en'
+2025-04-20 04:33:46,594 - translations - WARNING - Missing translation for 'sell_mode' in 'en'
+2025-04-20 04:33:46,594 - translations - WARNING - Missing translation for 'supply_mode' in 'en'
+2025-04-20 04:33:46,597 - translations - WARNING - Missing translation for 'search_button' in 'en'
+2025-04-20 04:33:46,598 - translations - WARNING - Missing translation for 'search_mode' in 'en'
+2025-04-20 04:33:46,598 - translations - WARNING - Missing translation for 'product_name_search' in 'en'
+2025-04-20 04:33:46,598 - translations - WARNING - Missing translation for 'barcode_search' in 'en'
+2025-04-20 04:33:46,598 - translations - WARNING - Missing translation for 'product_name_search_desc' in 'en'
+2025-04-20 04:33:46,602 - translations - WARNING - Missing translation for 'search_product_prompt' in 'en'
+2025-04-20 04:33:46,603 - translations - WARNING - Missing translation for 'empty_state_subtitle' in 'en'
+2025-04-20 04:33:46,606 - translations - WARNING - Missing translation for 'sell_cart_title' in 'en'
+2025-04-20 04:33:46,608 - translations - WARNING - Missing translation for 'empty_cart_sell' in 'en'
+2025-04-20 04:33:46,608 - translations - WARNING - Missing translation for 'empty_cart_hint' in 'en'
+2025-04-20 04:33:46,610 - translations - WARNING - Missing translation for 'subtotal' in 'en'
+2025-04-20 04:33:46,612 - translations - WARNING - Missing translation for 'total_items' in 'en'
+2025-04-20 04:33:46,612 - translations - WARNING - Missing translation for 'checkout' in 'en'
+2025-04-20 04:33:46,616 - translations - WARNING - Missing translation for 'supply_cart_title' in 'en'
+2025-04-20 04:33:46,617 - translations - WARNING - Missing translation for 'empty_cart_supply' in 'en'
+2025-04-20 04:33:46,618 - translations - WARNING - Missing translation for 'process_supply' in 'en'
+2025-04-20 04:33:46,906 - translations - WARNING - Missing translation for 'more_options' in 'en'
+2025-04-20 04:33:47,222 - widgets.smart_search_widget - WARNING - Could not find sort or filter buttons
+2025-04-20 04:33:47,254 - translations - WARNING - Missing translation for 'Internet: Connected' in 'en'
+2025-04-20 04:33:47,254 - translations - WARNING - Missing translation for 'Click for details' in 'en'
+2025-04-20 04:33:47,273 - database.car_parts_db - INFO - Thread 19548: New database connection established
+2025-04-20 04:33:47,897 - widgets.smart_search_widget - WARNING - Could not find sort or filter buttons
+2025-04-20 04:33:52,321 - UsersDB - INFO - User fahed authenticated successfully
+2025-04-20 04:33:52,336 - translations - WARNING - Missing translation for 'login:login_successful' in 'en'
+2025-04-20 04:33:52,336 - __main__ - INFO - User logged in: {'id': 2, 'username': 'fahed', 'full_name': 'Fahed Abu Mukh', 'role': 'manager', 'settings': {'theme': 'classic', 'language': 'en', 'rtl': False}}
+2025-04-20 04:33:58,058 - translations - WARNING - Missing translation for 'add:preparing' in 'en'
+2025-04-20 04:33:58,059 - translations - WARNING - Missing translation for 'barcode' in 'en'
+2025-04-20 04:33:58,059 - translations - WARNING - Missing translation for 'barcode_placeholder' in 'en'
+2025-04-20 04:33:58,059 - widgets.products.components.barcode_scanner_button - WARNING - No barcode icon found for button, using text fallback.
+2025-04-20 04:33:58,060 - translations - WARNING - Missing translation for 'compatible_models' in 'en'
+2025-04-20 04:33:58,060 - translations - WARNING - Missing translation for 'compatible_models_placeholder' in 'en'
+2025-04-20 04:33:58,060 - translations - WARNING - Missing translation for 'original' in 'en'
+2025-04-20 04:33:58,060 - translations - WARNING - Missing translation for 'yes' in 'en'
+2025-04-20 04:33:58,060 - translations - WARNING - Missing translation for 'no' in 'en'
+2025-04-20 04:33:59,196 - widgets.products.product_widget.operations.add_operation - INFO - Add Product Dialog Rejected/Cancelled.
+2025-04-20 04:34:11,774 - gui.view_manager - INFO - Adding Smart Search widget to stack
+2025-04-20 04:34:11,782 - gui.view_manager - INFO - Switching to Smart Search widget
+2025-04-20 04:34:16,443 - gui.gui_main - INFO - Showing register view
+2025-04-20 04:34:16,443 - gui.view_manager - INFO - Adding register widget to stack
+2025-04-20 04:34:16,457 - gui.view_manager - INFO - Switching to register widget
+2025-04-20 04:34:21,147 - widgets.statistics - ERROR - Error loading statistics data: 'NoneType' object has no attribute 'strip'
+2025-04-20 04:34:21,147 - widgets.statistics - ERROR - Failed to load data: 'NoneType' object has no attribute 'strip'
+2025-04-20 04:34:38,552 - widgets.settings.settings_widget - INFO - Changing theme to dark
+2025-04-20 04:34:38,734 - widgets.smart_search_widget - WARNING - Could not find sort or filter buttons
+2025-04-20 04:34:38,914 - gui.gui_main - INFO - Theme update completed synchronously
+2025-04-20 04:34:39,602 - widgets.settings.settings_widget - INFO - Settings saved successfully
+2025-04-20 04:34:44,121 - widgets.settings.settings_widget - INFO - Changing language from en to he
+2025-04-20 04:34:44,126 - widgets.settings.settings_widget - INFO - Changing theme to dark
+2025-04-20 04:34:44,282 - widgets.smart_search_widget - WARNING - Could not find sort or filter buttons
+2025-04-20 04:34:44,693 - translations - WARNING - Missing translation for 'duplicate_product' in 'he'
+2025-04-20 04:34:44,693 - widgets.smart_search_widget - WARNING - Could not find sort or filter buttons
+2025-04-20 04:34:44,793 - translations - WARNING - Missing translation for 'suggestion_parts' in 'he'
+2025-04-20 04:34:44,794 - translations - WARNING - Missing translation for 'suggestion_service' in 'he'
+2025-04-20 04:34:44,794 - translations - WARNING - Missing translation for 'suggestion_repair' in 'he'
+2025-04-20 04:34:44,794 - translations - WARNING - Missing translation for 'suggestion_brands' in 'he'
+2025-04-20 04:34:44,794 - translations - WARNING - Missing translation for 'suggestion_inventory' in 'he'
+2025-04-20 04:34:44,795 - widgets.header.top_bar - ERROR - Error updating translations in top bar: 'Translator' object has no attribute 'tr'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'welcome_message' in 'he'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'clear_filters_tooltip' in 'he'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'print' in 'he'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'print_with_preview_tooltip' in 'he'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'barcode:scan_barcode_tooltip' in 'he'
+2025-04-20 04:34:44,795 - translations - WARNING - Missing translation for 'manufacturer' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:analytics_dashboard' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:inventory_insights' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:categories' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:brands' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:low_stock' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:total_parts' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:total_value' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:average_price' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:out_of_stock' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:low_stock_items' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:items_need_reordering' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:total_categories' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:car_brands_compatible' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:inventory_value_trend' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:parts_by_category' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:inventory_value_by_brand' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:part_distribution' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:price_distribution' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:categories_for_brand' in 'he'
+2025-04-20 04:34:44,796 - translations - WARNING - Missing translation for 'statistics:low_stock_by_category' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'statistics:to' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'bartender_integration' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'labels_folder' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'bartender_executable' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'select_labels_folder' in 'he'
+2025-04-20 04:34:44,798 - translations - WARNING - Missing translation for 'select_bartender_executable' in 'he'
+2025-04-20 04:34:44,815 - translations - WARNING - Missing translation for 'search_by_barcode' in 'he'
+2025-04-20 04:34:44,815 - translations - WARNING - Missing translation for 'search_by_name' in 'he'
+2025-04-20 04:34:44,815 - translations - WARNING - Missing translation for 'search_results_title' in 'he'
+2025-04-20 04:34:44,815 - translations - WARNING - Missing translation for 'smart_search_button' in 'he'
+2025-04-20 04:34:44,818 - database.car_parts_db - INFO - Thread 19548: New database connection established
+2025-04-20 04:34:44,900 - gui.gui_main - INFO - Theme update completed synchronously
+2025-04-20 04:34:44,954 - database.car_parts_db - INFO - Thread 19548: New database connection established
+2025-04-20 04:34:45,695 - widgets.settings.settings_widget - INFO - Settings saved successfully
+2025-04-20 04:34:48,202 - gui.view_manager - INFO - Switching to Smart Search widget
+2025-04-20 04:34:57,971 - translations - WARNING - Missing translation for 'barcode:scan_barcode' in 'he'
+2025-04-20 04:34:57,971 - translations - WARNING - Missing translation for 'barcode:waiting_for_scan' in 'he'
+2025-04-20 04:34:57,972 - translations - WARNING - Missing translation for 'barcode:scan_note' in 'he'
+2025-04-20 04:34:57,972 - widgets.products.components.barcode_scanner_button - WARNING - No barcode icon found! Using text fallback.
+2025-04-20 04:35:00,229 - gui.view_manager - INFO - Switching to Smart Search widget
+2025-04-20 04:35:04,132 - gui.gui_main - INFO - Showing register view
+2025-04-20 04:35:04,132 - gui.view_manager - INFO - Switching to register widget
+2025-04-20 04:35:06,999 - gui.gui_main - INFO - Showing register view
+2025-04-20 04:35:06,999 - gui.view_manager - INFO - Switching to register widget
+2025-04-20 04:35:11,182 - gui.event_handlers - INFO - Closing database connection...
+2025-04-20 04:35:11,201 - __main__ - INFO - Cleaning up application resources...
+2025-04-20 04:35:11,201 - __main__ - INFO - Closing database connection...
+2025-04-20 04:35:11,201 - __main__ - INFO - Application shutdown complete

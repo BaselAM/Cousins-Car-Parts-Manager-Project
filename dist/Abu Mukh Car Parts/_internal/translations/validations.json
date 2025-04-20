@@ -1,0 +1,78 @@
+{
+  "confirm_delete": {
+    "en": "Confirm Deletion",
+    "he": "אישור מחיקה"
+  },
+  "delete_confirmation": {
+    "en": "Are you sure you want to delete {count} item(s)?",
+    "he": "האם אתה בטוח שברצונך למחוק {count} פריט(ים)?"
+  },
+  "items_selected": {
+    "en": "{count} items selected for deletion",
+    "he": "{count} פריטים נבחרו למחיקה"
+  },
+  "product_updated": {
+    "en": "Product updated successfully",
+    "he": "המוצר עודכן בהצלחה"
+  },
+  "items_deleted": {
+    "en": "Successfully deleted {count} items",
+    "he": "נמחקו בהצלחה {count} פריטים"
+  },
+  "select_mode_enabled": {
+    "en": "Selection mode enabled",
+    "he": "מצב בחירה הופעל"
+  },
+  "deleting_items": {
+    "en": "Deleting {count} items...",
+    "he": "מוחק {count} פריטים..."
+  },
+  "required_field": {
+    "en": "This field is required",
+    "he": "שדה חובה"
+  },
+  "confirm_clear": {
+    "en": "Confirm Clear",
+    "he": "אישור מחיקה"
+  },
+  "confirm_clear_field": {
+    "en": "Are you sure you want to clear the {field} field?",
+    "he": "האם אתה בטוח שברצונך למחוק את השדה {field}?"
+  },
+  "product_name_required": {
+    "en": "Product name is required",
+    "he": "שם המוצר הוא שדה חובה"
+  },
+  "validation_error": {
+    "en": "Validation Error",
+    "he": "שגיאת אימות"
+  },
+  "name_required": {
+    "en": "Please enter a product name",
+    "he": "אנא הזן שם מוצר"
+  },
+  "product_added": {
+    "en": "Product added successfully",
+    "he": "המוצר נוסף בהצלחה"
+  },
+  "no_data_to_export": {
+    "en": "No data to export",
+    "he": "אין נתונים לייצוא"
+  },
+  "export_title": {
+    "en": "Export Products",
+    "he": "ייצוא מוצרים"
+  },
+  "export_success": {
+    "en": "Data exported successfully to {file}",
+    "he": "הנתונים יוצאו בהצלחה לקובץ {file}"
+  },
+  "overwrite_title": {
+    "en": "Overwrite Product",
+    "he": "דרוש אישור לעדכון חלק"
+  },
+  "overwrite_message": {
+    "en": "A product with this name exists. Overwrite?",
+    "he": "קיים מוצר עם שם זה. לעדכן?"
+  }
+}

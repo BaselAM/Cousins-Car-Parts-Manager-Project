@@ -1,0 +1,54 @@
+{
+  "filter_title": {
+    "en": "Filter Products",
+    "he": "סינון מוצרים"
+  },
+  "filter_criteria": {
+    "en": "Filter Criteria",
+    "he": "קריטריוני סינון"
+  },
+  "filter_results": {
+    "en": "Found {count} out of {total} products",
+    "he": "נמצאו {count} מתוך {total} מוצרים"
+  },
+  "filter_status": {
+    "en": "Showing {count} of {total} products",
+    "he": "מציג {count} מתוך {total} מוצרים"
+  },
+  "search_results": {
+    "en": "Found {count} of {total} products",
+    "he": "נמצאו {count} מתוך {total} מוצרים"
+  },
+  "name_placeholder": {
+    "en": "Search by name",
+    "he": "חפש לפי שם"
+  },
+  "search_placeholder": {
+    "en": "Search products by name, category, car...",
+    "he": "חפש מוצרים לפי שם, קטגוריה, רכב..."
+  },
+  "no_cell_selected": {
+    "en": "No cell selected",
+    "he": "לא נבחר תא"
+  },
+  "clear_filters_tooltip": {
+  "en": "Clear Filters",
+  "he": "נקה מסננים"
+},
+  "search_too_short": {
+    "en": "Search term is too short",
+    "he": "מונח החיפוש קצר מדי"
+  },
+  "searching": {
+    "en": "Searching...",
+    "he": "מחפש..."
+  },
+  "advanced_search_results": {
+    "en": "Found {count} results matching your criteria",
+    "he": "נמצאו {count} תוצאות התואמות את הקריטריונים שלך"
+  },
+"filter:preparing": {
+    "en": "Opening filter options...",
+    "he": "פותח אפשרויות סינון..."
+  }
+}

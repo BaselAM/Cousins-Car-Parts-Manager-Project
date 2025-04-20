@@ -1,0 +1,122 @@
+{
+  "settings_page": {
+    "en": "Settings Page",
+    "he": "דף הגדרות"
+  },
+  "language_settings": {
+    "en": "Language Settings",
+    "he": "הגדרות שפה"
+  },
+  "interface_language": {
+    "en": "Interface Language",
+    "he": "שפת ממשק"
+  },
+  "english": {
+    "en": "English",
+    "he": "אנגלית"
+  },
+  "hebrew": {
+    "en": "Hebrew",
+    "he": "עברית"
+  },
+  "appearance": {
+    "en": "Appearance",
+    "he": "מראה"
+  },
+  "color_theme": {
+    "en": "Color Theme",
+    "he": "ערכת צבעים"
+  },
+  "dark_theme": {
+    "en": "Dark Theme",
+    "he": "ערכת נושא כהה"
+  },
+  "light_theme": {
+    "en": "Light Theme",
+    "he": "ערכת נושא בהיר"
+  },
+  "system_default": {
+    "en": "System Default",
+    "he": "ברירת מערכת"
+  },
+  "primary_color": {
+    "en": "Primary Color",
+    "he": "צבע ראשי"
+  },
+  "secondary_color": {
+    "en": "Secondary Color",
+    "he": "צבע משני"
+  },
+  "technical_settings": {
+    "en": "Technical Settings",
+    "he": "הגדרות טכניות"
+  },
+  "auto_backup": {
+    "en": "Auto Backup",
+    "he": "גיבוי אוטומטי"
+  },
+  "daily": {
+    "en": "Daily",
+    "he": "יומי"
+  },
+  "weekly": {
+    "en": "Weekly",
+    "he": "שבועי"
+  },
+  "monthly": {
+    "en": "Monthly",
+    "he": "חודשי"
+  },
+  "measurement_units": {
+    "en": "Measurement Units",
+    "he": "יחידות מדידה"
+  },
+  "metric_system": {
+    "en": "Metric",
+    "he": "מערכת מטרית"
+  },
+  "imperial_system": {
+    "en": "Imperial",
+    "he": "מערכת אימפריאלית"
+  },
+  "select_invoice_template": {
+    "en": "Select Invoice Template",
+    "he": "בחר תבנית חשבונית"
+  },
+  "inventory_settings": {
+    "en": "Inventory Settings",
+    "he": "הגדרות מלאי"
+  },
+  "low_stock_threshold": {
+    "en": "Low Stock Threshold",
+    "he": "סף מלאי נמוך"
+  },
+  "default_currency": {
+    "en": "Default Currency",
+    "he": "מטבע ברירת מחדל"
+  },
+  "enable_auto_restock": {
+    "en": "Enable Auto Restock",
+    "he": "הפעל חידוש אוטומטי"
+  },
+  "settings_saved": {
+    "en": "Settings saved successfully",
+    "he": "ההגדרות נשמרו בהצלחה"
+  },
+  "usd": {
+    "en": "USD",
+    "he": "דולר אמריקאי"
+  },
+  "eur": {
+    "en": "EUR",
+    "he": "יורו"
+  },
+  "gbp": {
+    "en": "GBP",
+    "he": "לירה שטרלינג"
+  },
+  "ils": {
+    "en": "ILS",
+    "he": "שקל ישראלי"
+  }
+}

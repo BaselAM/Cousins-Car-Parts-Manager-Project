@@ -1,0 +1,66 @@
+{
+  "window_title": {
+    "en": "Abu Mukh Car Parts Login",
+    "he": "כניסה למערכת חלקי רכב אבו מוך"
+  },
+  "login_subtitle": {
+    "en": "Management System Access",
+    "he": "גישה למערכת ניהול"
+  },
+  "username_label": {
+    "en": "Username",
+    "he": "שם משתמש"
+  },
+  "username_placeholder": {
+    "en": "Enter your username",
+    "he": "הכנס שם משתמש"
+  },
+  "password_label": {
+    "en": "Password",
+    "he": "סיסמה"
+  },
+  "password_placeholder": {
+    "en": "Enter your password",
+    "he": "הכנס סיסמה"
+  },
+  "login_button": {
+    "en": "Sign In",
+    "he": "התחבר"
+  },
+  "remember_me": {
+    "en": "Remember me",
+    "he": "זכור אותי"
+  },
+  "forgot_password": {
+    "en": "Change Password",
+    "he": "שינוי סיסמה"
+  },
+  "login_successful": {
+    "en": "Login successful!",
+    "he": "התחברת בהצלחה!"
+  },
+  "fields_required": {
+    "en": "Username and password are required",
+    "he": "שם משתמש וסיסמה נדרשים"
+  },
+  "invalid_credentials": {
+    "en": "Invalid username or password",
+    "he": "שם משתמש או סיסמה שגויים"
+  },
+  "system_error": {
+    "en": "System error. Please try again later.",
+    "he": "שגיאת מערכת. נסה שוב מאוחר יותר."
+  },
+  "change_password": {
+    "en": "Change Password",
+    "he": "שינוי סיסמה"
+  },
+  "password_reset": {
+    "en": "Password Reset",
+    "he": "איפוס סיסמה"
+  },
+  "enter_username_first": {
+    "en": "Please enter your username first",
+    "he": "נא להזין שם משתמש תחילה"
+  }
+}

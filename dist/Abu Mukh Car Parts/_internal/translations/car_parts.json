@@ -1,0 +1,34 @@
+{
+  "car_details": {
+    "en": "Car Details",
+    "he": "פרטי רכב"
+  },
+  "parts_navigation_title": {
+    "en": "Parts Selection Wizard",
+    "he": "אשף בחירת חלקים"
+  },
+  "select_car": {
+    "en": "Select a Car",
+    "he": "בחר רכב"
+  },
+  "search_cars": {
+    "en": "Search:",
+    "he": "חיפוש:"
+  },
+  "search_cars_placeholder": {
+    "en": "Search by make, model or year...",
+    "he": "חפש לפי יצרן, דגם או שנה..."
+  },
+  "select_car_help": {
+    "en": "Choose the car you need parts for",
+    "he": "בחר את הרכב שעבורו אתה צריך חלק"
+  },
+  "search_options": {
+    "en": "Search Options",
+    "he": "אפשרויות חיפוש"
+  },
+  "expand_search": {
+    "en": "Expand Search",
+    "he": "הרחב חיפוש"
+  }
+}

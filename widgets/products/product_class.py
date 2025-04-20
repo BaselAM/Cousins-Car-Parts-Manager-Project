@@ -130,6 +130,135 @@ class ProductsWidget(QWidget):
         # Load products after initialization
         QTimer.singleShot(100, self.load_products)
 
+        # Modify the handle_loaded_products method to emit signals
+
+    def handle_loaded_products(self, products):
+        """Handle loaded products with elegant organization and visual feedback."""
+        try:
+            is_single_update = len(products) == 1 and self.product_manager.get_products()
+
+            # Get view state
+            view_state = {}
+            if hasattr(self.product_loader, 'get_view_state'):
+                view_state = self.product_loader.get_view_state()
+
+            sort_column = view_state.get('sort_column', 2)
+            sort_order = view_state.get('sort_order', 0)
+            recent_products = view_state.get('recent_products', [])
+
+            if is_single_update:
+                # Handle single product update or addition
+                self._handle_single_product_update(products[0], sort_column, sort_order)
+            else:
+                # Handle full product list update
+                self._handle_bulk_products_update(products, sort_column, sort_order, recent_products)
+
+            # Reset search refresh flag after products are loaded
+            self._is_search_refresh = False
+
+            # Notify other widgets that products were loaded if this was not triggered by sync
+            if not hasattr(self, '_processing_sync_event') or not self._processing_sync_event:
+                try:
+                    from utils.database_sync import db_sync_manager
+                    db_sync_manager.emit_products_loaded()
+                except Exception as e:
+                    logger.error(f"Error emitting products_loaded signal: {e}")
+
+        except Exception as e:
+            # Reset the search refresh flag in case of error
+            self._is_search_refresh = False
+            logger.error(f"Error loading products: {e}")
+            self.status_bar.show_message(
+                self.translate('load_error', "Error loading products"),
+                "error"
+            )
+
+        # Modify the on_product_added method to emit signals
+
+    def on_product_added(self, product_id):
+        """Called after a product is added or updated"""
+        # Highlight the product after a short delay
+        QTimer.singleShot(100, lambda: self._highlight_product(product_id))
+
+        # Notify other widgets about the addition
+        if not hasattr(self, '_processing_sync_event') or not self._processing_sync_event:
+            try:
+                from utils.database_sync import db_sync_manager
+                db_sync_manager.emit_product_added(product_id)
+            except Exception as e:
+                logger.error(f"Error emitting product_added signal: {e}")
+
+        # Modify the on_products_deleted method to emit signals
+
+    def on_products_deleted(self, deleted_ids):
+        """Called after products are deleted"""
+        self.product_manager.remove_products_by_ids(deleted_ids)
+        self.load_products()
+
+        # Notify other widgets about the deletion
+        if not hasattr(self, '_processing_sync_event') or not self._processing_sync_event:
+            try:
+                from utils.database_sync import db_sync_manager
+                for product_id in deleted_ids:
+                    db_sync_manager.emit_product_deleted(product_id)
+            except Exception as e:
+                logger.error(f"Error emitting product_deleted signal: {e}")
+
+        # Modify the on_cell_changed method to emit signals for updates
+
+    def on_cell_changed(self, row, column):
+        """Handle cell value changes"""
+        # Comprehensive guard conditions
+        if (hasattr(self, '_updating_ui') and self._updating_ui or
+                hasattr(self, '_updating_cell') and self._updating_cell or
+                hasattr(self, '_search_in_progress') and self._search_in_progress or
+                hasattr(self, '_is_search_refresh') and self._is_search_refresh or
+                self.product_table.table.signalsBlocked()):
+            return
+
+        try:
+            self._updating_cell = True
+            # Rest of your existing code...
+            success, product_id, field, new_value, message = self.edit_handler.handle_cell_change(
+                row, column, self.product_table.table, self.product_manager.get_products()
+            )
+
+            if success:
+                # Update in-memory product data
+                self.product_manager.update_product_in_memory(product_id, field, new_value, column)
+
+                # Show the message with high priority
+                self.show_status_message(message, "success", priority=70)
+
+                # Notify other widgets about the update
+                if not hasattr(self, '_processing_sync_event') or not self._processing_sync_event:
+                    try:
+                        from utils.database_sync import db_sync_manager
+                        db_sync_manager.emit_product_updated(product_id)
+                    except Exception as e:
+                        logger.error(f"Error emitting product_updated signal: {e}")
+        except Exception as e:
+            logger.error(f"Error handling cell change: {e}")
+        finally:
+            self._updating_cell = False
+
+        # Modify the closeEvent method to disconnect from sync manager
+
+    def closeEvent(self, event):
+        """Handle widget close event"""
+        try:
+            self._is_closing = True
+
+            # Disconnect from sync manager
+            self.disconnect_from_sync_manager()
+
+            if hasattr(self.product_loader, 'cleanup'):
+                self.product_loader.cleanup()
+            self.product_manager.clear()
+        except Exception as e:
+            logger.error(f"Error during close event: {e}")
+        event.accept()
+
     def _setup_barcode_scanner(self):
         """Set up the barcode scanner button connection only, not creating a duplicate button"""
         try:
@@ -424,14 +553,6 @@ class ProductsWidget(QWidget):
         # Reset filter settings when loading all products
         self.filter_handler.reset_filters()
 
-    def on_product_added(self, product_id):
-        """Called after a product is added or updated"""
-        QTimer.singleShot(100, lambda: self._highlight_product(product_id))
-
-    def on_products_deleted(self, deleted_ids):
-        """Called after products are deleted"""
-        self.product_manager.remove_products_by_ids(deleted_ids)
-        self.load_products()
 
     def _highlight_product(self, product_id):
         """Highlight a product in the table"""
@@ -513,16 +634,6 @@ class ProductsWidget(QWidget):
         # Then show the dialog
         self.add_operation.show_add_dialog()
 
-    def closeEvent(self, event):
-        """Handle widget close event"""
-        try:
-            self._is_closing = True
-            if hasattr(self.product_loader, 'cleanup'):
-                self.product_loader.cleanup()
-            self.product_manager.clear()
-        except Exception as e:
-            logger.error(f"Error during close event: {e}")
-        event.accept()
 
     def _handle_status_bar_state_change(self, is_expanded):
         """Handle status bar expansion/collapse by updating layouts"""
@@ -657,33 +768,7 @@ class ProductsWidget(QWidget):
                 self.status_bar.clear()
 
     # UPDATE the on_cell_changed method
-    def on_cell_changed(self, row, column):
-        """Handle cell value changes"""
-        # Comprehensive guard conditions
-        if (hasattr(self, '_updating_ui') and self._updating_ui or
-                hasattr(self, '_updating_cell') and self._updating_cell or
-                hasattr(self, '_search_in_progress') and self._search_in_progress or
-                hasattr(self, '_is_search_refresh') and self._is_search_refresh or
-                self.product_table.table.signalsBlocked()):
-            return
 
-        try:
-            self._updating_cell = True
-            # Rest of your existing code...
-            success, product_id, field, new_value, message = self.edit_handler.handle_cell_change(
-                row, column, self.product_table.table, self.product_manager.get_products()
-            )
-
-            if success:
-                # Update in-memory product data
-                self.product_manager.update_product_in_memory(product_id, field, new_value, column)
-
-                # Show the message with high priority
-                self.show_status_message(message, "success", priority=70)
-        except Exception as e:
-            logger.error(f"Error handling cell change: {e}")
-        finally:
-            self._updating_cell = False
 
     def _on_search_input_changed(self, text):
         """Handle search input changes with delay to improve performance"""
@@ -1343,3 +1428,106 @@ class ProductsWidget(QWidget):
                 )
             else:
                 self.status_bar.clear()  # Just clear the status bar
+
+    def connect_to_sync_manager(self):
+        """Connect to the database sync manager to receive change notifications."""
+        try:
+            # Import here to avoid circular imports
+            from utils.database_sync import db_sync_manager
+
+            # Register with sync manager
+            db_sync_manager.register_listener(self)
+
+            # Connect signals to refresh methods
+            db_sync_manager.product_added.connect(self._handle_product_added)
+            db_sync_manager.product_updated.connect(self._handle_product_updated)
+            db_sync_manager.product_deleted.connect(self._handle_product_deleted)
+            db_sync_manager.products_loaded.connect(self._handle_products_loaded)
+
+            logger.info("ProductsWidget connected to database sync manager")
+        except Exception as e:
+            logger.error(f"Error connecting to sync manager: {e}")
+
+    def disconnect_from_sync_manager(self):
+        """Disconnect from the database sync manager."""
+        try:
+            from utils.database_sync import db_sync_manager
+
+            # Disconnect signals
+            db_sync_manager.product_added.disconnect(self._handle_product_added)
+            db_sync_manager.product_updated.disconnect(self._handle_product_updated)
+            db_sync_manager.product_deleted.disconnect(self._handle_product_deleted)
+            db_sync_manager.products_loaded.disconnect(self._handle_products_loaded)
+
+            # Unregister from sync manager
+            db_sync_manager.unregister_listener(self)
+
+            logger.info("ProductsWidget disconnected from database sync manager")
+        except Exception as e:
+            logger.error(f"Error disconnecting from sync manager: {e}")
+
+    def _handle_product_added(self, product_data):
+        """Handle notification that a product was added in another widget."""
+        logger.debug(f"ProductsWidget notified of product addition: {product_data}")
+        if not hasattr(self, '_processing_sync_event'):
+            self._processing_sync_event = True
+            try:
+                # Refresh products from database
+                self.load_products()
+
+                # Show feedback in status bar
+                self.show_status_message(
+                    self.translate('product_added', "Product added in another view, refreshed"),
+                    "info"
+                )
+            finally:
+                self._processing_sync_event = False
+
+    def _handle_product_updated(self, product_data):
+        """Handle notification that a product was updated in another widget."""
+        logger.debug(f"ProductsWidget notified of product update: {product_data}")
+        if not hasattr(self, '_processing_sync_event'):
+            self._processing_sync_event = True
+            try:
+                # Refresh products from database
+                self.load_products()
+
+                # Show feedback in status bar
+                self.show_status_message(
+                    self.translate('product_updated', "Product updated in another view, refreshed"),
+                    "info"
+                )
+            finally:
+                self._processing_sync_event = False
+
+    def _handle_product_deleted(self, product_id):
+        """Handle notification that a product was deleted in another widget."""
+        logger.debug(f"ProductsWidget notified of product deletion: {product_id}")
+        if not hasattr(self, '_processing_sync_event'):
+            self._processing_sync_event = True
+            try:
+                # Refresh products from database
+                self.load_products()
+
+                # Show feedback in status bar
+                self.show_status_message(
+                    self.translate('product_deleted', "Product deleted in another view, refreshed"),
+                    "info"
+                )
+            finally:
+                self._processing_sync_event = False
+
+    def _handle_products_loaded(self):
+        """Handle notification that products were loaded in another widget."""
+        logger.debug("ProductsWidget notified of products loaded event")
+        if not hasattr(self, '_processing_sync_event'):
+            self._processing_sync_event = True
+            try:
+                # Refresh products from database
+                self.load_products()
+            finally:
+                self._processing_sync_event = False
+
+    # Add this to the __init__ method at the end after everything is initialized
+    # self.connect_to_sync_manager()
+

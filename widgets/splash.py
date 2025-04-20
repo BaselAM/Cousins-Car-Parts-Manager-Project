@@ -99,3 +99,18 @@ class SplashScreen(QWidget):
 
         # Call parent closeEvent last
         super().closeEvent(event)
+
+    def _check_min_time_elapsed(self):
+        """Called when minimum display time has elapsed"""
+        self.min_time_elapsed = True
+        self._try_close_splash()
+
+    def set_initialization_complete(self):
+        """Called by main app when initialization is complete"""
+        self.init_complete = True
+        self._try_close_splash()
+
+    def _try_close_splash(self):
+        """Close splash only when both conditions are met"""
+        if hasattr(self, 'min_time_elapsed') and self.min_time_elapsed and self.init_complete:
+            self.close_splash()

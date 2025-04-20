@@ -9,8 +9,11 @@ from PyQt5.QtWidgets import (
 from themes import set_theme
 from .settings_groups import SettingsGroupCreator
 from .settings_styling import SettingsStyling
+from bartender_integration import BartenderManager
 from logger import get_logger
+
 logger = get_logger(__name__)
+
 
 class SettingsWidget(QWidget):
     def __init__(self, translator, on_save, gui, parent=None):
@@ -98,11 +101,18 @@ class SettingsWidget(QWidget):
             self.default_currency_combo,
             self.auto_restock_checkbox
         )
+        self.bartender_group = self.group_creator.create_bartender_group(
+            self.labels_folder_btn,
+            self.bartender_executable_btn,
+            self.labels_path_label,
+            self.executable_path_label
+        )
 
         scroll_layout.addWidget(self.language_group)
         scroll_layout.addWidget(self.appearance_group)
         scroll_layout.addWidget(self.technical_group)
         scroll_layout.addWidget(self.inventory_group)
+        scroll_layout.addWidget(self.bartender_group)
         scroll_layout.addStretch()
 
         content.setLayout(scroll_layout)
@@ -181,6 +191,42 @@ class SettingsWidget(QWidget):
         self.auto_restock_checkbox = QCheckBox()
         self.auto_restock_checkbox.setChecked(True)
 
+        # Bartender controls
+        self.labels_folder_btn = QPushButton(self.translator.t('select_labels_folder'))
+        self.labels_folder_btn.setFixedHeight(40)
+        self.bartender_executable_btn = QPushButton(self.translator.t('select_bartender_executable'))
+        self.bartender_executable_btn.setFixedHeight(40)
+
+        self.labels_path_label = QLabel("")
+        self.labels_path_label.setWordWrap(True)
+        self.labels_path_label.setTextFormat(Qt.PlainText)
+        self.labels_path_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+        self.executable_path_label = QLabel("")
+        self.executable_path_label.setWordWrap(True)
+        self.executable_path_label.setTextFormat(Qt.PlainText)
+        self.executable_path_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+        # Connect buttons to their handlers
+        self.labels_folder_btn.clicked.connect(self.select_labels_folder)
+        self.bartender_executable_btn.clicked.connect(self.select_bartender_executable)
+
+    def setup_bartender_manager(self):
+        """Initialize the Bartender manager"""
+        self.bartender_manager = BartenderManager(self.gui.settings_db, self.translator)
+
+    def select_labels_folder(self):
+        """Handle the select labels folder button click"""
+        folder = self.bartender_manager.select_labels_folder()
+        if folder:
+            self.labels_path_label.setText(folder)
+
+    def select_bartender_executable(self):
+        """Handle the select Bartender executable button click"""
+        executable = self.bartender_manager.select_bartender_executable()
+        if executable:
+            self.executable_path_label.setText(executable)
+
     def get_current_settings(self):
         return {
             'theme': self.theme_names[self.theme_combo.currentIndex()],
@@ -204,6 +250,12 @@ class SettingsWidget(QWidget):
         self.low_stock_threshold_input.setText(low_stock)
         is_rtl = self.gui.settings_db.get_setting('rtl', 'false') == 'true'
         self.language_combo.setCurrentIndex(1 if is_rtl else 0)
+
+        # Load Bartender settings
+        self.setup_bartender_manager()
+        self.labels_path_label.setText(self.gui.settings_db.get_setting('bartender_labels_folder', ''))
+        self.executable_path_label.setText(self.gui.settings_db.get_setting('bartender_executable', ''))
+
         self.initial_settings = self.get_current_settings()
 
     def save_settings(self):
@@ -394,6 +446,7 @@ class SettingsWidget(QWidget):
         self.appearance_group.setTitle(self.translator.t('appearance'))
         self.technical_group.setTitle(self.translator.t('technical_settings'))
         self.inventory_group.setTitle(self.translator.t('inventory_settings'))
+        self.bartender_group.setTitle(self.translator.t('bartender_integration'))
 
         # Update language group
         self.language_group.interface_lang_label.setText(self.translator.t('interface_language'))
@@ -419,6 +472,12 @@ class SettingsWidget(QWidget):
         self.inventory_group.low_stock_threshold_label.setText(self.translator.t('low_stock_threshold'))
         self.inventory_group.default_currency_label.setText(self.translator.t('default_currency'))
         self.inventory_group.auto_restock_label.setText(self.translator.t('enable_auto_restock'))
+
+        # Update Bartender group
+        self.bartender_group.labels_section.setTitle(self.translator.t('labels_folder'))
+        self.bartender_group.executable_section.setTitle(self.translator.t('bartender_executable'))
+        self.labels_folder_btn.setText(self.translator.t('select_labels_folder'))
+        self.bartender_executable_btn.setText(self.translator.t('select_bartender_executable'))
 
         # Update buttons
         self.save_btn.setText(self.translator.t('save'))

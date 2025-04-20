@@ -1,4 +1,5 @@
 # gui/view_manager.py
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMessageBox
 from logger import get_logger
 
@@ -10,6 +11,7 @@ from widgets.statistics import StatisticsWidget
 from widgets.settings.settings_widget import SettingsWidget
 from widgets.help import HelpWidget
 from widgets.register_widget import RegisterWidget
+from widgets.smart_search_widget import SmartSearchWidget
 
 # Configure module logger
 logger = get_logger(__name__)
@@ -57,7 +59,7 @@ class GUIViewManager:
 
         # Initialize the Smart Search widget (will implement later)
         # Commented out for now until the widget is implemented
-        # self.smart_search_widget = SmartSearchWidget(self.translator, self.parts_db, parent=self.parent)
+        self.smart_search_widget = SmartSearchWidget(self.translator, self.parts_db, parent=self.parent)
 
         # Pre-initialize the register widget to prevent loading delay when first accessed
         self.register_widget = RegisterWidget(
@@ -184,9 +186,6 @@ class GUIViewManager:
             if not self.smart_search_widget:
                 logger.info("Creating new Smart Search widget")
 
-                # Import here to avoid circular imports
-                from smart_search.smart_search_widget import SmartSearchWidget
-
                 # Create the Smart Search widget
                 self.smart_search_widget = SmartSearchWidget(
                     translator=self.translator,
@@ -211,6 +210,11 @@ class GUIViewManager:
             # Switch to Smart Search widget
             logger.info("Switching to Smart Search widget")
             content_stack.setCurrentWidget(self.smart_search_widget)
+
+            # Force a position update for the FAB
+            if hasattr(self.smart_search_widget, '_position_and_show_fab'):
+                # Use a slight delay to ensure widget is fully visible
+                QTimer.singleShot(100, self.smart_search_widget._position_and_show_fab)
 
         except Exception as e:
             logger.error(f"Error showing Smart Search widget: {str(e)}")

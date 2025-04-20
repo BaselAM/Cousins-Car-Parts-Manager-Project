@@ -32,7 +32,10 @@ class SettingsDB:
             ('default_currency', 'ILS'),
             ('auto_restock', 'true'),
             ('primary_color', '#2980b9'),
-            ('secondary_color', '#3498db')
+            ('secondary_color', '#3498db'),
+            # New Bartender settings with empty defaults
+            ('bartender_labels_folder', ''),
+            ('bartender_executable', '')
         ]
 
         self.conn.executemany(

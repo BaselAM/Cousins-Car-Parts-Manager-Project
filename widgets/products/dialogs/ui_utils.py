@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import (QPushButton, QLabel, QLineEdit, QSpinBox,
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QIcon, QColor
 
+
 from themes import get_color # Assuming themes.py exists and provides get_color
 from resource_manager import ResourceManager
-import constants # Import the constants
+from widgets.products.dialogs.constants import *
 
-# --- Button Creation ---
 
 def create_button(text_key, translator, icon_name=None, tooltip_key=None, style_type=None, object_name=None, parent=None):
     """Creates a QPushButton with standard settings."""

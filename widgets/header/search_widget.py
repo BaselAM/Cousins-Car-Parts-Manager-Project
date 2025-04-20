@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QPoint
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QPoint, QSize
 from PyQt5.QtWidgets import (QWidget, QLineEdit, QHBoxLayout, QPushButton,
                              QCompleter, QListView, QFrame, QShortcut,
                              QAbstractItemView, QStyledItemDelegate, QApplication)
@@ -86,8 +86,7 @@ class SuggestionDelegate(QStyledItemDelegate):
     def sizeHint(self, option, index):
         """Adjust the size of suggestion items for better spacing"""
         size = super().sizeHint(option, index)
-        return QPoint(size.width(), size.height() + 10)  # Add vertical padding
-
+        return QSize(size.width(), size.height() + 10)  # Correct!
 
 class ModernCompleterPopup(QListView):
     """Enhanced list view for search suggestions with elegant visuals"""

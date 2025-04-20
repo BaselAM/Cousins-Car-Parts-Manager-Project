@@ -51,8 +51,10 @@ class NetworkInfoDialog(QDialog):
     Using a dialog instead of a popup widget for better stability.
     """
 
-    def __init__(self, parent=None):
+    # COMPLETE __init__ METHOD FOR NetworkInfoDialog:
+    def __init__(self, translator=None, parent=None):
         super().__init__(parent)
+        self.translator = translator  # Store translator reference
         self.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
@@ -75,6 +77,92 @@ class NetworkInfoDialog(QDialog):
 
         # Initial check
         self._check_connection_async()
+
+    # COMPLETE update_ui METHOD FOR NetworkInfoDialog:
+    def update_ui(self):
+        """Update UI with current network status"""
+        # Update status indicator and row
+        if self.is_connected:
+            self.status_indicator.setStyleSheet("#statusIndicator { background-color: #2ecc71; border-radius: 6px; }")
+            if self.translator:
+                self.status_row.update_value(self.translator.t("Connected"))
+            else:
+                self.status_row.update_value("Connected")
+        else:
+            self.status_indicator.setStyleSheet("#statusIndicator { background-color: #e74c3c; border-radius: 6px; }")
+            if self.translator:
+                self.status_row.update_value(self.translator.t("Disconnected"))
+            else:
+                self.status_row.update_value("Disconnected")
+
+        # Update IP address
+        self.ip_row.update_value(self.ip_address)
+
+        # Update network name
+        self.network_row.update_value(self.network_name)
+
+        # Update connection type
+        self.connection_row.update_value(self.connection_type)
+
+        # Update ping latency with color coding
+        if self.ping_latency.isdigit():
+            ping_value = int(self.ping_latency)
+
+            # Determine quality text and color
+            if ping_value < 30:
+                quality = "Excellent"
+                color = "#2ecc71"  # Green
+            elif ping_value < 70:
+                quality = "Good"
+                color = "#27ae60"  # Darker green
+            elif ping_value < 120:
+                quality = "Fair"
+                color = "#f39c12"  # Yellow/orange
+            else:
+                quality = "Poor"
+                color = "#e74c3c"  # Red
+
+            ping_text = f"{ping_value} ms"
+
+            # Update with HTML for color
+            self.ping_row.update_value(f"<span style='color:{color};'>{ping_text}</span>")
+        else:
+            self.ping_row.update_value(self.ping_latency)
+
+    # NEW update_translations METHOD FOR NetworkInfoDialog:
+    def update_translations(self):
+        """Update all translations in the dialog"""
+        if not self.translator:
+            return
+
+        # Update title
+        if hasattr(self, 'title'):
+            self.title.setText(self.translator.t("Network Status"))
+
+        # Update all info rows
+        if hasattr(self, 'status_row'):
+            self.status_row.label.setText(self.translator.t("Status"))
+            # Also update value based on connection state
+            if self.is_connected:
+                self.status_row.update_value(self.translator.t("Connected"))
+            else:
+                self.status_row.update_value(self.translator.t("Disconnected"))
+
+        if hasattr(self, 'ip_row'):
+            self.ip_row.label.setText(self.translator.t("IP Address"))
+
+        if hasattr(self, 'network_row'):
+            self.network_row.label.setText(self.translator.t("Network"))
+
+        if hasattr(self, 'connection_row'):
+            self.connection_row.label.setText(self.translator.t("Connection"))
+
+        if hasattr(self, 'ping_row'):
+            self.ping_row.label.setText(self.translator.t("Latency"))
+
+        # Force UI update
+        self.update_ui()
+
 
     def _setup_ui(self):
         """Set up the panel UI"""
@@ -415,50 +503,6 @@ class NetworkInfoDialog(QDialog):
             self.connection_type = "Unknown"
             self.network_name = "Unknown"
 
-    def update_ui(self):
-        """Update UI with current network status"""
-        # Update status indicator and row
-        if self.is_connected:
-            self.status_indicator.setStyleSheet("#statusIndicator { background-color: #2ecc71; border-radius: 6px; }")
-            self.status_row.update_value("Connected")
-        else:
-            self.status_indicator.setStyleSheet("#statusIndicator { background-color: #e74c3c; border-radius: 6px; }")
-            self.status_row.update_value("Disconnected")
-
-        # Update IP address
-        self.ip_row.update_value(self.ip_address)
-
-        # Update network name
-        self.network_row.update_value(self.network_name)
-
-        # Update connection type
-        self.connection_row.update_value(self.connection_type)
-
-        # Update ping latency with color coding
-        if self.ping_latency.isdigit():
-            ping_value = int(self.ping_latency)
-
-            # Determine quality text and color
-            if ping_value < 30:
-                quality = "Excellent"
-                color = "#2ecc71"  # Green
-            elif ping_value < 70:
-                quality = "Good"
-                color = "#27ae60"  # Darker green
-            elif ping_value < 120:
-                quality = "Fair"
-                color = "#f39c12"  # Yellow/orange
-            else:
-                quality = "Poor"
-                color = "#e74c3c"  # Red
-
-            ping_text = f"{ping_value} ms"
-
-            # Update with HTML for color
-            self.ping_row.update_value(f"<span style='color:{color};'>{ping_text}</span>")
-        else:
-            self.ping_row.update_value(self.ping_latency)
-
     def apply_theme(self):
         """Apply current theme styling"""
         bg_color = get_color('background')
@@ -725,36 +769,13 @@ class OptimizedInternetStatusWidget(QWidget):
     def _update_tooltip(self):
         """Update tooltip text"""
         if self.is_connected:
-            status = self.translator.t("Internet: Connected")
+            status = self.translator.t("Internet: Connected")  # Correct method
         else:
-            status = self.translator.t("Internet: Disconnected")
+            status = self.translator.t("Internet: Disconnected")  # Correct method
 
-        click_text = self.translator.t("Click for details")
+        click_text = self.translator.t("Click for details")  # Correct method
         self.setToolTip(f"{status}\n{click_text}")
 
-    def toggle_info_dialog(self):
-        """Show or hide the network info dialog - completely redesigned for reliability"""
-        print("Toggle info dialog called")
-
-        # Create dialog if needed
-        if not self.info_dialog:
-            print("Creating new dialog")
-            # Create dialog without parent to avoid deletion when parent state changes
-            self.info_dialog = NetworkInfoDialog()
-            self.info_dialog.apply_theme()
-
-        # Simple toggle visibility
-        if self.info_dialog.isVisible():
-            print("Dialog is visible, hiding it")
-            self.info_dialog.hide()
-        else:
-            print("Dialog is hidden, showing it")
-            # Position and show
-            self.info_dialog.position_relative_to(self)
-            self.info_dialog.show()
-
-            # Make sure dialog gets updated data
-            QTimer.singleShot(10, self.info_dialog._check_connection_async)
 
     def apply_theme(self):
         """Apply theme styling"""
@@ -771,17 +792,32 @@ class OptimizedInternetStatusWidget(QWidget):
         # Update icon
         self.create_network_icon()
 
+    # CORRECTED version of the InternetStatusWidget update_translations method:
     def update_translations(self):
-        """Update translations"""
-        self._update_tooltip()
+        """Update all translations in the widget and dialog"""
+        # Update tooltip using the correct t() method, not tr()
+        if self.is_connected:
+            status = self.translator.t("Internet: Connected")
+        else:
+            status = self.translator.t("Internet: Disconnected")
 
-    def mousePressEvent(self, event):
-        """Handle mouse press to toggle dialog"""
-        if event.button() == Qt.LeftButton:
-            self.toggle_info_dialog()
-            self.clicked.emit()
-        super().mousePressEvent(event)
+        click_text = self.translator.t("Click for details")
+        self.setToolTip(f"{status}\n{click_text}")
 
+        # Update the dialog if it exists
+        if hasattr(self, 'info_dialog') and self.info_dialog:
+            # Pass translator to dialog if needed
+            if hasattr(self.info_dialog, 'translator') and self.info_dialog.translator is None:
+                self.info_dialog.translator = self.translator
+
+            # Call dialog's update_translations if available
+            if hasattr(self.info_dialog, 'update_translations'):
+                self.info_dialog.update_translations()
+
+        # Force recreation of the network icon with new translations
+        self.create_network_icon()
+
+    # CORRECTED version of the enterEvent method (if present):
     def enterEvent(self, event):
         """Handle mouse enter for tooltip"""
         if self.is_connected:
@@ -791,6 +827,40 @@ class OptimizedInternetStatusWidget(QWidget):
 
         QToolTip.showText(event.globalPos(), tooltip_text)
         super().enterEvent(event)
+
+    # CORRECTED version of the toggle_info_dialog method:
+    def toggle_info_dialog(self):
+        """Show or hide the network info dialog - completely redesigned for reliability"""
+        print("Toggle info dialog called")
+
+        # Create dialog if needed
+        if not self.info_dialog:
+            print("Creating new dialog")
+            # Create dialog without parent to avoid deletion when parent state changes
+            self.info_dialog = NetworkInfoDialog(self.translator)  # FIXED: Pass translator here!
+            self.info_dialog.apply_theme()
+
+        # Simple toggle visibility
+        if self.info_dialog.isVisible():
+            print("Dialog is visible, hiding it")
+            self.info_dialog.hide()
+        else:
+            print("Dialog is hidden, showing it")
+            # Position and show
+            self.info_dialog.position_relative_to(self)
+            self.info_dialog.show()
+
+            # Make sure dialog gets updated data
+            QTimer.singleShot(10, self.info_dialog._check_connection_async)
+
+
+    def mousePressEvent(self, event):
+        """Handle mouse press to toggle dialog"""
+        if event.button() == Qt.LeftButton:
+            self.toggle_info_dialog()
+            self.clicked.emit()
+        super().mousePressEvent(event)
+
 
     def hideEvent(self, event):
         """Hide dialog when widget is hidden"""
@@ -812,6 +882,12 @@ class OptimizedInternetStatusWidget(QWidget):
             self.info_dialog = None
 
         super().closeEvent(event)
+
+
+
+
+
+
 
 
 # For backward compatibility

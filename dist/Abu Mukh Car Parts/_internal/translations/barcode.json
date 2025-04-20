@@ -1,0 +1,66 @@
+{
+  "scan_barcode_tooltip": {
+    "en": "Scan Barcode",
+    "he": "סרוק ברקוד"
+  },
+  "scan_barcode": {
+    "en": "Scan Barcode",
+    "he": "סריקת ברקוד"
+  },
+  "waiting_for_scan": {
+    "en": "Waiting for barcode scan",
+    "he": "ממתין לסריקת ברקוד"
+  },
+  "scan_note": {
+    "en": "Position your barcode scanner and scan any barcode.\nPress ESC to cancel.",
+    "he": "מקם את סורק הברקוד וסרוק ברקוד כלשהו.\nלחץ על ESC לביטול."
+  },
+  "barcode_detected": {
+    "en": "Barcode detected!",
+    "he": "ברקוד זוהה!"
+  },
+  "barcode_scanned": {
+    "en": "Barcode scanned: {barcode}",
+    "he": "ברקוד נסרק: {barcode}"
+  },
+  "barcode_scan_error": {
+    "en": "Error processing barcode",
+    "he": "שגיאה בעיבוד הברקוד"
+  },
+  "cancel": {
+    "en": "Cancel",
+    "he": "ביטול"
+  },
+  "barcode_updated": {
+    "en": "Barcode updated: {barcode}",
+    "he": "ברקוד עודכן: {barcode}"
+  },
+  "exact_match_found": {
+    "en": "Found exact match: {name}",
+    "he": "נמצאה התאמה מדויקת: {name}"
+  },
+  "barcode": {
+  "en": "Barcode",
+  "he": "ברקוד"
+},
+"barcode_placeholder": {
+  "en": "Enter barcode",
+  "he": "הזן ברקוד"
+},
+  "initiating_scan": {
+    "en": "Preparing barcode scanner...",
+    "he": "מכין סורק ברקוד..."
+  },
+  "scan_complete": {
+    "en": "Barcode scanning completed",
+    "he": "סריקת ברקוד הושלמה"
+  },
+  "scan_cancelled": {
+    "en": "Barcode scanning cancelled",
+    "he": "סריקת ברקוד בוטלה"
+  },
+  "scan_error": {
+    "en": "Error showing barcode scanner",
+    "he": "שגיאה בהצגת סורק ברקוד"
+  }
+}

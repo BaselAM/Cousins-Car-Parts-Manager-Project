@@ -1,0 +1,190 @@
+{
+  "smart_search_button": {
+    "en": "Smart Search",
+    "he": "חיפוש חכם"
+  },
+  "duplicate_product": {
+    "en": "Duplicate Product",
+    "he": "שכפל מוצר"
+  },
+  "duplicate": {
+    "en": "Duplicate",
+    "he": "שכפל"
+  },
+  "duplicate_desc": {
+    "en": "Create a copy of this product with a new barcode",
+    "he": "צור עותק של מוצר זה עם ברקוד חדש"
+  },
+  "edit": {
+    "en": "Edit",
+    "he": "ערוך"
+  },
+  "barcode_scanned": {
+    "en": "Barcode scanned: {barcode}",
+    "he": "ברקוד נסרק: {barcode}"
+  },
+  "scan_barcode_tooltip": {
+    "en": "Scan Barcode",
+    "he": "סרוק ברקוד"
+  },
+  "scan_barcode": {
+    "en": "Scan",
+    "he": "סריקה"
+  },
+  "barcode_scanner_not_available": {
+    "en": "Barcode scanner not available",
+    "he": "סורק ברקוד אינו זמין"
+  },
+  "new_barcode": {
+    "en": "New Barcode",
+    "he": "ברקוד חדש"
+  },
+  "new_barcode_required": {
+    "en": "Enter new barcode (required)",
+    "he": "הזן ברקוד חדש (חובה)"
+  },
+  "barcode_required": {
+    "en": "Barcode is required",
+    "he": "ברקוד הוא שדה חובה"
+  },
+  "barcode_exists": {
+    "en": "A product with this barcode already exists",
+    "he": "מוצר עם ברקוד זה כבר קיים"
+  },
+  "search_placeholder": {
+    "en": "Enter product name or barcode",
+    "he": "הזן שם מוצר או ברקוד"
+  },
+  "no_products_to_duplicate": {
+    "en": "No products to duplicate",
+    "he": "אין מוצרים לשכפול"
+  },
+  "product_duplicated": {
+    "en": "Product duplicated successfully",
+    "he": "המוצר שוכפל בהצלחה"
+  },
+  "manufacturer": {
+    "en": "Manufacturer",
+    "he": "יצרן"
+  },
+  "manufacturer_placeholder": {
+    "en": "Enter manufacturer",
+    "he": "הזן שם יצרן"
+  },
+  "original": {
+    "en": "Original",
+    "he": "מקורי"
+  },
+  "original_only": {
+    "en": "Original Parts Only",
+    "he": "חלקים מקוריים בלבד"
+  },
+  "yes": {
+    "en": "Yes",
+    "he": "כן"
+  },
+  "no": {
+    "en": "No",
+    "he": "לא"
+  },
+  "compatible_models": {
+    "en": "Compatible Models",
+    "he": "דגמים תואמים"
+  },
+  "compatible_brands": {
+    "en": "Compatible Brands",
+    "he": "מותגים תואמים"
+  },
+  "information": {
+    "en": "Information",
+    "he": "מידע"
+  },
+  "validation_error": {
+    "en": "Validation Error",
+    "he": "שגיאת אימות"
+  },
+  "sell_cart_title": {
+    "en": "Sell Cart",
+    "he": "עגלת מכירה"
+  },
+  "supply_cart_title": {
+    "en": "Supply Cart",
+    "he": "עגלת אספקה"
+  },
+  "Internet: Connected": {
+    "en": "Internet: Connected",
+    "he": "אינטרנט: מחובר"
+  },
+  "search_by_name": {
+    "en": "By Name",
+    "he": "לפי שם"
+  },
+  "search_by_barcode": {
+    "en": "By Barcode",
+    "he": "לפי ברקוד"
+  },
+  "sort_by_price": {
+    "en": "Sort by Price",
+    "he": "מיון לפי מחיר"
+  },
+  "show_more": {
+    "en": "Show More",
+    "he": "הצג עוד"
+  },
+  "show_less": {
+    "en": "Show Less",
+    "he": "הצג פחות"
+  },
+  "searching_by_barcode": {
+    "en": "Searching by exact barcode: \"{search_text}\"",
+    "he": "חיפוש לפי ברקוד מדויק: \"{search_text}\""
+  },
+  "searching_by_name": {
+    "en": "Searching by exact name: \"{search_text}\"",
+    "he": "חיפוש לפי שם מדויק: \"{search_text}\""
+  },
+  "no_exact_matches": {
+    "en": "No exact matches found for '{search_text}' (out of {total} products)",
+    "he": "לא נמצאו התאמות מדויקות עבור '{search_text}' (מתוך {total} מוצרים)"
+  },
+  "found_exact_matches": {
+    "en": "Found {count} exact matches for '{search_text}' (out of {total} products)",
+    "he": "נמצאו {count} התאמות מדויקות עבור '{search_text}' (מתוך {total} מוצרים)"
+  },
+  "filter_button": {
+    "en": "Filter",
+    "he": "סינון"
+  },
+  "remove": {
+    "en": "Remove",
+    "he": "הסר"
+  },
+  "product_updated": {
+    "en": "Product updated, view refreshed",
+    "he": "המוצר עודכן, התצוגה רועננה"
+  },
+  "product_deleted": {
+    "en": "Product deleted, view refreshed",
+    "he": "המוצר נמחק, התצוגה רועננה"
+  },
+  "product_added": {
+    "en": "Product added, view refreshed",
+    "he": "המוצר נוסף, התצוגה רועננה"
+  },
+  "search_results_title": {
+    "en": "Search Results",
+    "he": "תוצאות חיפוש"
+  },
+  "search_by_name_placeholder": {
+    "en": "Search by name...",
+    "he": "חיפוש לפי שם..."
+  },
+  "search_by_barcode_placeholder": {
+    "en": "Search by barcode...",
+    "he": "חיפוש לפי ברקוד..."
+  },
+  "search_products": {
+    "en": "Search",
+    "he": "חיפוש"
+  }
+}

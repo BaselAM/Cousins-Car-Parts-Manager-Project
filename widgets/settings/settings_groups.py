@@ -137,3 +137,56 @@ class SettingsGroupCreator:
         group.auto_restock_label = auto_restock_label
 
         return group
+
+    def create_bartender_group(self, labels_folder_btn, executable_btn, labels_path_label, executable_path_label):
+        """Create Bartender integration settings group"""
+        group = QGroupBox(self.translator.t('bartender_integration'), self.parent)
+        layout = QVBoxLayout()
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(10)
+
+        # Labels folder section
+        labels_section = QGroupBox(self.translator.t('labels_folder'))
+        labels_layout = QVBoxLayout()
+        labels_layout.setContentsMargins(8, 8, 8, 8)
+        labels_layout.setSpacing(10)
+
+        # Add the path display label
+        labels_layout.addWidget(labels_path_label)
+
+        # Add the button in its own layout for proper alignment
+        btn_layout1 = QHBoxLayout()
+        btn_layout1.addWidget(labels_folder_btn)
+        btn_layout1.addStretch()
+        labels_layout.addLayout(btn_layout1)
+
+        labels_section.setLayout(labels_layout)
+
+        # Executable section
+        executable_section = QGroupBox(self.translator.t('bartender_executable'))
+        executable_layout = QVBoxLayout()
+        executable_layout.setContentsMargins(8, 8, 8, 8)
+        executable_layout.setSpacing(10)
+
+        # Add the path display label
+        executable_layout.addWidget(executable_path_label)
+
+        # Add the button in its own layout for proper alignment
+        btn_layout2 = QHBoxLayout()
+        btn_layout2.addWidget(executable_btn)
+        btn_layout2.addStretch()
+        executable_layout.addLayout(btn_layout2)
+
+        executable_section.setLayout(executable_layout)
+
+        # Add sections to main layout
+        layout.addWidget(labels_section)
+        layout.addWidget(executable_section)
+        layout.addStretch()
+        group.setLayout(layout)
+
+        # Store references
+        group.labels_section = labels_section
+        group.executable_section = executable_section
+
+        return group
